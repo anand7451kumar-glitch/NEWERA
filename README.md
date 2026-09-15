@@ -1,2 +1,2 @@
 # NEWERA
-Hi, I'm Anand 👋  🎓 B.Tech Student 💻 Learning C++ and DSA 🚀 Building projects 📚 Currently following CS50 🎯 Preparing for software engineering internships
+Hi, I'm Anand 👋  🎓 B.Tech Student 💻 Learning Python, Javascript, C++ and DSA 🚀 Building projects 📚 🎯
