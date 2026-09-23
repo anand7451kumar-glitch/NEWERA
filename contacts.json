@@ -1,6 +1,11 @@
 {
     "ANAND": {
+<<<<<<< HEAD
         "phone": "7091531757",
         "email": "anand7451kumar@gmail.com"
+=======
+        "phone": "1234567890",
+        "email": "poiuytfd"
+>>>>>>> 6322b9b (ADD CONTACT BOOK APPLICATION)
     }
 }
