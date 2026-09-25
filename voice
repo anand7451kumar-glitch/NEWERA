@@ -1,0 +1,25 @@
+import speech_recognition as sr
+import datetime
+
+def transcribe_audio(file_path):
+    recognizer = sr.Recognizer()
+    with sr.AudioFile(file_path) as source:
+        audio = recognizer.record(source)
+        try:
+            text = recognizer.recognize_google(audio)
+            print("📝 Note captured:", text)
+
+            # Save to Markdown file
+            filename = f"note_{datetime.date.today()}.md"
+            with open(filename, "a") as f:
+                f.write(f"- {datetime.datetime.now().strftime('%H:%M:%S')}: {text}\n")
+
+            print(f"✅ Saved to {filename}")
+        except sr.UnknownValueError:
+            print("❌ Could not understand audio")
+        except sr.RequestError:
+            print("⚠️ Speech recognition service unavailable")
+
+# Example usage
+transcribe_audio("sample.wav")   # replace with your uploaded audio file
+ 
