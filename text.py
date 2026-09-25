@@ -22,7 +22,7 @@ def take_note():
         print(f"✅ Saved to {filename}")
 
         #Optional: read back
-        engine = pytssx3.init()
+        engine = pyttsx3.init()
         engine.say("Your note has been saved.")
         engine.runAndWait()
 
