@@ -24,7 +24,7 @@ while True:
         cur.execute("SELECT * FROM tasks")
 
         for id, task, done in cur.fetchall():
-            mark = "✅" id done else "◻"
+            mark = "✅" if done else "◻"
             print(f"{id}. [{mark}] { task}")
 
     elif choice == "3":
