@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Survivor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="game-container">
+        <header>
+            <h1>NEON SURVIVOR</h1>
+            <p>Survive the hunters. Collect energy. Beat your record.</p>
+        </header>
+
+        <section class="stats">
+            <span>Score: <strong id="score">0</strong></span>
+            <span>Health: <strong id="health">3</strong></span>
+            <span>Wave: <strong id="wave">1</strong></span>
+        </section>
+
+        <div class="game-wrapper">
+            <canvas id="game" width="800" height="500"></canvas>
+
+            <div id="overlay">
+                <h2 id="message">READY TO SURVIVE?</h2>
+                <p>Move with WASD or arrow keys.</p>
+                <button id="start">START GAME</button>
+            </div>
+        </div>
+
+        <p class="instructions">
+            Move: WASD / Arrow keys · Pause: P · Collect cyan orbs
+        </p>
+    </main>
+
+    <script src="game.js"></script>
+</body>
+</html>

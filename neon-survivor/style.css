@@ -1,0 +1,116 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #080d19;
+    color: #e8f4ff;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 900px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+h1 {
+    color: #5ee7f7;
+    letter-spacing: 5px;
+    margin-bottom: 8px;
+}
+
+header p,
+.instructions {
+    color: #8da4bf;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 15px;
+    background: #111c30;
+    border: 1px solid #253852;
+    border-radius: 10px;
+}
+
+.stats strong {
+    color: #5ee7f7;
+}
+
+.game-wrapper {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #28445f;
+    border-radius: 12px;
+    background: #080d19;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+#overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    background: rgba(8, 13, 25, 0.88);
+}
+
+#overlay.hidden {
+    display: none;
+}
+
+#message {
+    color: #5ee7f7;
+    font-size: clamp(20px, 4vw, 32px);
+}
+
+button {
+    padding: 14px 24px;
+    background: #5ee7f7;
+    color: #08101c;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #b2f8ff;
+}
+
+.instructions {
+    text-align: center;
+    line-height: 1.7;
+}
+
+@media (max-width: 500px) {
+    body {
+        padding: 10px;
+    }
+
+    .stats {
+        font-size: 13px;
+        padding: 12px 6px;
+    }
+}
