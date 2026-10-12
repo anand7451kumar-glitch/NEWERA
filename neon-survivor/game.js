@@ -14,9 +14,13 @@ const HEIGHT = canvas.height;
 let player;
 let enemies = [];
 let orbs = [];
+
 let score = 0;
 let health = 3;
 let wave = 1;
+
+// Persistent high score
+let highScore = Number(localStorage.getItem("neonSurvivorHighScore")) || 0;
 
 let running = false;
 let paused = false;
@@ -39,9 +43,11 @@ function resetGame() {
 
     enemies = [];
     orbs = [];
+
     score = 0;
     health = 3;
     wave = 1;
+
     spawnTimer = 0;
     orbTimer = 0;
     keys = {};
@@ -53,6 +59,16 @@ function updateStats() {
     scoreElement.textContent = Math.floor(score);
     healthElement.textContent = health;
     waveElement.textContent = wave;
+
+    // Show the high score in the browser tab title.
+    document.title = `Neon Survivor | Best: ${highScore}`;
+}
+
+function saveHighScore() {
+    if (score > highScore) {
+        highScore = Math.floor(score);
+        localStorage.setItem("neonSurvivorHighScore", highScore);
+    }
 }
 
 function startGame() {
@@ -64,6 +80,8 @@ function startGame() {
     paused = false;
     gameOver = false;
 
+    message.textContent = "READY TO SURVIVE?";
+    startButton.textContent = "START GAME";
     overlay.classList.add("hidden");
 
     lastTime = performance.now();
@@ -74,7 +92,12 @@ function endGame() {
     running = false;
     gameOver = true;
 
-    message.textContent = `GAME OVER — SCORE: ${Math.floor(score)}`;
+    saveHighScore();
+    updateStats();
+
+    message.textContent =
+        `GAME OVER — SCORE: ${Math.floor(score)} | BEST: ${highScore}`;
+
     startButton.textContent = "PLAY AGAIN";
     overlay.classList.remove("hidden");
 }
@@ -92,6 +115,7 @@ function togglePause() {
     } else {
         running = true;
         overlay.classList.add("hidden");
+
         lastTime = performance.now();
         animationId = requestAnimationFrame(gameLoop);
     }
@@ -117,12 +141,46 @@ function spawnEnemy() {
         y = HEIGHT;
     }
 
-    enemies.push({
-        x,
-        y,
-        radius: 10,
-        speed: 55 + wave * 9
-    });
+    // Choose enemy type based on the current wave.
+    const roll = Math.random();
+    let enemy;
+
+    if (wave >= 3 && roll < 0.2) {
+        // Tank: large, slow, and takes three hits.
+        enemy = {
+            x,
+            y,
+            radius: 17,
+            speed: 35 + wave * 3,
+            type: "tank",
+            hp: 3,
+            damageTimer: 0
+        };
+    } else if (wave >= 2 && roll < 0.5) {
+        // Fast enemy: small and difficult to dodge.
+        enemy = {
+            x,
+            y,
+            radius: 7,
+            speed: 100 + wave * 8,
+            type: "fast",
+            hp: 1,
+            damageTimer: 0
+        };
+    } else {
+        // Normal enemy.
+        enemy = {
+            x,
+            y,
+            radius: 10,
+            speed: 55 + wave * 9,
+            type: "normal",
+            hp: 1,
+            damageTimer: 0
+        };
+    }
+
+    enemies.push(enemy);
 }
 
 function spawnOrb() {
@@ -268,10 +326,12 @@ function draw() {
     for (const orb of orbs) {
         ctx.beginPath();
         ctx.arc(orb.x, orb.y, orb.radius, 0, Math.PI * 2);
+
         ctx.fillStyle = "#52f1ff";
         ctx.shadowColor = "#52f1ff";
         ctx.shadowBlur = 15;
         ctx.fill();
+
         ctx.shadowBlur = 0;
     }
 
@@ -286,11 +346,32 @@ function draw() {
             Math.PI * 2
         );
 
-        ctx.fillStyle = "#ff426d";
-        ctx.shadowColor = "#ff426d";
+        if (enemy.type === "tank") {
+            ctx.fillStyle = "#a855f7";
+            ctx.shadowColor = "#a855f7";
+        } else if (enemy.type === "fast") {
+            ctx.fillStyle = "#ff9f43";
+            ctx.shadowColor = "#ff9f43";
+        } else {
+            ctx.fillStyle = "#ff426d";
+            ctx.shadowColor = "#ff426d";
+        }
+
         ctx.shadowBlur = 12;
         ctx.fill();
         ctx.shadowBlur = 0;
+
+        // Display tank health.
+        if (enemy.type === "tank") {
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "11px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(
+                enemy.hp,
+                enemy.x,
+                enemy.y + 4
+            );
+        }
     }
 
     // Player
@@ -315,6 +396,12 @@ function draw() {
         ctx.fill();
         ctx.shadowBlur = 0;
     }
+
+    // High score display
+    ctx.fillStyle = "#8da4bf";
+    ctx.font = "14px Arial";
+    ctx.textAlign = "right";
+    ctx.fillText(`BEST: ${highScore}`, WIDTH - 15, 25);
 }
 
 function gameLoop(timestamp) {
@@ -344,6 +431,7 @@ document.addEventListener("keydown", event => {
     }
 
     keys[event.key] = true;
+    keys[event.key.toLowerCase()] = true;
 
     if (event.key.toLowerCase() === "p") {
         togglePause();
@@ -352,6 +440,7 @@ document.addEventListener("keydown", event => {
 
 document.addEventListener("keyup", event => {
     keys[event.key] = false;
+    keys[event.key.toLowerCase()] = false;
 });
 
 startButton.addEventListener("click", () => {
