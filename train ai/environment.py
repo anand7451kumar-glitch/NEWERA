@@ -1,5 +1,6 @@
 import random
 
+
 class Maze:
     def __init__(self):
         self.width = 6
@@ -14,7 +15,6 @@ class Maze:
             (3, 1),
             (3, 2),
             (3, 3),
-
         }
 
         self.traps = {
@@ -32,10 +32,10 @@ class Maze:
         x, y = self.position
 
         moves = {
-            0: (0, -1),
-            1: (0, 1),
-            2: (-1, 0),
-            3: (1, 0),
+            0: (0, -1),   # Up
+            1: (0, 1),    # Down
+            2: (-1, 0),   # Left
+            3: (1, 0),    # Right
         }
 
         dx, dy = moves[action]
@@ -43,28 +43,28 @@ class Maze:
         new_position = (x + dx, y + dy)
         nx, ny = new_position
 
-        #Prevent  walking outside the maze
+        # Prevent walking outside the maze.
         if not (
             0 <= nx < self.width
             and 0 <= ny < self.height
         ):
             new_position = self.position
 
-        #Prevent walking through the walls,
+        # Prevent walking through walls.
         if new_position in self.walls:
             new_position = self.position
 
         self.position = new_position
 
-        #Reward the AI for reaching the goal.
+        # Reward the AI for reaching the goal.
         if self.position == self.goal:
             return self.position, 100, True
 
-        #Penalise falling into a trap
+        # Penalize falling into a trap.
         if self.position in self.traps:
             return self.position, -100, True
 
-        #A small penalty encourages shorter routes.
+        # A small penalty encourages shorter routes.
         return self.position, -1, False
 
     def display(self):
@@ -90,8 +90,3 @@ class Maze:
             print(" ".join(row))
 
         print()
-
-
-        
-
-
