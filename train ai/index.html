@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROJECT NEURO | AI Lab</title>
+
+<style>
+:root {
+    --bg: #080d19;
+    --panel: #111c30;
+    --border: #263b59;
+    --cyan: #5ee7f7;
+    --green: #61f2a2;
+    --red: #ff5470;
+    --purple: #bd91ff;
+    --text: #e8f1ff;
+    --muted: #91a6c3;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 25px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+header {
+    margin-bottom: 25px;
+}
+
+h1 {
+    margin-bottom: 5px;
+    color: var(--cyan);
+    letter-spacing: 4px;
+}
+
+.subtitle {
+    color: var(--muted);
+}
+
+.layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(280px, 0.7fr);
+    gap: 20px;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    min-width: 0;
+}
+
+h2 {
+    margin-top: 0;
+    font-size: 17px;
+}
+
+#maze {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 5px;
+    width: 100%;
+    aspect-ratio: 1;
+    margin: 15px auto;
+}
+
+.cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    border-radius: 6px;
+    background: #1b2b43;
+    color: var(--muted);
+    font-size: clamp(11px, 2vw, 20px);
+    font-weight: bold;
+    position: relative;
+}
+
+.wall {
+    background: #394861;
+}
+
+.trap {
+    background: #4a2335;
+    color: var(--red);
+}
+
+.goal {
+    background: #174733;
+    color: var(--green);
+}
+
+.agent {
+    background: #164b5a;
+    color: var(--cyan);
+    box-shadow: inset 0 0 0 2px var(--cyan);
+}
+
+.visited {
+    background: #203c52;
+}
+
+button {
+    padding: 11px 15px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--cyan);
+    color: #07111c;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 3px;
+}
+
+button:hover {
+    filter: brightness(1.12);
+}
+
+button.secondary {
+    background: #293b56;
+    color: var(--text);
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat {
+    padding: 14px;
+    border-radius: 9px;
+    background: #0b1425;
+}
+
+.stat span {
+    display: block;
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.stat strong {
+    font-size: 22px;
+    color: var(--cyan);
+}
+
+#status {
+    color: var(--green);
+    min-height: 24px;
+}
+
+#log {
+    height: 105px;
+    overflow-y: auto;
+    background: #080d19;
+    border-radius: 8px;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--muted);
+}
+
+.q-values {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.q-value {
+    text-align: center;
+    padding: 10px 3px;
+    background: #0b1425;
+    border-radius: 7px;
+    overflow-wrap: anywhere;
+}
+
+.q-value span {
+    display: block;
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 6px;
+}
+
+.q-value strong {
+    font-size: 13px;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 15px;
+}
+
+.legend span {
+    white-space: nowrap;
+}
+
+#modelStatus {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 12px;
+    overflow-wrap: anywhere;
+}
+
+footer {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 20px;
+    line-height: 1.7;
+}
+
+@media (max-width: 760px) {
+    body {
+        padding: 12px;
+    }
+
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .panel {
+        padding: 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header>
+    <h1>PROJECT NEURO</h1>
+    <div class="subtitle">
+        Reinforcement Learning Lab · Q-learning agent
+    </div>
+</header>
+
+<div class="layout">
+
+    <section class="panel">
+        <h2>🧩 AI Maze</h2>
+
+        <div class="legend">
+            <span>🔵 AI agent</span>
+            <span>⬛ Wall</span>
+            <span>🔴 Trap</span>
+            <span>🟢 Goal</span>
+        </div>
+
+        <div id="maze"></div>
+
+        <div class="controls">
+            <button id="startBtn">▶ Start</button>
+            <button id="stepBtn" class="secondary">Step</button>
+            <button id="resetBtn" class="secondary">Reset</button>
+        </div>
+
+        <p id="status">Loading saved AI model...</p>
+        <div id="modelStatus">Reading neuro_model.json</div>
+    </section>
+
+    <aside class="panel">
+        <h2>📊 Live Statistics</h2>
+
+        <div class="stats">
+            <div class="stat">
+                <span>Moves</span>
+                <strong id="moves">0</strong>
+            </div>
+
+            <div class="stat">
+                <span>Total reward</span>
+                <strong id="reward">0</strong>
+            </div>
+
+            <div class="stat">
+                <span>Current position</span>
+                <strong id="position">(0, 0)</strong>
+            </div>
+
+            <div class="stat">
+                <span>Model states</span>
+                <strong id="states">0</strong>
+            </div>
+        </div>
+
+        <h2>🧠 Current Q-values</h2>
+        <p class="subtitle">
+            Estimated values for each possible action.
+        </p>
+
+        <div class="q-values">
+            <div class="q-value">
+                <span>↑ UP</span>
+                <strong id="q0">0.00</strong>
+            </div>
+
+            <div class="q-value">
+                <span>↓ DOWN</span>
+                <strong id="q1">0.00</strong>
+            </div>
+
+            <div class="q-value">
+                <span>← LEFT</span>
+                <strong id="q2">0.00</strong>
+            </div>
+
+            <div class="q-value">
+                <span>→ RIGHT</span>
+                <strong id="q3">0.00</strong>
+            </div>
+        </div>
+
+        <h2 style="margin-top:24px">📟 Activity Log</h2>
+        <div id="log">Waiting for model...</div>
+    </aside>
+
+</div>
+
+<footer>
+    This dashboard loads your saved Q-table and uses it to choose
+    actions. It demonstrates the trained policy; it does not retrain
+    the AI in the browser.
+</footer>
+
+</div>
+
+<script>
+const WIDTH = 6;
+const HEIGHT = 6;
+
+const START = [0, 0];
+const GOAL = [5, 5];
+
+const WALLS = [
+    [1, 1],
+    [1, 2],
+    [3, 1],
+    [3, 2],
+    [3, 3]
+];
+
+const TRAPS = [
+    [2, 4],
+    [4, 2]
+];
+
+// Action indices must match agent.py.
+const ACTIONS = [
+    [0, -1],  // 0: Up
+    [0, 1],   // 1: Down
+    [-1, 0],  // 2: Left
+    [1, 0]    // 3: Right
+];
+
+const ACTION_NAMES = ["UP", "DOWN", "LEFT", "RIGHT"];
+
+const mazeElement = document.getElementById("maze");
+const statusElement = document.getElementById("status");
+const modelStatusElement = document.getElementById("modelStatus");
+const logElement = document.getElementById("log");
+const startButton = document.getElementById("startBtn");
+const stepButton = document.getElementById("stepBtn");
+
+let qTable = {};
+let position = [...START];
+let visited = new Set();
+let moves = 0;
+let totalReward = 0;
+let running = false;
+let finished = false;
+let timer = null;
+let modelLoaded = false;
+
+function keyOf(state) {
+    return `${state[0]},${state[1]}`;
+}
+
+function samePosition(a, b) {
+    return a[0] === b[0] && a[1] === b[1];
+}
+
+function contains(list, state) {
+    return list.some(item => samePosition(item, state));
+}
+
+function addLog(text) {
+    const line = document.createElement("div");
+    line.textContent = text;
+    logElement.appendChild(line);
+    logElement.scrollTop = logElement.scrollHeight;
+}
+
+async function loadModel() {
+    try {
+        const response = await fetch("./neuro_model.json");
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        qTable = await response.json();
+        modelLoaded = true;
+
+        modelStatusElement.textContent =
+            `Loaded ${Object.keys(qTable).length} learned states from neuro_model.json`;
+
+        statusElement.textContent = "Model loaded. Ready to run.";
+        addLog("Saved Q-table loaded.");
+
+        startButton.disabled = false;
+        stepButton.disabled = false;
+
+        render();
+        updateStats();
+    } catch (error) {
+        modelStatusElement.textContent =
+            "Could not load neuro_model.json.";
+
+        statusElement.textContent =
+            "Start the local web server and refresh this page.";
+
+        addLog(`Error: ${error.message}`);
+        addLog("Check that index.html and neuro_model.json are together.");
+
+        startButton.disabled = true;
+        stepButton.disabled = true;
+    }
+}
+
+function getQValues(state) {
+    return qTable[keyOf(state)] || [0, 0, 0, 0];
+}
+
+function chooseBestAction(state) {
+    const values = getQValues(state);
+    const maxValue = Math.max(...values);
+
+    const bestActions = values
+        .map((value, index) => ({ value, index }))
+        .filter(item => item.value === maxValue)
+        .map(item => item.index);
+
+    // Match the Python agent's random tie-breaking behavior.
+    return bestActions[
+        Math.floor(Math.random() * bestActions.length)
+    ];
+}
+
+function takeStep() {
+    if (!modelLoaded || finished) return;
+
+    const action = chooseBestAction(position);
+    const [dx, dy] = ACTIONS[action];
+
+    let next = [
+        position[0] + dx,
+        position[1] + dy
+    ];
+
+    // Prevent leaving the maze.
+    if (
+        next[0] < 0 || next[0] >= WIDTH ||
+        next[1] < 0 || next[1] >= HEIGHT
+    ) {
+        next = [...position];
+    }
+
+    // Prevent crossing walls.
+    if (contains(WALLS, next)) {
+        next = [...position];
+    }
+
+    position = next;
+    moves++;
+
+    let reward = -1;
+
+    if (samePosition(position, GOAL)) {
+        reward = 100;
+        finished = true;
+        stop();
+        statusElement.textContent = "🎉 AI reached the goal!";
+    } else if (contains(TRAPS, position)) {
+        reward = -100;
+        finished = true;
+        stop();
+        statusElement.textContent = "💥 AI fell into a trap.";
+    }
+
+    totalReward += reward;
+    visited.add(keyOf(position));
+
+    addLog(
+        `Move ${moves}: ${ACTION_NAMES[action]} | ` +
+        `Reward ${reward >= 0 ? "+" : ""}${reward}`
+    );
+
+    if (!finished && moves >= 200) {
+        finished = true;
+        stop();
+        statusElement.textContent = "Step limit reached.";
+    }
+
+    render();
+    updateStats();
+}
+
+function render() {
+    mazeElement.innerHTML = "";
+
+    for (let y = 0; y < HEIGHT; y++) {
+        for (let x = 0; x < WIDTH; x++) {
+            const cellPosition = [x, y];
+            const cell = document.createElement("div");
+
+            cell.className = "cell";
+
+            if (contains(WALLS, cellPosition)) {
+                cell.classList.add("wall");
+                cell.textContent = "■";
+            } else if (contains(TRAPS, cellPosition)) {
+                cell.classList.add("trap");
+                cell.textContent = "X";
+            } else if (samePosition(cellPosition, GOAL)) {
+                cell.classList.add("goal");
+                cell.textContent = "G";
+            } else {
+                cell.textContent = "·";
+            }
+
+            if (visited.has(keyOf(cellPosition))) {
+                cell.classList.add("visited");
+            }
+
+            if (samePosition(cellPosition, position)) {
+                cell.className = "cell agent";
+                cell.textContent = "A";
+            }
+
+            mazeElement.appendChild(cell);
+        }
+    }
+
+    const values = getQValues(position);
+
+    values.forEach((value, index) => {
+        document.getElementById(`q${index}`).textContent =
+            Number(value).toFixed(2);
+    });
+}
+
+function updateStats() {
+    document.getElementById("moves").textContent = moves;
+    document.getElementById("reward").textContent = totalReward;
+    document.getElementById("position").textContent =
+        `(${position[0]}, ${position[1]})`;
+    document.getElementById("states").textContent =
+        Object.keys(qTable).length;
+}
+
+function stop() {
+    running = false;
+
+    if (timer !== null) {
+        clearInterval(timer);
+        timer = null;
+    }
+
+    startButton.textContent = finished ? "▶ Restart" : "▶ Resume";
+}
+
+function start() {
+    if (!modelLoaded) return;
+
+    if (finished) {
+        reset();
+    }
+
+    if (running) {
+        stop();
+        statusElement.textContent = "Paused.";
+        return;
+    }
+
+    running = true;
+    startButton.textContent = "⏸ Pause";
+    statusElement.textContent = "AI is navigating the maze...";
+
+    timer = setInterval(takeStep, 450);
+}
+
+function reset() {
+    stop();
+
+    position = [...START];
+    visited = new Set([keyOf(START)]);
+    moves = 0;
+    totalReward = 0;
+    finished = false;
+
+    logElement.innerHTML = "";
+    addLog("Demonstration reset.");
+
+    statusElement.textContent = modelLoaded
+        ? "Ready to run."
+        : "Waiting for the saved model.";
+
+    startButton.textContent = "▶ Start";
+
+    render();
+    updateStats();
+}
+
+startButton.disabled = true;
+stepButton.disabled = true;
+
+startButton.addEventListener("click", start);
+
+stepButton.addEventListener("click", () => {
+    if (!running && !finished) {
+        takeStep();
+    }
+});
+
+document.getElementById("resetBtn").addEventListener("click", reset);
+
+visited.add(keyOf(START));
+
+render();
+updateStats();
+loadModel();
+</script>
+
+</body>
+</html>
