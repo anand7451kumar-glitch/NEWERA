@@ -62,6 +62,7 @@ def train():
             )
 
     print("\nTraining complete!")
+    agent.save()
     return maze, agent
 
 
