@@ -170,3 +170,15 @@ plt.title(
 
 plt.axis("off")
 plt.show()
+
+
+# Save the trained neural network
+np.savez(
+    "digit_model.npz",
+    W1=model.W1,
+    b1=model.b1,
+    W2=model.W2,
+    b2=model.b2
+)
+
+print("\nModel saved to digit_model.npz")
