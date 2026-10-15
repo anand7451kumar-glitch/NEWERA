@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Player",
+        "score": 1,
+        "total": 1,
+        "percentage": 100
+    },
+    {
+        "name": "Player",
+        "score": 3,
+        "total": 5,
+        "percentage": 60
+    },
+    {
+        "name": "Player",
+        "score": 0,
+        "total": 1,
+        "percentage": 0
+    }
+]
