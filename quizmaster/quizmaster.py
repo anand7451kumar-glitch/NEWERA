@@ -104,6 +104,7 @@ class QuizMaster:
         self.category_label.pack(pady=5)
 
         self.category = tk.StringVar(value="All")
+        self.difficulty = tk.StringVar(value="Medium")
 
         self.category_menu = tk.OptionMenu(
             root,
@@ -122,6 +123,26 @@ class QuizMaster:
             highlightthickness=0
         )
         self.category_menu.pack(pady=8)
+        self.name_entry = tk.Entry(
+            root,
+            textvariable=self.player_name,
+            font=("Arial", 12),
+            justify="center",
+            width=25
+        )
+        self.name_entry.pack(paddy=5)
+        self.name_entry.insert(0, "Enter your name")
+
+        self.difficulty_menu = tk.OptionMenu(
+            root, self.difficulty, "Easy", "Medium", "Hard"
+        )
+        self.difficulty_menu.config(
+            font=("Arial", 11),
+            bg="#252b3a",
+            fg="white",
+            highlightthickness=0
+        )
+        self.difficulty_menu.pack(pady=5)
 
         self.start_button = tk.Button(
             root,
@@ -208,6 +229,13 @@ class QuizMaster:
             button.config(state=state)
 
     def start_quiz(self):
+        name = self.player_name.get().strip()
+        if not name or name == "Enter your name":
+            messagebox.showwarning(
+                "Name required",
+                "Please enter your name before starting."
+            )
+            return
         self.cancel_timer()
 
         selected_category = self.category.get()
@@ -222,8 +250,16 @@ class QuizMaster:
             messagebox.showinfo("QuizMaster", "No questions available.")
             return
 
+        difficulty = self.difficulty.get()
+
+        question_count = {
+            "Easy": 3,
+            "Medium": 5,
+            "Hard": 8
+        }[difficulty]
+
         self.questions = random.sample(
-            available, min(5, len(available))
+            available, min(question_count, len(available))
         )
 
         self.score = 0
@@ -231,6 +267,7 @@ class QuizMaster:
         self.score_label.config(text="Score: 0")
         self.start_button.config(state="disabled")
         self.category_menu.config(state="disabled")
+        self.difficulty_menu.config(state="disabled")
 
         self.show_question()
 
@@ -246,8 +283,15 @@ class QuizMaster:
         self.time_left = 15
         self.feedback_label.config(text="")
         self.question_label.config(
-            text=f"Q{self.question_number + 1}. {question['question']}"
+            text=(
+                f"Quiz complete, {self.player_name.get().strip()}!\n\n"
+                f"Your score: {self.score}/{total}\n"
+                f"Result: {percentage}%"
+            )
         )
+        
+    
+
 
         options = question["options"][:]
         random.shuffle(options)
@@ -309,6 +353,7 @@ class QuizMaster:
         self.set_options_state("disabled")
         self.start_button.config(state="normal")
         self.category_menu.config(state="normal")
+        self.difficulty_menu.config(state="normal")
 
         total = len(self.questions)
         percentage = round((self.score / total) * 100)
@@ -322,7 +367,7 @@ class QuizMaster:
         self.save_score(total)
 
     def save_score(self, total):
-        name = "Player"
+        name = self.player_name.get().strip()
 
         scores = []
 
