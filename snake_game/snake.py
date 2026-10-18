@@ -2,6 +2,7 @@ import tkinter as tk
 import random
 import json
 import os
+import subprocess
 
 HIGH_SCORE_FILE = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
@@ -26,11 +27,24 @@ def save_high_score(score):
 WIDTH = 600
 HEIGHT = 400
 CELL_SIZE = 20
-SPEED = 120
+DIFFICULTIES = {
+    "Easy": 180,
+    "Medium": 120,
+    "Hard": 70
+}
+
+SPEED = DIFFICULTIES["Medium"]
 
 COLS = WIDTH // CELL_SIZE
 ROWS = HEIGHT // CELL_SIZE
 
+def play_sound(sound_name):
+    sound_path = f"/System/Library/Sounds/{sound_name}.aiff"
+    subprocess.Popen(
+        ["afplay", sound_path],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
 
 class SnakeGame:
     def __init__(self, root):
@@ -75,6 +89,22 @@ class SnakeGame:
         )
         self.high_score_label.pack(pady=2)
 
+        self.difficulty = tk.StringVar(value="Medium")
+
+        self.difficulty_menu = tk.OptionMenu(
+            self.root,
+            self.difficulty,
+            *DIFFICULTIES.keys(),
+            command=self.change_difficulty
+        )
+
+        self.difficulty_menu.config(
+            bg="#293449",
+            fg="white",
+            highlightthickness=0
+        )
+        self.difficulty_menu.pack(pady=5)
+    
         # Game canvas
         self.canvas = tk.Canvas(
             root,
@@ -140,17 +170,32 @@ class SnakeGame:
         else:
             self.draw()
             self.after_id = self.root.after(SPEED, self.update_game)
-    
+
+
+    def change_difficulty(self, selected):
+        global SPEED
+
+        SPEED = DIFFICULTIES[selected]
+
+        if not self.game_over and not self.paused:
+            if self.after_id is not None:
+                self.root.after_cancel(self.after_id)
+
+            self.after_id = self.root.after(SPEED, self.update_game)
 
     def restart(self):
         if self.after_id is not None:
             self.root.after_cancel(self.after_id)
             self.after_id = None
+        if hasattr(self, "play_again_button"):
+            self.play_again_button.destroy()
+            del self.play_again_button
 
         self.score = 0
         self.direction = "Right"
         self.next_direction = "Right"
         self.game_over = False
+        self.paused = False
 
         self.snake = [
             (5, 5),
@@ -225,6 +270,7 @@ class SnakeGame:
         self.snake.insert(0, new_head)
 
         if eating:
+            play_sound("Pop")
             self.score += 10
             self.score_label.config(text=f"Score: {self.score}")
 
@@ -241,6 +287,7 @@ class SnakeGame:
                 self.game_over = True
                 self.draw()
                 self.show_message("YOU WIN!")
+                play_sound("Hero")
                 return
         else:
             self.snake.pop()
@@ -248,7 +295,7 @@ class SnakeGame:
         self.draw()
 
         # Gradually increase speed as the score rises.
-        speed = max(55, SPEED - (self.score // 50) * 5)
+        speed = max(40, SPEED - (self.score // 50) * 5)
 
         self.after_id = self.root.after(speed, self.update_game)
 
@@ -283,7 +330,19 @@ class SnakeGame:
 
     def end_game(self):
         self.game_over = True
+        play_sound("Basso")
         self.show_message("GAME OVER")
+
+        self.play_again_button = tk.Button(
+            self.root,
+            text="Play Again",
+            command=self.restart,
+            font=("Arial", 11, "bold"),
+            bg="#4ade80",
+            fg="#172033"
+        )
+
+        self.play_again_button.pack(pady=5)
 
     def show_message(self, message):
         self.canvas.create_rectangle(
