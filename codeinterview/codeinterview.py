@@ -261,7 +261,7 @@ QUESTIONS = [
             "Time complexity: O(n)\n"
             "Space complexity: O(1)"
         )
-    }
+    },
     {
         "title": "Move Zeroes",
         "category": "Arrays",
@@ -547,6 +547,7 @@ class CodeInterviewPrep:
         self.run_button = tk.Button(
             self.root,
             text="Run Code",
+            command=self.run_code,
             bg="#2563eb",
             fg="white",
             font=("Arial", 11, "bold"),
@@ -844,6 +845,7 @@ class CodeInterviewPrep:
                 )
 
             self.output_box.insert("end", output)
+            self.output_box.config(state="disabled")
 
         except subprocess.TimeoutExpired:
             self.output_box.insert(
