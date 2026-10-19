@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
 import sqlite3
 
 DB_FILE = "codevault.db"
@@ -148,6 +148,7 @@ class CodeVault:
             ("Update", self.update_snippet),
             ("Delete", self.delete_snippet),
             ("Copy Code", self.copy_code),
+            ("Export", self.export_snippet),
             ("Clear", self.clear_form)
         ]
 
@@ -286,6 +287,49 @@ class CodeVault:
         self.connection.commit()
         self.clear_form()
         self.load_snippets()
+
+    def export_snippet(self):
+        title = self.title_entry.get().strip()
+        language = self.language.get()
+        code = self.code_text.get("1.0", "end-1c")
+
+        if not title or not code.strip():
+            messagebox.showwarning(
+                "Missing information",
+                "Select a snippet or enter a title and code first."
+            )
+            return
+
+        extensions = {
+            "Python": ".py",
+            "C++": ".cpp",
+            "Java": ".java",
+            "JavaScript": ".js",
+            "C": ".c",
+            "Other": ".txt"
+        }
+
+        file_path = filedialog.asksaveasfilename(
+            title="Export Code Snippet",
+            initialfile=title.replace(" ", "_") + extensions.get(language,  ".txt"),
+            defaultextension=extensions.get(language, ".txt"),
+            filetypes=[("All files", "*.*")]
+        )
+
+        if not file_path:
+            return
+
+        try:
+            with open(file_path, "w", encoding="utf-8") as file:
+                file.write(code)
+
+            messagebox.showinfo(
+                "Export successful",
+                f"Snippet exported to:\n{file_path}"
+            )
+        except OSError as error:
+            messagebox.showerror("Export failed", str(error))
+    
 
     def copy_code(self):
         code = self.code_text.get("1.0", "end-1c")
