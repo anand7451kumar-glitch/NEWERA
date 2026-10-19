@@ -153,7 +153,7 @@ class SnakeGame:
         self.root.bind("d", lambda event: self.change_direction("Right"))
         self.root.bind("<space>", self.toggle_pause)
 
-        self.restart()
+    
 
     def toggle_pause(self, event=None):
         if self.game_over:
@@ -183,7 +183,45 @@ class SnakeGame:
 
             self.after_id = self.root.after(SPEED, self.update_game)
 
+    def show_start_screen(self):
+        self.game_over = True
+        self.canvas.delete("all")
+
+        self.canvas.create_text(
+            WIDTH // 2, 90,
+            text="SNAKE GAME",
+            fill="#4ade80",
+            font=("Arial", 28, "bold")
+        )
+
+        self.canvas.create_text(
+            WIDTH // 2, 150,
+            text="Use Arrow Keys or WASD to move",
+            fill="white",
+            font=("Arial", 13)
+        )
+
+        self.canvas.create_text(
+            WIDTH // 2, 185,
+            text="Press SPACE to pause",
+            fill="white",
+            font=("Arial", 13)
+        )
+
+        self.start_button = tk.Button(
+            self.root,
+            text="Start Game",
+            command=self.restart,
+            font=("Arial", 12, "bold"),
+            bg="#4ade80",
+            fg="#172033"
+        )
+        self.start_button.pack(pady=5)
+
     def restart(self):
+        if hasattr(self, "start_button"):
+            self.start_button.destroy()
+            del self.start_button
         if self.after_id is not None:
             self.root.after_cancel(self.after_id)
             self.after_id = None
@@ -372,4 +410,5 @@ class SnakeGame:
 if __name__ == "__main__":
     root = tk.Tk()
     game = SnakeGame(root)
+    game.show_start_screen()
     root.mainloop()
