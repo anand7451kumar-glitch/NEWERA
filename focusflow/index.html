@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusFlow | Study smarter</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <h2 class="brand">◈ FocusFlow</h2>
+    <p class="muted">YOUR WORKSPACE</p>
+    <a class="nav active" href="#dashboard">▦ &nbsp; Dashboard</a>
+    <a class="nav" href="#tasks">☑ &nbsp; My tasks</a>
+    <a class="nav" href="#stats">▥ &nbsp; Statistics</a>
+    <div class="sidebar-bottom">
+      <div class="avatar">F</div>
+      <div><strong>My Study Space</strong><small>One session at a time.</small></div>
+    </div>
+  </aside>
+
+  <main id="dashboard">
+    <header>
+      <div>
+        <p class="muted">YOUR PERSONAL STUDY SPACE</p>
+        <h1>Let's get in the zone.</h1>
+        <p class="muted">Small steps. Real progress.</p>
+      </div>
+      <span class="status"><span class="dot"></span> Ready to focus</span>
+    </header>
+
+    <section class="stats-grid" id="stats">
+      <article class="stat-card">
+        <span>Focus minutes today</span>
+        <h2 id="focusMinutes">0</h2>
+        <small>Minutes of deep work</small>
+      </article>
+      <article class="stat-card">
+        <span>Sessions completed</span>
+        <h2 id="sessionCount">0</h2>
+        <small>Focus sessions today</small>
+      </article>
+      <article class="stat-card">
+        <span>Tasks completed</span>
+        <h2 id="taskCount">0</h2>
+        <small>Tasks finished today</small>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel timer-panel">
+        <div class="panel-heading">
+          <div><p class="muted">STAY PRESENT</p><h2>Focus timer</h2></div>
+          <span class="pill" id="timerModeLabel">Focus</span>
+        </div>
+
+        <div class="modes">
+          <button class="mode selected" data-mode="focus">Focus</button>
+          <button class="mode" data-mode="short">Short break</button>
+          <button class="mode" data-mode="long">Long break</button>
+        </div>
+
+        <div class="timer-ring" id="timerRing">
+          <div>
+            <div class="timer" id="timer">25:00</div>
+            <p class="muted" id="timerCaption">Time to concentrate</p>
+          </div>
+        </div>
+
+        <div class="timer-actions">
+          <button class="primary" id="startBtn">▶ Start focus</button>
+          <button class="secondary" id="resetBtn">↻ Reset</button>
+        </div>
+        <p class="muted center" id="timerMessage">Your next achievement starts here.</p>
+      </article>
+
+      <article class="panel" id="tasks">
+        <div class="panel-heading">
+          <div><p class="muted">MAKE IT HAPPEN</p><h2>Today's tasks</h2></div>
+          <span class="pill" id="taskBadge">0 tasks</span>
+        </div>
+
+        <form id="taskForm">
+          <input id="taskInput" placeholder="What do you need to do?" maxlength="160" required>
+          <div class="form-row">
+            <select id="priority">
+              <option value="Normal">Normal priority</option>
+              <option value="High">High priority</option>
+              <option value="Low">Low priority</option>
+            </select>
+            <input id="dueDate" type="date" aria-label="Due date">
+          </div>
+          <button class="primary full" type="submit">+ Add task</button>
+        </form>
+
+        <div class="task-list" id="taskList">
+          <p class="muted">Loading your tasks...</p>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="panel-heading">
+        <div><p class="muted">BUILD YOUR CONSISTENCY</p><h2>Last 7 days</h2></div>
+        <span class="pill">Focus minutes</span>
+      </div>
+      <div class="chart" id="weeklyChart"></div>
+    </section>
+
+    <footer>FocusFlow · Built for consistency, not perfection.</footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
