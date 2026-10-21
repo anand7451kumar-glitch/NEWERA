@@ -84,6 +84,99 @@
 </section>
 
 
+<!-- RPS Arena Statistics Dashboard -->
+<section class="stats-dashboard" id="statsDashboard">
+
+  <div class="stats-heading">
+    <div>
+      <p class="eyebrow">YOUR GAME ANALYTICS</p>
+      <h2>Performance Dashboard</h2>
+    </div>
+    <span class="stats-live">● LIVE STATS</span>
+  </div>
+
+  <!-- Main statistics cards -->
+  <div class="stats-cards">
+
+    <article class="stat-card">
+      <span class="stat-label">Win Rate</span>
+      <strong class="stat-value" id="winPercentage">0%</strong>
+      <span class="stat-note">Excluding draws</span>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Total Wins</span>
+      <strong class="stat-value" id="totalWins">0</strong>
+      <span class="stat-note">Rounds won</span>
+    </article>
+
+    <article class="stat-card">
+      <span class="stat-label">Rounds Played</span>
+      <strong class="stat-value" id="totalRounds">0</strong>
+      <span class="stat-note">Completed rounds</span>
+    </article>
+
+  </div>
+
+  <!-- Performance charts -->
+  <div class="stats-charts">
+
+    <article class="chart-card">
+      <h3>Overall Results</h3>
+      <p class="chart-subtitle">Wins, losses and draws</p>
+
+      <div class="outcome-chart">
+
+        <div class="outcome-row">
+          <span>Wins</span>
+          <div class="bar-track">
+            <div class="bar-fill win-bar" id="winsBar"></div>
+          </div>
+          <strong id="winsCount">0</strong>
+        </div>
+
+        <div class="outcome-row">
+          <span>Losses</span>
+          <div class="bar-track">
+            <div class="bar-fill loss-bar" id="lossesBar"></div>
+          </div>
+          <strong id="lossesCount">0</strong>
+        </div>
+
+        <div class="outcome-row">
+          <span>Draws</span>
+          <div class="bar-track">
+            <div class="bar-fill draw-bar" id="drawsBar"></div>
+          </div>
+          <strong id="drawsCount">0</strong>
+        </div>
+
+      </div>
+    </article>
+
+    <article class="chart-card">
+      <h3>Recent Form</h3>
+      <p class="chart-subtitle">Your last 10 rounds</p>
+
+      <div class="recent-chart" id="recentChart">
+        <p class="chart-empty">
+          Play a round to see your performance.
+        </p>
+      </div>
+
+      <div class="chart-legend">
+        <span><i class="legend-dot win-dot"></i> Win</span>
+        <span><i class="legend-dot loss-dot"></i> Loss</span>
+        <span><i class="legend-dot draw-dot"></i> Draw</span>
+      </div>
+    </article>
+
+  </div>
+
+</section>
+
+
+
     <section class="game-panel">
       <div class="panel-top">
         <div>

@@ -236,6 +236,85 @@ function renderHistory() {
   }
 }
 
+
+function updateStats() {
+  const wins = history.filter(item => item.outcome === "win").length;
+  const losses = history.filter(item => item.outcome === "lose").length;
+  const draws = history.filter(item => item.outcome === "draw").length;
+
+  const total = history.length;
+  const decisiveRounds = wins + losses;
+
+  const winRate = decisiveRounds > 0
+    ? Math.round((wins / decisiveRounds) * 100)
+    : 0;
+
+  $("winPercentage").textContent = `${winRate}%`;
+  $("totalWins").textContent = wins;
+  $("totalRounds").textContent = total;
+
+  $("winsCount").textContent = wins;
+  $("lossesCount").textContent = losses;
+  $("drawsCount").textContent = draws;
+
+  // Compare each result against all rounds played.
+  [
+    ["winsBar", wins],
+    ["lossesBar", losses],
+    ["drawsBar", draws]
+  ].forEach(([id, count]) => {
+    $(id).style.width =
+      total > 0 ? `${(count / total) * 100}%` : "0%";
+  });
+
+  // Display the 10 most recent rounds.
+  const chart = $("recentChart");
+  chart.replaceChildren();
+
+  const recent = history.slice(0, 10);
+
+  if (recent.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "chart-empty";
+    empty.textContent = "Play a round to see your performance.";
+    chart.append(empty);
+    return;
+  }
+
+  recent.forEach(item => {
+    const column = document.createElement("div");
+    column.className = "recent-column";
+
+    const bar = document.createElement("div");
+    const resultClass = {
+      win: "win-dot",
+      lose: "loss-dot",
+      draw: "draw-dot"
+    }[item.outcome];
+
+    bar.className = `recent-bar ${resultClass}`;
+    bar.style.height = "54px";
+
+    const resultName = {
+      win: "Win",
+      lose: "Loss",
+      draw: "Draw"
+    }[item.outcome];
+
+    bar.title = `Round ${item.round}: ${resultName}`;
+    bar.setAttribute("role", "img");
+    bar.setAttribute("aria-label", bar.title);
+
+    const label = document.createElement("span");
+    label.className = "recent-round";
+    label.textContent = `#${item.round}`;
+
+    column.append(bar, label);
+    chart.append(column);
+  });
+}
+
+
 function play(player) {
   if (!moves[player] || matchFinished) return;
 
@@ -283,6 +362,7 @@ function play(player) {
   renderHistory();
   saveGame();
   updateTournament();
+  updateStats();
 
   buttons.forEach(button => {
     button.classList.toggle(
@@ -329,12 +409,16 @@ $("resetButton").addEventListener("click", () => {
 
   updateScoreboard();
   renderHistory();
+  updateTournament();
   saveGame();
+  updateStats();
 });
 
 updateScoreboard();
 renderHistory();
 updateTournament();
+saveGame();
+updateStats();
 
 if (round > 0 && history.length > 0) {
   const latest = history[0];
