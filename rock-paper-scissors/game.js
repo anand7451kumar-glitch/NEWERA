@@ -7,14 +7,145 @@ const moves = {
   scissors: { emoji: "✌️", name: "Scissors" }
 };
 
-let playerScore = 0;
-let computerScore = 0;
-let currentStreak = 0;
-let bestStreak = 0;
-let round = 0;
-let history = [];
+const STORAGE_KEY = "rpsArenaSave";
 
 const buttons = document.querySelectorAll(".choice-button");
+
+
+const MATCH_TARGET = 3;
+
+let matchPlayerScore = 0;
+let matchComputerScore = 0;
+let matchFinished = false;
+
+function updateTournament() {
+  $("matchPlayerScore").textContent = matchPlayerScore;
+  $("matchComputerScore").textContent = matchComputerScore;
+
+  const dots = $("matchProgress").querySelectorAll(".match-dot");
+
+  dots.forEach((dot, index) => {
+    dot.classList.remove("player-point", "computer-point");
+
+    if (index < matchPlayerScore) {
+      dot.classList.add("player-point");
+    } else if (index < matchPlayerScore + matchComputerScore) {
+      dot.classList.add("computer-point");
+    }
+  });
+
+  const status = $("matchStatus");
+  status.className = "tournament-badge";
+
+  if (matchPlayerScore >= MATCH_TARGET) {
+    status.textContent = "CHAMPION";
+    status.classList.add("champion");
+    $("matchMessage").textContent =
+      "🏆 You are the champion! Restart the match to play again.";
+  } else if (matchComputerScore >= MATCH_TARGET) {
+    status.textContent = "MATCH LOST";
+    status.classList.add("defeated");
+    $("matchMessage").textContent =
+      "The computer won this match. Restart and try again!";
+  } else {
+    status.textContent = "IN PROGRESS";
+    const needed = MATCH_TARGET - matchPlayerScore;
+    const computerNeeded = MATCH_TARGET - matchComputerScore;
+
+    $("matchMessage").textContent =
+      `First to 3 wins. You need ${needed}; computer needs ${computerNeeded}.`;
+  }
+
+  buttons.forEach(button => {
+    button.disabled = matchFinished;
+  });
+}
+
+function restartMatch() {
+  matchPlayerScore = 0;
+  matchComputerScore = 0;
+  matchFinished = false;
+
+  $("playerHand").textContent = "✊";
+  $("computerHand").textContent = "✊";
+  $("playerChoice").textContent = "Waiting...";
+  $("computerChoice").textContent = "Ready...";
+  $("resultBox").className = "result-box";
+  $("resultTitle").textContent = "Ready to battle?";
+  $("resultMessage").textContent =
+    "Pick a move below to start your next tournament.";
+
+  buttons.forEach(button => button.classList.remove("chosen"));
+
+  updateTournament();
+}
+
+$("restartMatchButton").addEventListener("click", restartMatch);
+
+
+function loadGame() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return {};
+
+    const data = JSON.parse(saved);
+
+    if (
+      !data ||
+      typeof data !== "object" ||
+      !Number.isInteger(data.playerScore) ||
+      !Number.isInteger(data.computerScore) ||
+      !Number.isInteger(data.currentStreak) ||
+      !Number.isInteger(data.bestStreak) ||
+      !Number.isInteger(data.round) ||
+      !Array.isArray(data.history) ||
+      data.playerScore < 0 ||
+      data.computerScore < 0 ||
+      data.currentStreak < 0 ||
+      data.bestStreak < 0 ||
+      data.round < 0 ||
+      data.history.some(item =>
+        !item ||
+        !moves[item.player] ||
+        !moves[item.computer] ||
+        !["win", "lose", "draw"].includes(item.outcome) ||
+        !Number.isInteger(item.round) ||
+        item.round < 1 ||
+        item.round > data.round
+      )
+    ) {
+      return {};
+    }
+
+    return data;
+  } catch {
+    return {};
+  }
+}
+
+const savedGame = loadGame();
+
+let playerScore = savedGame.playerScore ?? 0;
+let computerScore = savedGame.computerScore ?? 0;
+let currentStreak = savedGame.currentStreak ?? 0;
+let bestStreak = savedGame.bestStreak ?? 0;
+let round = savedGame.round ?? 0;
+let history = savedGame.history ?? [];
+
+function saveGame() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      playerScore,
+      computerScore,
+      currentStreak,
+      bestStreak,
+      round,
+      history
+    }));
+  } catch (error) {
+    console.warn("Could not save game progress:", error);
+  }
+}
 
 function getComputerChoice() {
   const choices = Object.keys(moves);
@@ -67,7 +198,8 @@ function renderHistory() {
   const list = $("historyList");
   list.replaceChildren();
 
-  $("historyCount").textContent = `${history.length} ROUND${history.length === 1 ? "" : "S"}`;
+  $("historyCount").textContent =
+    `${history.length} ROUND${history.length === 1 ? "" : "S"}`;
 
   if (history.length === 0) {
     const empty = document.createElement("p");
@@ -105,7 +237,7 @@ function renderHistory() {
 }
 
 function play(player) {
-  if (!moves[player]) return;
+  if (!moves[player] || matchFinished) return;
 
   const computer = getComputerChoice();
   const outcome = getOutcome(player, computer);
@@ -117,7 +249,6 @@ function play(player) {
   $("playerChoice").textContent = moves[player].name;
   $("computerChoice").textContent = moves[computer].name;
 
-  // Restart the animation on every round.
   for (const id of ["playerHand", "computerHand"]) {
     const hand = $(id);
     hand.classList.remove("shake");
@@ -125,25 +256,39 @@ function play(player) {
     hand.classList.add("shake");
   }
 
-  if (outcome === "win") {
-    playerScore++;
-    currentStreak++;
-    bestStreak = Math.max(bestStreak, currentStreak);
-  } else if (outcome === "lose") {
-    computerScore++;
-    currentStreak = 0;
-  } else {
-    currentStreak = 0;
-  }
+ if (outcome === "win") {
+  playerScore++;
+  matchPlayerScore++;
+  currentStreak++;
+  bestStreak = Math.max(bestStreak, currentStreak);
+ } else if (outcome === "lose") {
+  computerScore++;
+  matchComputerScore++;
+  currentStreak = 0;
+ } else {
+  currentStreak = 0;
+ }
+
+ if (
+  matchPlayerScore >= MATCH_TARGET ||
+  matchComputerScore >= MATCH_TARGET
+ ) {
+  matchFinished = true;
+ }
 
   history.unshift({ round, player, computer, outcome });
 
   updateScoreboard();
   showResult(outcome, player, computer);
   renderHistory();
+  saveGame();
+  updateTournament();
 
   buttons.forEach(button => {
-    button.classList.toggle("chosen", button.dataset.choice === player);
+    button.classList.toggle(
+      "chosen",
+      button.dataset.choice === player
+    );
   });
 }
 
@@ -151,7 +296,6 @@ buttons.forEach(button => {
   button.addEventListener("click", () => play(button.dataset.choice));
 });
 
-// Keyboard shortcuts: R = rock, P = paper, S = scissors.
 document.addEventListener("keydown", event => {
   if (event.repeat || event.metaKey || event.ctrlKey || event.altKey) return;
 
@@ -178,13 +322,34 @@ $("resetButton").addEventListener("click", () => {
   $("computerChoice").textContent = "Ready...";
   $("resultBox").className = "result-box";
   $("resultTitle").textContent = "Ready to battle?";
-  $("resultMessage").textContent = "Pick a move below to start your first round.";
+  $("resultMessage").textContent =
+    "Pick a move below to start your first round.";
 
   buttons.forEach(button => button.classList.remove("chosen"));
 
   updateScoreboard();
   renderHistory();
+  saveGame();
 });
 
 updateScoreboard();
 renderHistory();
+updateTournament();
+
+if (round > 0 && history.length > 0) {
+  const latest = history[0];
+
+  $("playerHand").textContent = moves[latest.player].emoji;
+  $("computerHand").textContent = moves[latest.computer].emoji;
+  $("playerChoice").textContent = moves[latest.player].name;
+  $("computerChoice").textContent = moves[latest.computer].name;
+
+  showResult(latest.outcome, latest.player, latest.computer);
+
+  buttons.forEach(button => {
+    button.classList.toggle(
+      "chosen",
+      button.dataset.choice === latest.player
+    );
+  });
+}
