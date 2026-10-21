@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0b14">
+  <title>RPS Arena | Rock Paper Scissors</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background-glow"></div>
+
+  <main class="app">
+    <header class="topbar">
+      <a class="logo" href="#">
+        <span class="logo-icon">✦</span>
+        RPS<span class="logo-accent">ARENA</span>
+      </a>
+      <div class="online-badge">
+        <span class="online-dot"></span> ARCADE MODE
+      </div>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">THE CLASSIC SHOWDOWN</p>
+      <h1>Make your <span>move.</span></h1>
+      <p class="subtitle">Three choices. One winner. Do you have what it takes?</p>
+    </section>
+
+    <section class="scoreboard" aria-label="Scoreboard">
+      <article class="score-card player-card">
+        <div class="score-label"><span class="mini-dot player-dot"></span> YOU</div>
+        <div class="score-number" id="playerScore">0</div>
+        <div class="score-caption">PLAYER SCORE</div>
+      </article>
+
+      <div class="versus">VS</div>
+
+      <article class="score-card cpu-card">
+        <div class="score-label"><span class="mini-dot cpu-dot"></span> COMPUTER</div>
+        <div class="score-number" id="computerScore">0</div>
+        <div class="score-caption">CPU SCORE</div>
+      </article>
+    </section>
+
+    <section class="game-panel">
+      <div class="panel-top">
+        <div>
+          <p class="eyebrow">ROUND <span id="roundNumber">01</span></p>
+          <h2>Choose your weapon</h2>
+        </div>
+        <button class="text-button" id="resetButton" type="button">↻ Reset game</button>
+      </div>
+
+      <div class="battle-area">
+        <div class="fighter">
+          <div class="fighter-label">YOUR PICK</div>
+          <div class="hand-display player-hand" id="playerHand">✊</div>
+          <div class="fighter-name" id="playerChoice">Waiting...</div>
+        </div>
+
+        <div class="battle-vs">VS</div>
+
+        <div class="fighter">
+          <div class="fighter-label">CPU PICK</div>
+          <div class="hand-display cpu-hand" id="computerHand">✊</div>
+          <div class="fighter-name" id="computerChoice">Ready...</div>
+        </div>
+      </div>
+
+      <div class="result-box" id="resultBox" aria-live="polite">
+        <div class="result-title" id="resultTitle">Ready to battle?</div>
+        <div class="result-message" id="resultMessage">Pick a move below to start your first round.</div>
+      </div>
+
+      <div class="choices-heading">
+        <span>SELECT YOUR MOVE</span>
+        <span class="keyboard-hint">CLICK TO PLAY</span>
+      </div>
+
+      <div class="choices">
+        <button class="choice-button rock" data-choice="rock" type="button" aria-label="Choose rock">
+          <span class="choice-emoji">✊</span>
+          <span class="choice-name">Rock</span>
+          <span class="choice-desc">Crushes scissors</span>
+        </button>
+
+        <button class="choice-button paper" data-choice="paper" type="button" aria-label="Choose paper">
+          <span class="choice-emoji">✋</span>
+          <span class="choice-name">Paper</span>
+          <span class="choice-desc">Covers rock</span>
+        </button>
+
+        <button class="choice-button scissors" data-choice="scissors" type="button" aria-label="Choose scissors">
+          <span class="choice-emoji">✌️</span>
+          <span class="choice-name">Scissors</span>
+          <span class="choice-desc">Cuts paper</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="bottom-grid">
+      <article class="info-card">
+        <div class="info-heading">
+          <h3>🔥 Your streak</h3>
+          <span class="tiny-tag">BEST RUN</span>
+        </div>
+        <div class="streak-number"><span id="currentStreak">0</span> <small>in a row</small></div>
+        <p class="muted">Best winning streak: <strong id="bestStreak">0</strong></p>
+      </article>
+
+      <article class="info-card history-card">
+        <div class="info-heading">
+          <h3>◷ Round history</h3>
+          <span class="tiny-tag" id="historyCount">0 ROUNDS</span>
+        </div>
+        <div class="history-list" id="historyList">
+          <p class="empty-history">Your battles will appear here.</p>
+        </div>
+      </article>
+    </section>
+
+    <footer>
+      <span>RPS ARENA</span>
+      <span>BUILT FOR THE LOVE OF THE GAME ✦</span>
+    </footer>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
