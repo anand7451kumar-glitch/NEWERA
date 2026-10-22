@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Code Breaker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main>
+    <h1>Code Breaker</h1>
+    <p class="intro">Crack the hidden {{ length }}-colour code in {{ max_attempts }} tries. Colours can repeat.</p>
+
+    <section id="board" aria-label="Your guesses"></section>
+
+    <section class="controls">
+      <div id="slots" aria-label="Current guess"></div>
+      <div id="palette" aria-label="Colour choices">
+        {% for c in colors %}
+        <button class="peg {{ c }}" data-color="{{ c }}" aria-label="{{ c }}"></button>
+        {% endfor %}
+      </div>
+      <div class="actions">
+        <button id="undo">Undo</button>
+        <button id="submit" class="primary">Submit guess</button>
+        <button id="new">New game</button>
+      </div>
+      <p id="message" role="status"></p>
+    </section>
+
+    <p class="legend"><span class="key exact"></span> right colour, right slot &nbsp; <span class="key misplaced"></span> right colour, wrong slot</p>
+  </main>
+  <script>window.CODE_LENGTH = {{ length }}; window.MAX_ATTEMPTS = {{ max_attempts }};</script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

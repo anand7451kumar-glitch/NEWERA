@@ -1,0 +1,38 @@
+:root {
+  --bg: #1b2a2f; --panel: #243a40; --text: #e9f0ea; --muted: #9db3b0; --line: #35525a;
+  --red: #e5484d; --blue: #3b82f6; --green: #30a46c; --yellow: #f5d90a; --purple: #8e4ec6; --orange: #f76b15;
+  --exact: #f5f5f5; --misplaced: #5f7f86;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 Georgia, "Times New Roman", serif; }
+main { max-width: 440px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: 2.2rem; margin: 0 0 4px; letter-spacing: .02em; }
+.intro, .legend { color: var(--muted); margin: 0 0 20px; }
+.legend { margin-top: 20px; font-size: .9rem; }
+
+#board { display: grid; gap: 8px; margin-bottom: 24px; }
+.row { display: flex; align-items: center; gap: 10px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; }
+.row.empty { opacity: .45; }
+.row .pegs { display: flex; gap: 8px; flex: 1; }
+.dot { width: 30px; height: 30px; border-radius: 50%; background: #17242a; border: 2px solid var(--line); }
+.dot.red, .peg.red { background: var(--red); } .dot.blue, .peg.blue { background: var(--blue); }
+.dot.green, .peg.green { background: var(--green); } .dot.yellow, .peg.yellow { background: var(--yellow); }
+.dot.purple, .peg.purple { background: var(--purple); } .dot.orange, .peg.orange { background: var(--orange); }
+.dot.red, .dot.blue, .dot.green, .dot.yellow, .dot.purple, .dot.orange { border-color: transparent; }
+.hints { display: grid; grid-template-columns: repeat(2, 12px); gap: 4px; }
+.hint { width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--line); }
+.hint.exact, .key.exact { background: var(--exact); } .hint.misplaced, .key.misplaced { background: var(--misplaced); }
+.key { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: middle; }
+
+#slots { display: flex; gap: 12px; justify-content: center; margin-bottom: 16px; }
+#slots .dot { width: 44px; height: 44px; }
+#palette { display: flex; gap: 10px; justify-content: center; margin-bottom: 16px; }
+.peg { width: 44px; height: 44px; border-radius: 50%; border: 3px solid transparent; cursor: pointer; }
+.peg:hover { transform: scale(1.08); }
+.peg:focus-visible, button:focus-visible { outline: 3px solid var(--text); outline-offset: 2px; }
+.actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+.actions button { font: inherit; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; }
+.actions button.primary { background: var(--text); color: var(--bg); border-color: var(--text); font-weight: bold; }
+.actions button:disabled { opacity: .4; cursor: not-allowed; }
+#message { text-align: center; min-height: 1.5em; margin: 16px 0 0; }
+@media (prefers-reduced-motion: reduce) { .peg:hover { transform: none; } }
