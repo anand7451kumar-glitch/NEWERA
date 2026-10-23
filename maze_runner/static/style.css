@@ -1,0 +1,17 @@
+:root { --bg: #12161f; --panel: #1c2230; --text: #e8ecf4; --muted: #8b95ab; --line: #2f3a52; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 "Trebuchet MS", Verdana, sans-serif; }
+main { max-width: 600px; margin: 0 auto; padding: 24px 16px 48px; text-align: center; }
+h1 { margin: 0 0 4px; font-size: 2rem; }
+.intro { color: var(--muted); margin: 0 0 16px; }
+.bar { display: flex; gap: 8px; justify-content: center; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+label { color: var(--muted); }
+select, button { font: inherit; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; }
+button:hover { border-color: var(--muted); }
+:focus-visible { outline: 3px solid var(--text); outline-offset: 2px; }
+canvas { display: block; margin: 0 auto; border-radius: 8px; border: 1px solid var(--line); max-width: 100%; }
+.stats { display: flex; gap: 20px; justify-content: center; margin: 16px 0 4px; color: var(--muted); }
+.stats b { color: var(--text); }
+#message { min-height: 1.5em; margin: 8px 0 16px; font-weight: bold; }
+.pad { display: none; gap: 8px; justify-content: center; }
+@media (pointer: coarse) { .pad { display: flex; } }
