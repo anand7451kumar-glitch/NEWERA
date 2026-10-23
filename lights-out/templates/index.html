@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lights Out</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main>
+    <h1>Lights Out</h1>
+    <p class="intro">Turn every light off. Clicking a cell flips it and the four cells next to it.</p>
+    <div class="bar">
+      <label>Size
+        <select id="size">
+          <option value="3">3 x 3</option>
+          <option value="5" selected>5 x 5</option>
+          <option value="7">7 x 7</option>
+        </select>
+      </label>
+      <button id="new">New puzzle</button>
+      <button id="reset">Reset</button>
+      <button id="hint">Hint</button>
+    </div>
+    <div id="grid" role="grid" aria-label="Lights"></div>
+    <p class="stats">Moves <b id="moves">0</b> &nbsp; Seed <b id="seed"></b></p>
+    <p id="message" role="status"></p>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
