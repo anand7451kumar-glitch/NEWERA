@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rocket Evolution</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main>
+    <h1>Rocket Evolution</h1>
+    <p class="intro">Draw walls with your mouse or finger, then press <b>Evolve</b>. Fifty rockets start with random steering. After every flight the best ones breed, and their children fly better. Watch them learn your maze.</p>
+
+    <div class="bar">
+      <button id="evolve" class="primary">Evolve</button>
+      <button id="step">Step</button>
+      <button id="reset">Reset</button>
+      <label>Speed
+        <select id="speed">
+          <option value="4">Normal</option>
+          <option value="14" selected>Fast</option>
+          <option value="0">Instant</option>
+        </select>
+      </label>
+    </div>
+    <div class="bar">
+      <span class="label">Walls:</span>
+      <button data-preset="wall">Wall</button>
+      <button data-preset="maze">Maze</button>
+      <button id="undo">Undo</button>
+      <button id="clear">Clear</button>
+    </div>
+
+    <canvas id="sky" width="640" height="480" aria-label="Rocket flight area. Drag to draw walls."></canvas>
+
+    <div class="stats">
+      <span>Generation <b id="gen">0</b></span>
+      <span>Reached target <b id="reached">0%</b></span>
+    </div>
+    <canvas id="chart" width="640" height="90" aria-label="Chart of how many rockets reached the target each generation"></canvas>
+    <p id="message" role="status">Draw walls, or just press Evolve.</p>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
