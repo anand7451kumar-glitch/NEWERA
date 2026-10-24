@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snake + AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main>
+    <h1>Snake + AI</h1>
+    <p class="intro">Play with the arrow keys or WASD, or switch on autopilot and watch Python play.</p>
+    <div class="bar">
+      <button id="start">Start</button>
+      <button id="auto" aria-pressed="false">Autopilot: off</button>
+      <label>Speed
+        <select id="speed">
+          <option value="160">Slow</option>
+          <option value="100" selected>Normal</option>
+          <option value="50">Fast</option>
+          <option value="20">Turbo</option>
+        </select>
+      </label>
+    </div>
+    <canvas id="board" width="400" height="400" aria-label="Snake board"></canvas>
+    <p class="stats">Score <b id="score">0</b> &nbsp; Best <b id="best">0</b></p>
+    <p id="message" role="status">Press Start or an arrow key.</p>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
