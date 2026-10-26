@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Deep Dungeon</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main>
+    <h1>Deep Dungeon</h1>
+    <p class="intro">Move with arrow keys or WASD, space to wait. Walk into monsters to fight them. Find the stairs <b>&gt;</b> to go deeper.</p>
+    <canvas id="map" width="768" height="480" aria-label="Dungeon map"></canvas>
+    <div class="hud">
+      <span>HP <b id="hp"></b></span><span>Attack <b id="atk"></b></span>
+      <span>Depth <b id="depth"></b></span><span>Kills <b id="kills"></b></span><span>Score <b id="score"></b></span>
+    </div>
+    <ul id="log" aria-live="polite"></ul>
+    <div class="pad">
+      <button data-m="0,-1">Up</button><button data-m="-1,0">Left</button><button data-m="0,1">Down</button><button data-m="1,0">Right</button>
+      <button id="new" class="primary">New game</button>
+    </div>
+    <p class="key"><span>r</span> rat <span>g</span> goblin <span>o</span> ogre <span>!</span> potion <span>/</span> sword</p>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
