@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connect Four vs AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main>
+    <h1>Connect Four vs AI</h1>
+    <p class="intro">Click a column (or press 1 to 7) to drop a piece. Get four in a row before the AI does.</p>
+    <div class="bar">
+      <label>Level
+        <select id="level">
+          <option value="easy">Easy</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Hard</option>
+          <option value="expert">Expert</option>
+        </select>
+      </label>
+      <label>First move
+        <select id="first">
+          <option value="you" selected>You</option>
+          <option value="ai">AI</option>
+        </select>
+      </label>
+      <button id="new" class="primary">New game</button>
+    </div>
+    <p id="status" role="status"></p>
+    <div id="board" aria-label="Connect Four board"></div>
+    <p class="score">You <b id="w">0</b> &nbsp; AI <b id="l">0</b> &nbsp; Draws <b id="d">0</b></p>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
