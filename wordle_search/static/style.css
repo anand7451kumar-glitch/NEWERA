@@ -1,0 +1,33 @@
+:root { --bg: #11151a; --panel: #1b222b; --text: #eef2f6; --muted: #8b97a6; --line: #2e3945; --hit: #2f9e8f; --near: #e0a82e; --miss: #3a434e; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 "Avenir Next", "Segoe UI", Helvetica, sans-serif; }
+main { max-width: 440px; margin: 0 auto; padding: 22px 12px 40px; text-align: center; }
+h1 { margin: 0 0 4px; font-size: 2rem; letter-spacing: .04em; }
+.intro { color: var(--muted); font-size: .92rem; margin: 0 0 14px; }
+.intro b { color: var(--text); }
+.bar { display: flex; gap: 8px; justify-content: center; margin-bottom: 14px; }
+button { font: inherit; padding: 6px 14px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--text); cursor: pointer; }
+button.primary { background: var(--hit); border-color: var(--hit); color: #04201b; font-weight: bold; }
+:focus-visible { outline: 3px solid var(--text); outline-offset: 2px; }
+#board { display: grid; gap: 6px; width: min(100%, 320px); margin: 0 auto; }
+.row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.tile { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: bold; text-transform: uppercase; border: 2px solid var(--line); border-radius: 6px; }
+.tile.filled { border-color: var(--muted); }
+.tile.s2 { background: var(--hit); border-color: var(--hit); }
+.tile.s1 { background: var(--near); border-color: var(--near); }
+.tile.s0 { background: var(--miss); border-color: var(--miss); }
+.tile.flip { animation: flip .5s ease both; animation-delay: calc(var(--i) * .12s); }
+.row.shake { animation: shake .3s; }
+@keyframes flip { 0% { transform: scaleY(1); } 50% { transform: scaleY(0); } 100% { transform: scaleY(1); } }
+@keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .tile.flip, .row.shake { animation: none; } }
+#message { min-height: 1.6em; margin: 12px 0 2px; font-weight: bold; }
+.left { color: var(--muted); margin: 0 0 12px; }
+.left b { color: var(--text); }
+#keys { display: grid; gap: 6px; }
+.krow { display: flex; gap: 5px; justify-content: center; }
+.key { flex: 1; max-width: 40px; padding: 10px 0; font-size: .95rem; text-transform: uppercase; }
+.key.wide { max-width: 62px; font-size: .75rem; }
+.key.s2 { background: var(--hit); border-color: var(--hit); }
+.key.s1 { background: var(--near); border-color: var(--near); }
+.key.s0 { background: var(--miss); border-color: var(--miss); color: var(--muted); }

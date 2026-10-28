@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wordle Coach</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main>
+    <h1>Wordle Coach</h1>
+    <p class="intro">Guess the five-letter word in six tries. After each guess Python tells you how many of the {{ total }} words are still possible, and the <b>Coach</b> can suggest the guess that will narrow them down most.</p>
+    <div class="bar">
+      <button id="new" class="primary">New game</button>
+      <button id="hint">Coach</button>
+    </div>
+    <div id="board" aria-label="Guesses"></div>
+    <p id="message" role="status"></p>
+    <p class="left">Possible words left: <b id="left"></b></p>
+    <div id="keys" aria-label="Keyboard"></div>
+  </main>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
