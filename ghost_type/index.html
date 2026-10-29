@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b0d">
+  <title>GhostType — Typing Arena</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <header class="topbar">
+      <a class="brand" href="#">
+        <span class="brand-icon">G</span>
+        <span>ghost<span class="accent">type</span></span>
+      </a>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        SYSTEM ONLINE
+      </div>
+
+      <button class="icon-button" id="resetButton" title="Restart test">
+        ↻
+      </button>
+    </header>
+
+    <main>
+      <section class="hero">
+        <p class="eyebrow">// YOUR KEYBOARD. YOUR LIMITS.</p>
+        <h1>Enter the <span>arena.</span></h1>
+        <p class="subtitle">
+          Test your speed. Sharpen your accuracy. Beat your own record.
+        </p>
+      </section>
+
+      <section class="mode-bar" aria-label="Test duration">
+        <div class="mode-label">CHALLENGE</div>
+        <div class="mode-options">
+          <button class="mode-button" data-time="15">15 SEC</button>
+          <button class="mode-button active" data-time="30">30 SEC</button>
+          <button class="mode-button" data-time="60">60 SEC</button>
+        </div>
+      </section>
+
+      <section class="stats-grid" aria-label="Live statistics">
+        <article class="stat-card">
+          <span class="stat-label">WPM</span>
+          <strong id="wpm">0</strong>
+          <span class="stat-hint">WORDS / MIN</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">ACCURACY</span>
+          <strong id="accuracy">100<span class="unit">%</span></strong>
+          <span class="stat-hint">PRECISION RATE</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">TIME LEFT</span>
+          <strong id="timeLeft">30<span class="unit">s</span></strong>
+          <span class="stat-hint">COUNTDOWN</span>
+        </article>
+
+        <article class="stat-card">
+          <span class="stat-label">BEST WPM</span>
+          <strong id="bestWpm">0</strong>
+          <span class="stat-hint">PERSONAL RECORD</span>
+        </article>
+      </section>
+
+      <section class="typing-panel">
+        <div class="panel-heading">
+          <div>
+            <span class="live-indicator"></span>
+            <span class="panel-title">LIVE TERMINAL</span>
+          </div>
+          <span id="testStatus">READY TO DEPLOY</span>
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div
+          id="textDisplay"
+          class="text-display"
+          aria-label="Text to type"
+        ></div>
+
+        <label class="input-label" for="typingInput">
+          YOUR INPUT
+        </label>
+
+        <textarea
+          id="typingInput"
+          placeholder="Click here and start typing the displayed text..."
+          spellcheck="false"
+          autocomplete="off"
+          autocapitalize="off"
+          rows="3"
+          disabled
+        ></textarea>
+
+        <div class="typing-footer">
+          <span id="characterCount">0 characters typed</span>
+          <span>PRESS <kbd>TAB</kbd> + <kbd>ENTER</kbd> TO RESTART</span>
+        </div>
+
+        <button id="startButton" class="primary-button">
+          INITIALIZE TEST <span>→</span>
+        </button>
+      </section>
+
+      <section id="resultPanel" class="result-panel hidden">
+        <div class="result-top">
+          <div>
+            <p class="eyebrow">// SESSION COMPLETE</p>
+            <h2 id="resultTitle">Run complete.</h2>
+          </div>
+          <div class="result-grade" id="resultGrade">—</div>
+        </div>
+
+        <div class="result-grid">
+          <div>
+            <span>FINAL WPM</span>
+            <strong id="finalWpm">0</strong>
+          </div>
+          <div>
+            <span>ACCURACY</span>
+            <strong id="finalAccuracy">100%</strong>
+          </div>
+          <div>
+            <span>CHARACTERS</span>
+            <strong id="finalCharacters">0</strong>
+          </div>
+        </div>
+
+        <p id="resultMessage"></p>
+        <button id="againButton" class="primary-button">
+          RUN IT BACK <span>↻</span>
+        </button>
+      </section>
+
+      <section class="lower-grid">
+        <article class="info-card">
+          <div class="card-heading">
+            <span class="card-icon">⌁</span>
+            <h2>Performance</h2>
+          </div>
+          <p class="muted">Your current session at a glance.</p>
+
+          <div class="metric-row">
+            <span>Characters entered</span>
+            <strong id="totalCharacters">0</strong>
+          </div>
+          <div class="metric-row">
+            <span>Correct characters</span>
+            <strong id="correctCharacters">0</strong>
+          </div>
+          <div class="metric-row">
+            <span>Mistakes</span>
+            <strong id="mistakes">0</strong>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <div class="card-heading">
+            <span class="card-icon">◇</span>
+            <h2>Operator stats</h2>
+          </div>
+          <p class="muted">Your progress across completed tests.</p>
+
+          <div class="metric-row">
+            <span>Tests completed</span>
+            <strong id="testsCompleted">0</strong>
+          </div>
+          <div class="metric-row">
+            <span>Average WPM</span>
+            <strong id="averageWpm">0</strong>
+          </div>
+          <div class="metric-row">
+            <span>Best accuracy</span>
+            <strong id="bestAccuracy">0%</strong>
+          </div>
+        </article>
+      </section>
+
+      <section class="history-section">
+        <div class="history-heading">
+          <div>
+            <p class="eyebrow">// YOUR TRACK RECORD</p>
+            <h2>Recent sessions</h2>
+          </div>
+          <button id="clearHistoryButton" class="text-button">
+            CLEAR HISTORY
+          </button>
+        </div>
+
+        <div id="historyList" class="history-list">
+          <p class="empty-history">No completed tests yet. Your first run awaits.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>GHOSTTYPE <span class="accent">///</span> BUILD YOUR SPEED</span>
+      <span>MADE FOR THE GRIND.</span>
+    </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </div>
+</body>
+</html>
