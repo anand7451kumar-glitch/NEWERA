@@ -1,0 +1,612 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b100f">
+  <meta name="description" content="AttendIQ - Smart college attendance tracker and planner.">
+  <title>AttendIQ — Attendance Planner</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+
+  <div class="app-shell">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+      <a href="#" class="brand">
+        <span class="brand-icon">A</span>
+        <span>Attend<span class="brand-accent">IQ</span></span>
+      </a>
+
+      <div class="sidebar-label">WORKSPACE</div>
+
+      <nav class="navigation">
+        <a href="#overview" class="nav-link active">
+          <span class="nav-icon">▦</span>
+          Overview
+        </a>
+
+        <a href="#subjects" class="nav-link">
+          <span class="nav-icon">▤</span>
+          My Subjects
+        </a>
+
+        <a href="#calculator" class="nav-link">
+          <span class="nav-icon">⌗</span>
+          Attendance Planner
+        </a>
+
+        <a href="#history" class="nav-link">
+          <span class="nav-icon">◷</span>
+          Class History
+        </a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="sidebar-tip">
+          <span class="tip-icon">✦</span>
+          <p>Consistency today, success tomorrow.</p>
+        </div>
+
+        <div class="sidebar-footer">
+          ATTENDIQ <span>V1.0</span>
+        </div>
+      </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+      <!-- TOPBAR -->
+
+      <header class="topbar">
+
+        <div class="breadcrumb">
+          <span>Workspace</span>
+          <span class="breadcrumb-divider">/</span>
+          <strong>Overview</strong>
+        </div>
+
+        <div class="topbar-right">
+          <div class="today-date" id="currentDate">
+            Loading date...
+          </div>
+
+          <div class="profile-avatar">S</div>
+        </div>
+
+      </header>
+
+
+      <!-- OVERVIEW -->
+
+      <section id="overview" class="page-section">
+
+        <div class="welcome-section">
+          <div>
+            <p class="eyebrow">YOUR ACADEMIC OVERVIEW</p>
+            <h1>Good to see you<span class="heading-dot">.</span></h1>
+            <p class="welcome-subtitle">
+              Here's how your attendance is looking today.
+            </p>
+          </div>
+
+          <button class="primary-button" id="addSubjectButton">
+            <span>＋</span> Add subject
+          </button>
+        </div>
+
+
+        <!-- OVERALL ATTENDANCE -->
+
+        <section class="overview-card">
+
+          <div class="overview-card-left">
+            <div class="card-overline">
+              OVERALL ATTENDANCE
+              <span class="live-dot"></span>
+            </div>
+
+            <div class="overall-percentage">
+              <span id="overallPercentage">0</span><span>%</span>
+            </div>
+
+            <p class="overall-description" id="overallMessage">
+              Add your subjects to start tracking attendance.
+            </p>
+
+            <div class="overall-progress">
+              <div class="progress-track">
+                <div class="progress-fill" id="overallProgress"></div>
+              </div>
+
+              <div class="progress-labels">
+                <span>0%</span>
+                <span id="targetLabel">Target: 75%</span>
+                <span>100%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="overview-card-right">
+
+            <div class="attendance-ring" id="attendanceRing">
+              <div class="ring-content">
+                <strong id="ringPercentage">0%</strong>
+                <span>ATTENDANCE</span>
+              </div>
+            </div>
+
+            <div class="ring-legend">
+              <span><i class="legend-dot attended-dot"></i> Attended</span>
+              <span><i class="legend-dot missed-dot"></i> Missed</span>
+            </div>
+
+          </div>
+
+        </section>
+
+
+        <!-- STATISTICS -->
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">YOUR NUMBERS</p>
+            <h2>Attendance summary</h2>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+
+          <article class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon green-icon">✓</span>
+              <span class="stat-label">CLASSES ATTENDED</span>
+            </div>
+
+            <strong id="totalAttended">0</strong>
+            <p>Classes attended so far</p>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon red-icon">×</span>
+              <span class="stat-label">CLASSES MISSED</span>
+            </div>
+
+            <strong id="totalMissed">0</strong>
+            <p>Classes missed so far</p>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon blue-icon">▤</span>
+              <span class="stat-label">TOTAL CLASSES</span>
+            </div>
+
+            <strong id="totalClasses">0</strong>
+            <p>Total recorded classes</p>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-card-top">
+              <span class="stat-icon gold-icon">◎</span>
+              <span class="stat-label">SUBJECTS</span>
+            </div>
+
+            <strong id="totalSubjects">0</strong>
+            <p>Subjects being tracked</p>
+          </article>
+
+        </div>
+
+      </section>
+
+
+      <!-- SUBJECTS -->
+
+      <section id="subjects" class="page-section">
+
+        <div class="section-heading subject-heading">
+          <div>
+            <p class="eyebrow">YOUR COURSE LOAD</p>
+            <h2>My subjects</h2>
+            <p class="section-description">
+              Track attendance for every subject individually.
+            </p>
+          </div>
+
+          <button class="secondary-button" id="subjectAddButton">
+            ＋ Add subject
+          </button>
+        </div>
+
+
+        <!-- ADD SUBJECT FORM -->
+
+        <div class="form-card hidden" id="subjectFormCard">
+
+          <div class="form-heading">
+            <div>
+              <h3>Add a subject</h3>
+              <p>Enter the subject details below.</p>
+            </div>
+
+            <button class="close-button" id="closeSubjectForm" aria-label="Close form">
+              ×
+            </button>
+          </div>
+
+          <form id="subjectForm">
+
+            <div class="form-grid">
+
+              <div class="form-group">
+                <label for="subjectName">Subject name</label>
+                <input
+                  type="text"
+                  id="subjectName"
+                  placeholder="e.g. Mathematics"
+                  maxlength="50"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="subjectCode">Subject code</label>
+                <input
+                  type="text"
+                  id="subjectCode"
+                  placeholder="e.g. BS M 101"
+                  maxlength="25"
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="initialAttended">Classes attended</label>
+                <input
+                  type="number"
+                  id="initialAttended"
+                  min="0"
+                  max="10000"
+                  value="0"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="initialMissed">Classes missed</label>
+                <input
+                  type="number"
+                  id="initialMissed"
+                  min="0"
+                  max="10000"
+                  value="0"
+                  required
+                >
+              </div>
+
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="secondary-button" id="cancelSubject">
+                Cancel
+              </button>
+
+              <button type="submit" class="primary-button">
+                Save subject
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+
+
+        <!-- SUBJECT FILTER -->
+
+        <div class="subject-toolbar">
+          <span id="subjectCount">0 subjects</span>
+
+          <select id="subjectFilter" aria-label="Filter subjects">
+            <option value="all">All subjects</option>
+            <option value="safe">Above target</option>
+            <option value="warning">Below target</option>
+          </select>
+        </div>
+
+
+        <!-- SUBJECT CARDS -->
+
+        <div class="subjects-grid" id="subjectsGrid">
+
+          <div class="empty-state" id="emptySubjects">
+            <div class="empty-icon">▤</div>
+            <h3>No subjects yet</h3>
+            <p>Add your first subject to start monitoring attendance.</p>
+
+            <button class="primary-button" id="emptyAddButton">
+              ＋ Add your first subject
+            </button>
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- ATTENDANCE PLANNER -->
+
+      <section id="calculator" class="page-section">
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">PLAN SMARTER</p>
+            <h2>Attendance planner</h2>
+            <p class="section-description">
+              Find out how many classes you can miss or need to attend.
+            </p>
+          </div>
+        </div>
+
+
+        <div class="planner-grid">
+
+          <!-- CALCULATOR INPUTS -->
+
+          <div class="planner-card">
+
+            <div class="card-title">
+              <span class="card-title-icon">⌗</span>
+              <div>
+                <h3>Calculate your attendance</h3>
+                <p>Choose a subject and set your target.</p>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="plannerSubject">Select subject</label>
+
+              <select id="plannerSubject">
+                <option value="">Select a subject</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="plannerTarget">
+                Required attendance percentage
+              </label>
+
+              <div class="input-with-suffix">
+                <input
+                  type="number"
+                  id="plannerTarget"
+                  min="1"
+                  max="100"
+                  value="75"
+                >
+                <span>%</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="futureClasses">
+                Upcoming classes to consider
+              </label>
+
+              <input
+                type="number"
+                id="futureClasses"
+                min="0"
+                max="10000"
+                value="10"
+              >
+            </div>
+
+            <button class="primary-button full-button" id="calculateButton">
+              Calculate attendance <span>→</span>
+            </button>
+
+          </div>
+
+
+          <!-- CALCULATOR RESULTS -->
+
+          <div class="planner-result" id="plannerResult">
+
+            <div class="result-placeholder" id="plannerPlaceholder">
+              <div class="result-placeholder-icon">◎</div>
+              <h3>Your results will appear here</h3>
+              <p>Select a subject and calculate your attendance plan.</p>
+            </div>
+
+            <div class="result-content hidden" id="plannerOutput">
+
+              <p class="eyebrow">YOUR ATTENDANCE FORECAST</p>
+
+              <h3 id="plannerResultTitle">Your attendance outlook</h3>
+
+              <div class="forecast-number">
+                <strong id="forecastPercentage">0%</strong>
+                <span id="forecastLabel">PROJECTED ATTENDANCE</span>
+              </div>
+
+              <div class="forecast-message" id="forecastMessage"></div>
+
+              <div class="forecast-details">
+
+                <div>
+                  <span>Current attendance</span>
+                  <strong id="forecastCurrent">0%</strong>
+                </div>
+
+                <div>
+                  <span>Classes to attend</span>
+                  <strong id="forecastAttend">0</strong>
+                </div>
+
+                <div>
+                  <span>Classes you can miss</span>
+                  <strong id="forecastSkip">0</strong>
+                </div>
+
+              </div>
+
+              <p class="result-note">
+                Forecast assumes every upcoming class is recorded for this subject.
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- CLASS HISTORY -->
+
+      <section id="history" class="page-section">
+
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">YOUR ACTIVITY</p>
+            <h2>Class history</h2>
+            <p class="section-description">
+              Review your latest attendance updates.
+            </p>
+          </div>
+
+          <button class="secondary-button" id="exportButton">
+            ↓ Export data
+          </button>
+        </div>
+
+
+        <div class="history-card">
+
+          <div class="history-toolbar">
+            <span>RECENT ACTIVITY</span>
+
+            <button class="text-button" id="clearHistoryButton">
+              Clear history
+            </button>
+          </div>
+
+          <div class="history-table-wrapper">
+
+            <table class="history-table">
+
+              <thead>
+                <tr>
+                  <th>SUBJECT</th>
+                  <th>DATE</th>
+                  <th>STATUS</th>
+                  <th>CLASSES</th>
+                </tr>
+              </thead>
+
+              <tbody id="historyTableBody">
+
+                <tr id="emptyHistoryRow">
+                  <td colspan="4" class="empty-table">
+                    No attendance activity recorded yet.
+                  </td>
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- SETTINGS -->
+
+      <section class="settings-card">
+
+        <div>
+          <p class="eyebrow">PREFERENCES</p>
+          <h3>Attendance target</h3>
+          <p>Set your default minimum attendance requirement.</p>
+        </div>
+
+        <div class="target-control">
+          <input
+            type="number"
+            id="defaultTarget"
+            min="1"
+            max="100"
+            value="75"
+          >
+          <span>%</span>
+          <button id="saveTargetButton" class="secondary-button">
+            Save target
+          </button>
+        </div>
+
+      </section>
+
+
+      <!-- FOOTER -->
+
+      <footer class="main-footer">
+        <span>ATTENDIQ <span class="footer-accent">///</span> SMARTER ATTENDANCE</span>
+        <span>YOUR DATA STAYS IN YOUR BROWSER</span>
+      </footer>
+
+    </main>
+
+  </div>
+
+
+  <!-- TOAST NOTIFICATION -->
+
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+  ></div>
+
+
+  <!-- CONFIRMATION / FUTURE DIALOG CONTAINER -->
+
+  <dialog id="confirmDialog" class="confirm-dialog">
+    <div class="dialog-content">
+      <h3 id="dialogTitle">Confirm action</h3>
+      <p id="dialogMessage">Are you sure?</p>
+
+      <div class="dialog-actions">
+        <button class="secondary-button" id="dialogCancel">
+          Cancel
+        </button>
+
+        <button class="danger-button" id="dialogConfirm">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+</body>
+</html>
