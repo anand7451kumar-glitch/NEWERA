@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#070b0a">
+  <title>NEON//BREACH — Unauthorized Access</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="scanlines"></div>
+
+  <main class="game-shell">
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-symbol">N</span>
+        <span>NEON<span class="brand-divider">//</span>BREACH</span>
+      </div>
+
+      <div class="system-status">
+        <span class="status-light"></span>
+        SYSTEM ONLINE
+      </div>
+    </header>
+
+    <section class="mission-header">
+      <div class="mission-label">CLASSIFIED OPERATION / 001</div>
+      <h1>THE FIRST <span>FIREWALL</span></h1>
+      <p>Infiltrate the network. Crack the access code. Avoid detection.</p>
+    </section>
+
+    <section class="game-layout">
+
+      <!-- LEFT: SECURITY STATUS -->
+      <aside class="status-panel">
+
+        <div class="panel-heading">
+          <span>01 / SYSTEM STATUS</span>
+          <span class="live-label">● LIVE</span>
+        </div>
+
+        <div class="status-block">
+          <div class="status-title">SECURITY TRACE</div>
+          <div class="trace-number" id="traceNumber">00<span>%</span></div>
+
+          <div class="trace-track">
+            <div class="trace-fill" id="traceFill"></div>
+          </div>
+
+          <div class="trace-caption" id="traceCaption">UNDETECTED</div>
+        </div>
+
+        <div class="status-divider"></div>
+
+        <div class="status-block">
+          <div class="status-title">ATTEMPTS REMAINING</div>
+          <div class="attempt-number" id="attemptNumber">10</div>
+          <div class="attempt-dots" id="attemptDots">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <div class="status-divider"></div>
+
+        <div class="status-block">
+          <div class="status-title">CURRENT OBJECTIVE</div>
+          <div class="objective">
+            <span class="objective-icon">⌁</span>
+            <p>DECRYPT THE<br>4-DIGIT ACCESS KEY</p>
+          </div>
+        </div>
+
+        <div class="terminal-status">
+          <span class="terminal-dot"></span>
+          CONNECTION ENCRYPTED
+        </div>
+
+      </aside>
+
+      <!-- CENTER: MAIN GAME -->
+      <section class="main-panel">
+
+        <div class="panel-heading">
+          <span>02 / ACCESS TERMINAL</span>
+          <span class="terminal-id">NODE_0X41</span>
+        </div>
+
+        <div class="terminal-screen">
+
+          <div class="terminal-topline">
+            <span>ROOT@NEON-NETWORK</span>
+            <span id="clock">00:00:00</span>
+          </div>
+
+          <div class="terminal-message" id="terminalMessage">
+            <p class="terminal-green">[ SYSTEM ] INITIALIZING BREACH PROTOCOL...</p>
+            <p>[ SYSTEM ] ENCRYPTED GATEWAY DETECTED.</p>
+            <p>[ SYSTEM ] ACCESS KEY REQUIRED.</p>
+            <p class="terminal-warning">[ WARNING ] UNAUTHORIZED ACCESS IS TRACEABLE.</p>
+            <p class="terminal-ready">[ READY ] AWAITING INPUT_</p>
+          </div>
+
+          <div class="code-display" id="codeDisplay">
+            <div class="code-slot">?</div>
+            <div class="code-slot">?</div>
+            <div class="code-slot">?</div>
+            <div class="code-slot">?</div>
+          </div>
+
+          <div class="input-label">ENTER FOUR-DIGIT ACCESS CODE</div>
+
+          <div class="input-row">
+            <input
+              type="text"
+              id="codeInput"
+              maxlength="4"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="0000"
+              aria-label="Four digit access code"
+            >
+            <button id="submitButton">EXECUTE ↗</button>
+          </div>
+
+          <div class="input-hint">[ ENTER ] TO SUBMIT &nbsp; / &nbsp; FOUR UNIQUE DIGITS</div>
+
+          <div class="game-message" id="gameMessage">
+            AWAITING YOUR FIRST ATTEMPT...
+          </div>
+
+        </div>
+
+        <div class="history-heading">
+          <span>03 / DECRYPTION LOG</span>
+          <span id="historyCount">0 ENTRIES</span>
+        </div>
+
+        <div class="history-list" id="historyList">
+          <div class="history-empty">
+            NO DATA RECORDED. BEGIN THE BREACH.
+          </div>
+        </div>
+
+      </section>
+
+    </section>
+
+    <footer class="game-footer">
+      <span>NEON//BREACH <span class="footer-dim">© 2089</span></span>
+      <span>UNAUTHORIZED ACCESS IS PROHIBITED</span>
+      <span id="connectionStatus">SECURE CONNECTION</span>
+    </footer>
+
+  </main>
+
+  <div class="result-overlay hidden" id="resultOverlay">
+    <div class="result-card">
+      <div class="result-icon" id="resultIcon">✓</div>
+      <div class="result-label" id="resultLabel">ACCESS GRANTED</div>
+      <h2 id="resultTitle">FIREWALL BREACHED</h2>
+      <p id="resultDescription">You successfully infiltrated the gateway.</p>
+      <div class="result-code" id="resultCode">0000</div>
+      <button id="restartButton">RESTART MISSION ↻</button>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
