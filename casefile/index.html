@@ -1,0 +1,287 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101113">
+  <title>CASEFILE — The Last Signal</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+
+<body>
+  <div class="app-shell">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">C</div>
+        <div>
+          <h1>CASEFILE<span>.</span></h1>
+          <p>INDEPENDENT INVESTIGATION UNIT</p>
+        </div>
+      </div>
+
+      <div class="case-status">
+        <span class="status-dot"></span>
+        ACTIVE INVESTIGATION
+      </div>
+
+      <div class="top-right">
+        <span>CASE NO. 0471</span>
+        <span id="caseClock">00:00:00</span>
+      </div>
+    </header>
+
+    <main>
+      <section class="case-heading">
+        <div>
+          <p class="eyebrow">UNSOLVED CASE / 01 NOVEMBER 2026</p>
+          <h2>The Last Signal</h2>
+          <p class="subtitle">
+            One missing scientist. Three suspects. A signal that should not exist.
+          </p>
+        </div>
+
+        <div class="case-stamp">
+          <span>CONFIDENTIAL</span>
+          <strong>0471</strong>
+        </div>
+      </section>
+
+      <section class="briefing">
+        <div class="briefing-label">CASE BRIEFING</div>
+        <p>
+          At 11:47 PM, marine researcher Dr. Elias Voss disappeared
+          from his private laboratory. Security footage shows nobody
+          entering or leaving the building.
+        </p>
+        <p>
+          His computer was still running. A strange radio signal was
+          recorded at exactly 11:47 PM. Three people had access to
+          the laboratory that evening.
+        </p>
+        <div class="briefing-footer">
+          <span>LOCATION: NORTH HARBOR RESEARCH FACILITY</span>
+          <span>STATUS: MISSING PERSON</span>
+        </div>
+      </section>
+
+      <section class="workspace">
+
+        <aside class="sidebar">
+          <div class="panel-heading">
+            <span>INVESTIGATION</span>
+            <span class="tiny-count">01 / 03</span>
+          </div>
+
+          <div class="progress-section">
+            <div class="progress-label">
+              <span>CASE PROGRESS</span>
+              <strong id="progressText">0%</strong>
+            </div>
+            <div class="progress-track">
+              <div id="progressBar"></div>
+            </div>
+          </div>
+
+          <div class="nav-label">CASE FILE</div>
+
+          <button class="nav-item active" data-section="evidence">
+            <span>01</span> Evidence board
+            <span class="nav-arrow">→</span>
+          </button>
+
+          <button class="nav-item" data-section="suspects">
+            <span>02</span> Suspect profiles
+            <span class="nav-arrow">→</span>
+          </button>
+
+          <button class="nav-item" data-section="deduction">
+            <span>03</span> Final deduction
+            <span class="nav-arrow">→</span>
+          </button>
+
+          <div class="sidebar-bottom">
+            <div class="case-note">
+              <span class="note-icon">✎</span>
+              <div>
+                <strong>Detective's note</strong>
+                <p>Examine every piece of evidence before making an accusation.</p>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <section class="main-panel">
+
+          <div class="panel-top">
+            <div>
+              <p class="eyebrow">INVESTIGATION ROOM</p>
+              <h3 id="sectionTitle">Evidence Board</h3>
+            </div>
+            <span class="evidence-counter" id="evidenceCounter">
+              0 / 5 EXAMINED
+            </span>
+          </div>
+
+          <div id="evidenceSection">
+            <p class="section-description">
+              Five objects were recovered from the laboratory.
+              Select each item to inspect it and uncover clues.
+            </p>
+
+            <div class="evidence-grid" id="evidenceGrid">
+
+              <button class="evidence-card" data-evidence="computer">
+                <div class="evidence-visual computer-visual">⌘</div>
+                <div class="evidence-info">
+                  <span class="evidence-type">DIGITAL</span>
+                  <strong>Research Terminal</strong>
+                  <span class="evidence-state">NOT EXAMINED</span>
+                </div>
+              </button>
+
+              <button class="evidence-card" data-evidence="radio">
+                <div class="evidence-visual radio-visual">〰</div>
+                <div class="evidence-info">
+                  <span class="evidence-type">ELECTRONIC</span>
+                  <strong>Radio Receiver</strong>
+                  <span class="evidence-state">NOT EXAMINED</span>
+                </div>
+              </button>
+
+              <button class="evidence-card" data-evidence="keycard">
+                <div class="evidence-visual keycard-visual">▤</div>
+                <div class="evidence-info">
+                  <span class="evidence-type">PHYSICAL</span>
+                  <strong>Access Keycard</strong>
+                  <span class="evidence-state">NOT EXAMINED</span>
+                </div>
+              </button>
+
+              <button class="evidence-card" data-evidence="coffee">
+                <div class="evidence-visual coffee-visual">☕</div>
+                <div class="evidence-info">
+                  <span class="evidence-type">FORENSIC</span>
+                  <strong>Coffee Cup</strong>
+                  <span class="evidence-state">NOT EXAMINED</span>
+                </div>
+              </button>
+
+              <button class="evidence-card" data-evidence="footage">
+                <div class="evidence-visual footage-visual">▣</div>
+                <div class="evidence-info">
+                  <span class="evidence-type">SURVEILLANCE</span>
+                  <strong>Security Footage</strong>
+                  <span class="evidence-state">NOT EXAMINED</span>
+                </div>
+              </button>
+
+            </div>
+
+            <div class="inspection-panel" id="inspectionPanel">
+              <div class="inspection-placeholder">
+                <span>◎</span>
+                <p>Select an evidence item to begin inspection.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="suspectsSection" class="hidden">
+            <p class="section-description">
+              Three individuals had access to the facility on the night
+              of Dr. Voss's disappearance.
+            </p>
+
+            <div class="suspect-grid">
+              <article class="suspect-card">
+                <div class="suspect-avatar">AM</div>
+                <span class="evidence-type">SUSPECT 01</span>
+                <h4>Adrian Miles</h4>
+                <p class="suspect-role">Research Assistant</p>
+                <p>Worked directly under Dr. Voss for two years.
+                  Claims he left at 10:30 PM.</p>
+              </article>
+
+              <article class="suspect-card">
+                <div class="suspect-avatar">SC</div>
+                <span class="evidence-type">SUSPECT 02</span>
+                <h4>Sarah Chen</h4>
+                <p class="suspect-role">Security Officer</p>
+                <p>Responsible for monitoring the building.
+                  Claims the cameras malfunctioned.</p>
+              </article>
+
+              <article class="suspect-card">
+                <div class="suspect-avatar">JM</div>
+                <span class="evidence-type">SUSPECT 03</span>
+                <h4>James Mercer</h4>
+                <p class="suspect-role">External Contractor</p>
+                <p>Visited the laboratory earlier that evening.
+                  Claims he never met Dr. Voss.</p>
+              </article>
+            </div>
+          </div>
+
+          <div id="deductionSection" class="hidden">
+            <p class="section-description">
+              Review your findings and submit your final theory.
+              You must examine all five pieces of evidence first.
+            </p>
+
+            <div class="deduction-card">
+              <div class="deduction-warning" id="deductionWarning">
+                INVESTIGATION INCOMPLETE — EXAMINE ALL EVIDENCE FIRST.
+              </div>
+
+              <label for="culpritSelect">WHO IS RESPONSIBLE?</label>
+              <select id="culpritSelect">
+                <option value="">Select a suspect</option>
+                <option value="adrian">Adrian Miles</option>
+                <option value="sarah">Sarah Chen</option>
+                <option value="james">James Mercer</option>
+              </select>
+
+              <label for="motiveSelect">WHAT WAS THE MOTIVE?</label>
+              <select id="motiveSelect">
+                <option value="">Select a motive</option>
+                <option value="theft">Steal the research data</option>
+                <option value="coverup">Cover up an experiment</option>
+                <option value="revenge">Personal revenge</option>
+              </select>
+
+              <label for="methodSelect">HOW DID THEY DO IT?</label>
+              <select id="methodSelect">
+                <option value="">Select a method</option>
+                <option value="signal">Used the radio signal to fake a disappearance</option>
+                <option value="keycard">Used a stolen access keycard</option>
+                <option value="camera">Manipulated the security footage</option>
+              </select>
+
+              <button id="submitDeduction" class="submit-button">
+                SUBMIT FINAL THEORY →
+              </button>
+
+              <div id="deductionResult" class="deduction-result hidden"></div>
+            </div>
+          </div>
+
+        </section>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>CASEFILE SYSTEMS © 2026</span>
+      <span>ALL INVESTIGATIONS ARE RECORDED</span>
+      <span id="connectionStatus">● SYSTEM ONLINE</span>
+    </footer>
+
+  </div>
+</body>
+</html>
