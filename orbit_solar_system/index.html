@@ -1,0 +1,202 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b13">
+  <title>ORBIT — Solar System Simulator</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+
+<body>
+  <div class="app">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">◉</div>
+        <div>
+          <h1>ORBIT<span>.</span></h1>
+          <p>PERSONAL SPACE OBSERVATORY</p>
+        </div>
+      </div>
+
+      <div class="system-status">
+        <span class="live-dot"></span>
+        SIMULATION ACTIVE
+      </div>
+
+      <div class="top-actions">
+        <span class="system-id">SYS-001</span>
+        <button id="resetButton" class="reset-button">↻ RESET</button>
+      </div>
+    </header>
+
+    <main>
+
+      <section class="intro">
+        <div>
+          <p class="eyebrow">INTERACTIVE COSMOS / EXPERIMENT 001</p>
+          <h2>Your universe.<br><span>Your rules.</span></h2>
+          <p class="intro-text">
+            Create planets, shape their orbits and watch your
+            own solar system come alive.
+          </p>
+        </div>
+
+        <div class="simulation-clock">
+          <span>SIMULATION TIME</span>
+          <strong id="simulationTime">DAY 001</strong>
+          <span id="simulationStatus">RUNNING</span>
+        </div>
+      </section>
+
+      <section class="workspace">
+
+        <section class="universe-panel">
+          <div class="universe-heading">
+            <div>
+              <p class="eyebrow">LIVE VIEW</p>
+              <h3>Solar System</h3>
+            </div>
+
+            <div class="view-label">
+              <span class="live-dot"></span>
+              REAL-TIME
+            </div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="spaceCanvas"></canvas>
+
+            <div class="canvas-label">
+              <span>OBSERVATION MODE</span>
+              <span id="planetCount">04 OBJECTS</span>
+            </div>
+
+            <div class="canvas-hint">
+              SELECT A PLANET TO INSPECT
+            </div>
+          </div>
+
+          <div class="simulation-controls">
+            <button id="playButton" class="control-button">
+              <span id="playIcon">Ⅱ</span>
+              <span id="playText">PAUSE</span>
+            </button>
+
+            <div class="speed-control">
+              <label for="speedRange">TIME SPEED</label>
+              <input id="speedRange" type="range" min="0.2" max="5" step="0.1" value="1">
+              <strong id="speedValue">1.0×</strong>
+            </div>
+          </div>
+        </section>
+
+        <aside class="control-panel">
+
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">MISSION CONTROL</p>
+              <h3>Planet Designer</h3>
+            </div>
+            <span class="panel-icon">✳</span>
+          </div>
+
+          <div class="selected-info">
+            <span>SELECTED BODY</span>
+            <strong id="selectedName">Earth</strong>
+            <span id="selectedDescription">Terrestrial planet</span>
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <label for="sizeRange">PLANET SIZE</label>
+              <strong id="sizeValue">10</strong>
+            </div>
+            <input id="sizeRange" type="range" min="4" max="24" value="10">
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <label for="orbitRange">ORBIT DISTANCE</label>
+              <strong id="orbitValue">125</strong>
+            </div>
+            <input id="orbitRange" type="range" min="65" max="260" value="125">
+          </div>
+
+          <div class="control-group">
+            <div class="control-label">
+              <label for="planetSpeedRange">ORBIT SPEED</label>
+              <strong id="planetSpeedValue">1.0×</strong>
+            </div>
+            <input id="planetSpeedRange" type="range" min="0.1" max="3" step="0.1" value="1">
+          </div>
+
+          <div class="control-group">
+            <label for="colorSelect">PLANET COLOR</label>
+            <select id="colorSelect">
+              <option value="#5e9eff">Ocean blue</option>
+              <option value="#e5a16b">Desert orange</option>
+              <option value="#b18aff">Cosmic violet</option>
+              <option value="#8bd6a0">Emerald green</option>
+              <option value="#e8d58b">Golden yellow</option>
+              <option value="#ef8298">Rose red</option>
+            </select>
+          </div>
+
+          <button id="addPlanetButton" class="add-button">
+            + CREATE NEW PLANET
+          </button>
+
+          <div class="planet-list-section">
+            <div class="list-heading">
+              <span>CELESTIAL BODIES</span>
+              <span id="listCount">04</span>
+            </div>
+
+            <div id="planetList" class="planet-list"></div>
+          </div>
+
+        </aside>
+      </section>
+
+      <section class="bottom-stats">
+        <div class="stat-card">
+          <span>CELESTIAL BODIES</span>
+          <strong id="statBodies">04</strong>
+        </div>
+
+        <div class="stat-card">
+          <span>SIMULATION SPEED</span>
+          <strong id="statSpeed">1.0×</strong>
+        </div>
+
+        <div class="stat-card">
+          <span>SELECTED PLANET</span>
+          <strong id="statSelected">EARTH</strong>
+        </div>
+
+        <div class="stat-card">
+          <span>ENGINE STATUS</span>
+          <strong class="engine-online">ONLINE</strong>
+        </div>
+      </section>
+
+    </main>
+
+    <footer>
+      <span>ORBIT SPACE ENGINE v1.0</span>
+      <span>BUILT FOR EXPLORATION</span>
+      <span>© 2026</span>
+    </footer>
+
+  </div>
+</body>
+</html>
