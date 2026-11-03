@@ -1,0 +1,372 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #0b0d12;
+  --panel: #131720;
+  --panel-light: #1a202b;
+  --border: #272e3b;
+  --text: #edf0f7;
+  --muted: #858da0;
+  --accent: #a78bfa;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse at 50% 0%, #20203b 0%, transparent 45%),
+    var(--bg);
+  color: var(--text);
+  font-family: "Space Grotesk", sans-serif;
+}
+
+button, select, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.topbar {
+  min-height: 82px;
+  padding: 15px 4%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+  background: #10131aeF;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #29213f;
+  color: var(--accent);
+  font-size: 28px;
+}
+
+.brand h1 {
+  font-size: 17px;
+  letter-spacing: 2px;
+}
+
+.brand p {
+  color: var(--muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 1.5px;
+  margin-top: 4px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.top-actions button {
+  padding: 9px 13px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 12px;
+  transition: 0.2s;
+}
+
+.top-actions button:hover,
+.tool:hover {
+  border-color: var(--accent);
+  background: #252037;
+}
+
+.top-actions .export-btn {
+  background: var(--accent);
+  color: #171020;
+  border-color: var(--accent);
+  font-weight: 700;
+}
+
+.workspace {
+  width: min(1400px, 94%);
+  margin: 38px auto;
+  display: grid;
+  grid-template-columns: 205px minmax(0, 1fr) 205px;
+  gap: 24px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.panel h2 {
+  color: var(--muted);
+  font: 11px "DM Mono", monospace;
+  letter-spacing: 1.5px;
+  margin-bottom: 18px;
+}
+
+.tool {
+  width: 100%;
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--panel-light);
+  color: var(--text);
+  text-align: left;
+  font-size: 13px;
+}
+
+.tool.active {
+  background: #29213f;
+  border-color: var(--accent);
+  color: #d5c7ff;
+}
+
+.tool span {
+  font-size: 13px;
+}
+
+.section {
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+#colorPicker {
+  width: 100%;
+  height: 42px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-light);
+  cursor: pointer;
+}
+
+.palette {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+  margin-top: 15px;
+}
+
+.palette button {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 7px;
+  border: 2px solid #ffffff22;
+  background: var(--c);
+  transition: transform 0.15s;
+}
+
+.palette button:hover {
+  transform: scale(1.12);
+  border-color: white;
+}
+
+#gridSize {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  background: var(--panel-light);
+  outline: none;
+}
+
+.editor {
+  min-width: 0;
+}
+
+.editor-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.editor-heading h2 {
+  font-size: 19px;
+  margin-bottom: 5px;
+}
+
+.editor-heading p {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+#pixelCount {
+  color: var(--accent);
+  font: 11px "DM Mono", monospace;
+  white-space: nowrap;
+}
+
+.canvas-frame {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+  padding: 12px;
+  border: 1px solid #39314d;
+  border-radius: 12px;
+  background:
+    linear-gradient(45deg, #171c27 25%, transparent 25%),
+    linear-gradient(-45deg, #171c27 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #171c27 75%),
+    linear-gradient(-45deg, transparent 75%, #171c27 75%),
+    #11151d;
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+  box-shadow: 0 20px 70px #0008;
+}
+
+#pixelCanvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  image-rendering: pixelated;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.hint {
+  text-align: center;
+  color: var(--muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 1px;
+  margin-top: 18px;
+}
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-card span {
+  color: var(--muted);
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 1px;
+}
+
+.info-card strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tip {
+  margin-top: 24px;
+  padding: 14px;
+  border: 1px solid #554477;
+  border-radius: 9px;
+  background: #211b31;
+}
+
+.tip span {
+  color: #c4a9ff;
+  font: 10px "DM Mono", monospace;
+}
+
+.tip p {
+  color: #c0b9d0;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-top: 10px;
+}
+
+footer {
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  text-align: center;
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 1.5px;
+}
+
+footer span {
+  color: var(--accent);
+}
+
+@media (max-width: 1000px) {
+  .workspace {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+
+  .info-panel {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+
+  .info-panel h2,
+  .tip {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 650px) {
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+    margin-top: 22px;
+  }
+
+  .tools-panel {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .tools-panel > h2,
+  .tools-panel .section {
+    grid-column: 1 / -1;
+  }
+
+  .tool {
+    justify-content: center;
+    margin: 0;
+  }
+
+  .info-panel {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .canvas-frame {
+    padding: 7px;
+  }
+
+  .top-actions button {
+    padding: 8px 10px;
+  }
+}

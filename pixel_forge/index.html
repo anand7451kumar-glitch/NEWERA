@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PIXEL FORGE — Pixel Art Studio</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">▦</span>
+      <div>
+        <h1>PIXEL FORGE</h1>
+        <p>YOUR DIGITAL CANVAS</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button id="undoBtn">↶ Undo</button>
+      <button id="redoBtn">↷ Redo</button>
+      <button id="clearBtn">Clear</button>
+      <button id="exportBtn" class="export-btn">↓ Export PNG</button>
+    </div>
+  </header>
+
+  <main class="workspace">
+    <aside class="panel tools-panel">
+      <h2>TOOLS</h2>
+      <button class="tool active" data-tool="draw">✎ <span>Draw</span></button>
+      <button class="tool" data-tool="eraser">▱ <span>Eraser</span></button>
+      <button class="tool" data-tool="fill">◩ <span>Fill</span></button>
+
+      <div class="section">
+        <h2>COLOR</h2>
+        <input type="color" id="colorPicker" value="#ff6b6b">
+        <div class="palette" id="palette">
+          <button style="--c:#ff6b6b" data-color="#ff6b6b"></button>
+          <button style="--c:#ffd166" data-color="#ffd166"></button>
+          <button style="--c:#06d6a0" data-color="#06d6a0"></button>
+          <button style="--c:#118ab2" data-color="#118ab2"></button>
+          <button style="--c:#9b5de5" data-color="#9b5de5"></button>
+          <button style="--c:#ffffff" data-color="#ffffff"></button>
+          <button style="--c:#222222" data-color="#222222"></button>
+          <button style="--c:#777777" data-color="#777777"></button>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>CANVAS SIZE</h2>
+        <select id="gridSize">
+          <option value="16">16 × 16</option>
+          <option value="24">24 × 24</option>
+          <option value="32" selected>32 × 32</option>
+          <option value="48">48 × 48</option>
+        </select>
+      </div>
+    </aside>
+
+    <section class="editor">
+      <div class="editor-heading">
+        <div>
+          <h2>Untitled Artwork</h2>
+          <p>Express yourself, one pixel at a time.</p>
+        </div>
+        <span id="pixelCount">0 pixels</span>
+      </div>
+
+      <div class="canvas-frame">
+        <canvas id="pixelCanvas" width="512" height="512"></canvas>
+      </div>
+
+      <p class="hint">CLICK OR DRAG TO DRAW · USE THE TOOLS TO CREATE</p>
+    </section>
+
+    <aside class="panel info-panel">
+      <h2>WORKSPACE</h2>
+      <div class="info-card">
+        <span>ACTIVE TOOL</span>
+        <strong id="activeTool">Draw</strong>
+      </div>
+      <div class="info-card">
+        <span>SELECTED COLOR</span>
+        <strong id="activeColor">#FF6B6B</strong>
+      </div>
+      <div class="info-card">
+        <span>GRID</span>
+        <strong id="gridLabel">32 × 32</strong>
+      </div>
+      <div class="tip">
+        <span>✦ CREATIVE TIP</span>
+        <p>Start with a simple shape. Add shadows and highlights to bring your pixel art to life.</p>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    PIXEL FORGE <span>·</span> MADE ONE PIXEL AT A TIME
+  </footer>
+</body>
+</html>
