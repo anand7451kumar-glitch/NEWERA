@@ -1,0 +1,151 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOUNDWAVE STUDIO</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">∿</div>
+      <div>
+        <h1>SOUNDWAVE</h1>
+        <p>STUDIO / AUDIO VISUALIZER</p>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="status-dot" id="statusDot"></span>
+      <span id="statusText">STANDBY</span>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <section class="intro">
+      <div>
+        <span class="eyebrow">REAL-TIME AUDIO ENGINE</span>
+        <h2>See your music<span>.</span></h2>
+        <p>Turn sound into something you can see.</p>
+      </div>
+      <div class="version">BUILD 01.0</div>
+    </section>
+
+    <section class="visualizer-card">
+
+      <div class="visualizer-top">
+        <div>
+          <span class="eyebrow">VISUAL OUTPUT</span>
+          <h3 id="modeTitle">Frequency Spectrum</h3>
+        </div>
+        <button id="fullscreenBtn" class="icon-button" title="Fullscreen">
+          ⛶
+        </button>
+      </div>
+
+      <div class="visualizer-stage" id="visualizerStage">
+        <canvas id="visualizer"></canvas>
+
+        <div class="empty-state" id="emptyState">
+          <div class="sound-symbol">♫</div>
+          <h3>Waiting for sound</h3>
+          <p>Load a track or activate your microphone.</p>
+        </div>
+      </div>
+
+      <div class="visualizer-footer">
+        <span>LIVE AUDIO VISUALIZATION</span>
+        <span id="frequencyLabel">0 Hz</span>
+      </div>
+
+    </section>
+
+    <section class="controls-grid">
+
+      <div class="panel source-panel">
+        <div class="panel-heading">
+          <span class="number">01</span>
+          <h3>AUDIO SOURCE</h3>
+        </div>
+
+        <label for="audioFile" class="upload-button">
+          <span>＋</span>
+          <div>
+            <strong>Load audio file</strong>
+            <small>MP3, WAV, OGG and other browser-supported formats</small>
+          </div>
+        </label>
+
+        <input type="file" id="audioFile" accept="audio/*">
+
+        <div class="track-info">
+          <div class="track-icon">♫</div>
+          <div class="track-details">
+            <strong id="trackName">No track loaded</strong>
+            <small id="trackStatus">Choose an audio file to begin</small>
+          </div>
+        </div>
+
+        <audio id="audioPlayer" controls></audio>
+
+        <button id="micBtn" class="mic-button">
+          <span>🎙</span> Use microphone
+        </button>
+      </div>
+
+      <div class="panel appearance-panel">
+        <div class="panel-heading">
+          <span class="number">02</span>
+          <h3>VISUAL STYLE</h3>
+        </div>
+
+        <label class="field-label">VISUALIZATION MODE</label>
+
+        <div class="mode-options">
+          <button class="mode-btn active" data-mode="bars">Bars</button>
+          <button class="mode-btn" data-mode="wave">Wave</button>
+          <button class="mode-btn" data-mode="radial">Radial</button>
+        </div>
+
+        <label class="field-label" for="colorSelect">COLOR THEME</label>
+        <select id="colorSelect">
+          <option value="purple">Electric Purple</option>
+          <option value="cyan">Arctic Cyan</option>
+          <option value="fire">Solar Fire</option>
+          <option value="green">Neon Green</option>
+          <option value="rainbow">Spectrum</option>
+        </select>
+
+        <label class="field-label" for="sensitivity">
+          SENSITIVITY <span id="sensitivityValue">1.5×</span>
+        </label>
+        <input type="range" id="sensitivity" min="0.5" max="3" step="0.1" value="1.5">
+      </div>
+
+    </section>
+
+    <section class="bottom-actions">
+      <div class="audio-indicator">
+        <span class="equalizer">▂ ▄ ▆ ▄ ▂</span>
+        <span>POWERED BY WEB AUDIO API</span>
+      </div>
+
+      <div class="action-buttons">
+        <button id="stopBtn" class="secondary-button">Stop microphone</button>
+        <button id="exportBtn" class="primary-button">↓ Export image</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    SOUNDWAVE STUDIO <span>·</span> SOUND MADE VISIBLE
+  </footer>
+
+</body>
+</html>
