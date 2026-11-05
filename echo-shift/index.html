@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ECHO//SHIFT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand">ECHO<span>//</span>SHIFT</div>
+      <div class="top-label">REFLEX PROTOCOL <span>● ONLINE</span></div>
+    </header>
+
+    <section class="hud">
+      <div><small>SCORE</small><strong id="score">00000</strong></div>
+      <div><small>BEST</small><strong id="best">00000</strong></div>
+      <div><small>COMBO</small><strong id="combo">x1</strong></div>
+    </section>
+
+    <section class="arena-wrap">
+      <canvas id="game" width="900" height="560"></canvas>
+
+      <div class="overlay" id="overlay">
+        <p class="eyebrow" id="eyebrow">SYSTEM READY</p>
+        <h1 id="overlayTitle">SHIFT<br><span>OR VANISH.</span></h1>
+        <p id="overlayText">Dodge incoming signals. Survive as long as you can.</p>
+        <button id="startBtn">INITIALIZE GAME <span>↗</span></button>
+      </div>
+    </section>
+
+    <footer>
+      <div class="controls">
+        <span>CONTROLS</span>
+        <kbd>←</kbd><kbd>→</kbd>
+        <span>OR</span>
+        <kbd>A</kbd><kbd>D</kbd>
+        <span class="hint">Mobile: tap left or right side</span>
+      </div>
+      <div class="status">BUILD 01.01 <span>●</span></div>
+    </footer>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
