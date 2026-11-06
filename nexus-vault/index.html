@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NEXUS // VAULT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="logo">NEXUS<span>//</span>VAULT</div>
+      <div class="system-status"><i></i> SECURITY SYSTEM: ACTIVE</div>
+      <div class="chapter">CASE 001 / THE SILENT ROOM</div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div class="eyebrow">CLASSIFIED // LEVEL 09</div>
+        <h1>THE LAST<br><span>EXIT.</span></h1>
+        <p>You are inside an abandoned research vault. The exit is sealed. Four security systems stand between you and freedom.</p>
+        <button id="beginBtn">ENTER THE VAULT <span>↗</span></button>
+      </section>
+
+      <section class="game hidden" id="game">
+        <aside class="sidebar">
+          <div class="side-heading">MISSION FILE</div>
+          <div class="mission-name">THE SILENT ROOM</div>
+          <p class="mission-desc">Recover the access sequence and unlock the final door.</p>
+
+          <div class="progress-label">
+            <span>SECURITY LAYERS</span>
+            <strong id="progress">0 / 4</strong>
+          </div>
+          <div class="progress-track"><div id="progressBar"></div></div>
+
+          <div class="side-heading inventory-heading">RECOVERED EVIDENCE</div>
+          <div id="inventory" class="inventory">
+            <div class="empty-inventory">No evidence recovered.</div>
+          </div>
+
+          <div class="sidebar-bottom">
+            <span>OPERATOR STATUS</span>
+            <strong id="operatorStatus">LOCKED IN</strong>
+          </div>
+        </aside>
+
+        <section class="workspace">
+          <div class="workspace-top">
+            <span id="stageLabel">SYSTEM 01 / ENTRY TERMINAL</span>
+            <span class="live"><i></i> LIVE FEED</span>
+          </div>
+
+          <div class="puzzle-card">
+            <div class="puzzle-icon" id="puzzleIcon">⌘</div>
+            <div class="eyebrow" id="puzzleType">ACCESS CONTROL</div>
+            <h2 id="puzzleTitle">The First Lock</h2>
+            <p id="puzzleDescription">A terminal waits for its access code.</p>
+
+            <div id="clue" class="clue"></div>
+
+            <div id="puzzleContent" class="puzzle-content"></div>
+
+            <div id="feedback" class="feedback" aria-live="polite"></div>
+          </div>
+
+          <div class="workspace-footer">
+            <span>ENCRYPTION: AES-256</span>
+            <span>CONNECTION: SECURE</span>
+            <button id="restartBtn" class="text-button">RESTART CASE ↻</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      <span>NEXUS RESEARCH DIVISION</span>
+      <span>UNAUTHORIZED ACCESS IS PROHIBITED</span>
+      <span>© 2094</span>
+    </footer>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
