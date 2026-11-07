@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHRONOS // LAB</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <a class="logo" href="#">CHRONOS<span>//</span>LAB</a>
+      <div class="system"><i></i> TEMPORAL CORE ONLINE</div>
+      <div class="operator">OPERATOR 001</div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow">TEMPORAL RESEARCH DIVISION · EST. 2091</div>
+        <h1>TIME IS<br><span>NOT LINEAR.</span></h1>
+        <p>Every second is a destination. Every decision leaves a trace. Welcome to the Chronos laboratory.</p>
+        <button id="enterBtn">INITIALIZE TIME CORE <span>↗</span></button>
+      </section>
+
+      <section class="lab hidden" id="lab">
+        <aside class="sidebar">
+          <div class="section-label">LABORATORY STATUS</div>
+          <div class="status-card">
+            <span>CORE STABILITY</span>
+            <strong id="stabilityText">100%</strong>
+            <div class="meter"><div id="stabilityBar"></div></div>
+          </div>
+          <div class="status-card">
+            <span>TIMELINE INTEGRITY</span>
+            <strong id="integrityText">100%</strong>
+            <div class="meter"><div id="integrityBar"></div></div>
+          </div>
+          <div class="side-divider"></div>
+          <div class="section-label">RESEARCH LOG</div>
+          <div class="log" id="log">
+            <p class="muted">No temporal activity recorded.</p>
+          </div>
+          <div class="discoveries">
+            <span>DISCOVERIES</span>
+            <strong id="discoveryCount">0 / 8</strong>
+          </div>
+        </aside>
+
+        <section class="main-panel">
+          <div class="panel-head">
+            <span>01 / TEMPORAL NAVIGATOR</span>
+            <span class="live"><i></i> LIVE SYSTEM</span>
+          </div>
+
+          <div class="time-display">
+            <div class="eyebrow">CURRENT DESTINATION</div>
+            <div class="year" id="yearDisplay">2026</div>
+            <h2 id="eraName">THE PRESENT</h2>
+            <p id="eraDescription">Your starting point. The timeline is stable.</p>
+          </div>
+
+          <div class="timeline-area">
+            <div class="timeline-labels">
+              <span>1900</span>
+              <span>2000</span>
+              <span>2100</span>
+              <span>2200</span>
+            </div>
+            <input id="yearSlider" type="range" min="1900" max="2200" value="2026" step="1">
+            <div class="selected-year">SELECTED YEAR: <strong id="selectedYear">2026</strong></div>
+          </div>
+
+          <div class="destination-grid" id="destinations">
+            <button data-year="1920"><strong>1920</strong><span>THE JAZZ AGE</span></button>
+            <button data-year="1969"><strong>1969</strong><span>MOON LANDING</span></button>
+            <button data-year="2000"><strong>2000</strong><span>NEW MILLENNIUM</span></button>
+            <button data-year="2026"><strong>2026</strong><span>THE PRESENT</span></button>
+            <button data-year="2089"><strong>2089</strong><span>NEON CENTURY</span></button>
+            <button data-year="2150"><strong>2150</strong><span>NEW FRONTIER</span></button>
+          </div>
+
+          <div class="mission" id="mission">
+            <div>
+              <div class="eyebrow">ACTIVE EXPERIMENT</div>
+              <h3 id="missionTitle">The First Jump</h3>
+              <p id="missionDescription">Travel to another year to begin your research.</p>
+            </div>
+            <button id="jumpBtn">INITIATE JUMP ↗</button>
+          </div>
+
+          <div class="anomaly hidden" id="anomaly">
+            <div class="anomaly-icon">⚠</div>
+            <div>
+              <strong>TEMPORAL ANOMALY DETECTED</strong>
+              <p id="anomalyText"></p>
+            </div>
+            <button id="resolveBtn">INVESTIGATE</button>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      <span>CHRONOS RESEARCH DIVISION</span>
+      <span>DO NOT ALTER YOUR OWN TIMELINE</span>
+      <button id="resetBtn">RESET EXPERIMENT ↻</button>
+    </footer>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
