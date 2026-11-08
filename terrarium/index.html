@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TERRARIUM — A Living World</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="brand-icon">◈</span>
+      <div>
+        <h1>TERRARIUM</h1>
+        <p>A SMALL WORLD, YOURS TO GROW</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <span id="day">DAY 01</span>
+      <span class="save-status">● WORLD SAVED</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="world-section">
+      <div class="world-heading">
+        <div>
+          <span class="eyebrow">YOUR PERSONAL ECOSYSTEM</span>
+          <h2>The Little Wild</h2>
+          <p>Every small action changes this world.</p>
+        </div>
+        <button id="reset" class="reset-btn">↻ Reset world</button>
+      </div>
+
+      <div class="world-frame">
+        <canvas id="world"></canvas>
+        <div class="world-overlay">
+          <span id="weather-label">☀ CLEAR SKIES</span>
+          <span id="time-label">MORNING</span>
+        </div>
+        <div id="notification" class="notification">
+          Welcome to your new world!
+        </div>
+      </div>
+
+      <div class="world-controls">
+        <div class="tool-label">CHOOSE YOUR TOOL</div>
+        <div class="tools">
+          <button class="tool active" data-tool="select">
+            <span>👆</span> Select
+          </button>
+          <button class="tool" data-tool="grass">
+            <span>🌱</span> Grass
+          </button>
+          <button class="tool" data-tool="flower">
+            <span>🌼</span> Flower
+          </button>
+          <button class="tool" data-tool="tree">
+            <span>🌳</span> Tree
+          </button>
+          <button class="tool" data-tool="pond">
+            <span>💧</span> Pond
+          </button>
+          <button class="tool" data-tool="mushroom">
+            <span>🍄</span> Mushroom
+          </button>
+          <button class="tool" data-tool="water">
+            <span>🚿</span> Water
+          </button>
+        </div>
+        <p class="hint">Select a tool, then click an open spot in your world.</p>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <section class="panel">
+        <div class="panel-title">
+          <h3>WORLD HEALTH</h3>
+          <span>LIVE</span>
+        </div>
+        <div class="health-score">
+          <strong id="health">100</strong>
+          <span>/ 100</span>
+        </div>
+        <div class="health-bar"><div id="health-bar"></div></div>
+        <p id="health-message">Your ecosystem is just beginning.</p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">
+          <h3>ENVIRONMENT</h3>
+          <span>CONDITIONS</span>
+        </div>
+        <div class="stat-row">
+          <span>☀ Sunlight</span>
+          <strong id="sun-value">70%</strong>
+        </div>
+        <input id="sun" type="range" min="0" max="100" value="70">
+        <div class="stat-row">
+          <span>💧 Moisture</span>
+          <strong id="moisture-value">65%</strong>
+        </div>
+        <input id="moisture" type="range" min="0" max="100" value="65">
+        <div class="weather-buttons">
+          <button data-weather="clear">☀ Clear</button>
+          <button data-weather="rain">🌧 Rain</button>
+          <button data-weather="cloudy">☁ Cloudy</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">
+          <h3>BIODIVERSITY</h3>
+          <span>DISCOVERED</span>
+        </div>
+        <div class="creature-grid">
+          <div><span>🌱</span><strong id="plants">0</strong><small>Plants</small></div>
+          <div><span>🌳</span><strong id="trees">0</strong><small>Trees</small></div>
+          <div><span>🦋</span><strong id="butterflies">0</strong><small>Butterflies</small></div>
+          <div><span>🐝</span><strong id="bees">0</strong><small>Bees</small></div>
+          <div><span>🐦</span><strong id="birds">0</strong><small>Birds</small></div>
+          <div><span>🍄</span><strong id="mushrooms">0</strong><small>Mushrooms</small></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-title">
+          <h3>TIME CONTROL</h3>
+          <span id="speed-label">1× SPEED</span>
+        </div>
+        <div class="time-buttons">
+          <button id="pause">Ⅱ Pause</button>
+          <button data-speed="1" class="speed active">1×</button>
+          <button data-speed="2" class="speed">2×</button>
+          <button data-speed="4" class="speed">4×</button>
+        </div>
+        <div class="stat-row">
+          <span>🌍 World age</span>
+          <strong id="age">0 days</strong>
+        </div>
+      </section>
+
+      <section class="discovery">
+        <span>✦ FIELD NOTE</span>
+        <p id="field-note">A new ecosystem begins with a single seed. Give it time, light and water.</p>
+      </section>
+    </aside>
+  </main>
+
+  <footer>
+    <span>TERRARIUM © 2026</span>
+    <span>GROW SLOW. THINK GREEN.</span>
+  </footer>
+
+  <script src="game.js"></script>
+</body>
+</html>
