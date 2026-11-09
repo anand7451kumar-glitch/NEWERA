@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>THE LAST MUSEUM</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <a class="logo" href="#">THE LAST <span>MUSEUM</span></a>
+    <div class="header-status">
+      <span>YEAR 2249</span>
+      <span class="status-dot"></span>
+      <span>ARCHIVE ONLINE</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div class="eyebrow">THE HUMAN MEMORY PROJECT · EST. 2249</div>
+      <h1>Some things<br>deserve to <i>survive.</i></h1>
+      <p>Humanity has forgotten its past. You've been entrusted with the last museum on Earth. Discover what remains. Give forgotten history a home.</p>
+      <button id="enterMuseum">ENTER THE MUSEUM <span>↗</span></button>
+    </section>
+
+    <section class="museum">
+      <div class="museum-top">
+        <div>
+          <div class="eyebrow">YOUR INSTITUTION</div>
+          <h2>The Archive</h2>
+        </div>
+        <div class="museum-date" id="museumDate">DAY 001 · 2249</div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <span>ARTIFACTS</span>
+          <strong id="artifactCount">0</strong>
+        </div>
+        <div class="stat">
+          <span>REPUTATION</span>
+          <strong id="reputation">0</strong>
+        </div>
+        <div class="stat">
+          <span>VISITORS</span>
+          <strong id="visitors">0</strong>
+        </div>
+        <div class="stat">
+          <span>ARCHIVE CREDITS</span>
+          <strong id="credits">100</strong>
+        </div>
+      </div>
+
+      <div class="museum-layout">
+        <nav class="sidebar">
+          <div class="nav-label">COLLECTION</div>
+          <button class="nav-btn active" data-page="gallery">◈ Exhibition Hall</button>
+          <button class="nav-btn" data-page="collection">▧ Artifact Archive</button>
+          <button class="nav-btn" data-page="expedition">⌕ Expeditions</button>
+          <button class="nav-btn" data-page="restoration">✧ Restoration Lab</button>
+          <button class="nav-btn" data-page="records">≡ Museum Records</button>
+          <div class="sidebar-bottom">
+            <span>THE HUMAN MEMORY PROJECT</span>
+            <small>Preserving what remains.</small>
+          </div>
+        </nav>
+
+        <section class="content">
+          <div id="page-gallery" class="page active">
+            <div class="section-heading">
+              <div>
+                <div class="eyebrow">01 / THE PUBLIC COLLECTION</div>
+                <h2>Exhibition Hall</h2>
+              </div>
+              <span class="small-tag">OPEN TO VISITORS</span>
+            </div>
+
+            <div class="hero-artifact">
+              <div class="artifact-art" id="featuredArt">⌚</div>
+              <div class="hero-info">
+                <span class="eyebrow">FEATURED DISCOVERY</span>
+                <h3 id="featuredTitle">The Forgotten Hour</h3>
+                <p id="featuredDescription">An object recovered from the ruins of an ancient city.</p>
+                <button id="inspectFeatured" class="outline-btn">INSPECT ARTIFACT →</button>
+              </div>
+            </div>
+
+            <div class="section-heading subsection">
+              <div>
+                <div class="eyebrow">CURATED SPACES</div>
+                <h2>Explore the galleries</h2>
+              </div>
+            </div>
+
+            <div class="gallery-grid">
+              <button class="gallery-card" data-gallery="technology">
+                <span class="gallery-icon">⌘</span>
+                <span class="gallery-number">GALLERY 001</span>
+                <strong>Lost Technology</strong>
+                <small>Machines, inventions and forgotten tools</small>
+                <span class="card-arrow">↗</span>
+              </button>
+              <button class="gallery-card" data-gallery="civilization">
+                <span class="gallery-icon">🏛</span>
+                <span class="gallery-number">GALLERY 002</span>
+                <strong>Ancient Civilization</strong>
+                <small>Fragments of humanity's beginnings</small>
+                <span class="card-arrow">↗</span>
+              </button>
+              <button class="gallery-card" data-gallery="nature">
+                <span class="gallery-icon">❀</span>
+                <span class="gallery-number">GALLERY 003</span>
+                <strong>The Natural World</strong>
+                <small>Life that once covered the planet</small>
+                <span class="card-arrow">↗</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="page-collection" class="page">
+            <div class="eyebrow">02 / RECOVERED HISTORY</div>
+            <h2>Artifact Archive</h2>
+            <p class="muted">Every object has a story. Every story is worth preserving.</p>
+            <div id="artifactList" class="artifact-list"></div>
+          </div>
+
+          <div id="page-expedition" class="page">
+            <div class="eyebrow">03 / FIELD OPERATIONS</div>
+            <h2>Expeditions</h2>
+            <p class="muted">Send recovery teams to forgotten locations.</p>
+            <div id="expeditionList" class="expedition-list"></div>
+          </div>
+
+          <div id="page-restoration" class="page">
+            <div class="eyebrow">04 / CONSERVATION DEPARTMENT</div>
+            <h2>Restoration Lab</h2>
+            <p class="muted">Repair damaged artifacts and uncover their hidden details.</p>
+            <div id="restorationList" class="artifact-list"></div>
+          </div>
+
+          <div id="page-records" class="page">
+            <div class="eyebrow">05 / INSTITUTIONAL HISTORY</div>
+            <h2>Museum Records</h2>
+            <div class="records-box">
+              <div class="record-row"><span>Founding year</span><strong>2249</strong></div>
+              <div class="record-row"><span>Curator</span><strong>YOU</strong></div>
+              <div class="record-row"><span>Recovered artifacts</span><strong id="recordArtifacts">0</strong></div>
+              <div class="record-row"><span>Completed expeditions</span><strong id="recordExpeditions">0</strong></div>
+              <div class="record-row"><span>Restored artifacts</span><strong id="recordRestored">0</strong></div>
+              <div class="record-row"><span>Current reputation</span><strong id="recordReputation">0</strong></div>
+            </div>
+            <button id="saveButton" class="outline-btn">SAVE MUSEUM</button>
+            <button id="resetButton" class="danger-btn">RESET MUSEUM</button>
+            <div id="eventLog" class="event-log"></div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal">
+    <div class="modal-card">
+      <button id="closeModal" class="close-modal">✕</button>
+      <div id="modalIcon" class="modal-icon">⌚</div>
+      <div class="eyebrow" id="modalCategory">ARTIFACT REPORT</div>
+      <h2 id="modalTitle">The Forgotten Hour</h2>
+      <p id="modalDescription"></p>
+      <div id="modalExtra" class="modal-extra"></div>
+      <button id="modalAction" class="primary-btn">CONTINUE</button>
+    </div>
+  </div>
+
+  <footer>
+    <span>THE LAST MUSEUM · 2249</span>
+    <span>HISTORY IS ALL WE HAVE LEFT.</span>
+  </footer>
+
+  <script src="game.js"></script>
+</body>
+</html>
