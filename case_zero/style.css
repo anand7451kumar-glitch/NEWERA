@@ -1,0 +1,201 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Special+Elite&display=swap');
+
+:root {
+  --bg: #111313;
+  --panel: #191d1d;
+  --panel2: #222727;
+  --border: #353c3b;
+  --red: #d75c51;
+  --text: #e7e8df;
+  --muted: #929c98;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+}
+
+button { font: inherit; }
+
+header {
+  height: 70px;
+  padding: 0 7%;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand { font-weight: 700; letter-spacing: 2px; font-size: 18px; }
+.brand span { color: var(--red); }
+.brand small { display: block; color: var(--muted); font: 8px 'DM Mono', monospace; letter-spacing: 1px; margin-top: 4px; }
+
+.case-status { font: 9px 'DM Mono', monospace; color: var(--muted); letter-spacing: 1px; }
+.dot { display: inline-block; width: 7px; height: 7px; background: var(--red); border-radius: 50%; margin-right: 8px; box-shadow: 0 0 9px var(--red); }
+
+main { max-width: 1200px; margin: auto; padding: 0 5%; }
+
+.intro { padding: 85px 0 75px; max-width: 650px; }
+.eyebrow { font: 9px 'DM Mono', monospace; color: var(--red); letter-spacing: 1.7px; }
+.intro h1 { font: 500 clamp(65px, 10vw, 105px)/.9 'Special Elite', serif; margin: 28px 0; letter-spacing: 2px; }
+.intro h1 span { color: var(--red); }
+.intro p { max-width: 430px; color: var(--muted); font-size: 14px; line-height: 1.9; }
+
+.intro button, .submit-btn {
+  margin-top: 20px;
+  padding: 15px 20px;
+  border: 0;
+  background: var(--red);
+  color: white;
+  cursor: pointer;
+  font: 10px 'DM Mono', monospace;
+  letter-spacing: 1px;
+}
+.intro button span { margin-left: 20px; }
+
+.game { border: 1px solid var(--border); background: #151818; padding: 25px; margin-bottom: 70px; }
+.case-heading { display: flex; justify-content: space-between; align-items: center; }
+.case-heading h2 { font: 30px 'Special Elite', serif; margin: 10px 0 20px; }
+.case-clock { font: 20px 'DM Mono', monospace; color: var(--red); }
+
+.case-overview { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--border); margin-bottom: 24px; }
+.case-overview div { padding: 15px; border-right: 1px solid var(--border); }
+.case-overview div:last-child { border: 0; }
+.case-overview span, .bottom-status span { display: block; color: var(--muted); font: 8px 'DM Mono', monospace; letter-spacing: 1px; margin-bottom: 7px; }
+.case-overview strong { font: 10px 'DM Mono', monospace; }
+.red { color: var(--red); }
+
+.workspace { border: 1px solid var(--border); min-height: 540px; }
+.tabs { display: flex; overflow-x: auto; border-bottom: 1px solid var(--border); }
+.tab { flex: 1; white-space: nowrap; background: transparent; border: 0; padding: 17px 12px; color: var(--muted); font: 9px 'DM Mono', monospace; cursor: pointer; }
+.tab.active { color: var(--red); background: #282020; border-bottom: 2px solid var(--red); }
+
+.tab-page { display: none; padding: 25px; }
+.tab-page.active { display: block; animation: fade .25s ease; }
+@keyframes fade { from {opacity:0; transform:translateY(5px)} to {opacity:1;transform:translateY(0)} }
+
+.page-heading h3 { font: 25px 'Special Elite', serif; margin: 10px 0; }
+.page-heading p { color: var(--muted); font-size: 12px; }
+
+.crime-scene {
+  position: relative;
+  height: 350px;
+  margin-top: 25px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, #171a1a 49%, #242827 50%),
+    #222;
+  border: 1px solid #414847;
+}
+
+.scene-wall {
+  position: absolute;
+  inset: 0 0 25% 0;
+  background: linear-gradient(180deg,#323736,#1d2221);
+  border-bottom: 10px solid #38352d;
+}
+.scene-wall:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 5px;
+  background: #6b5b43;
+}
+.hotspot {
+  position: absolute;
+  background: #111c;
+  border: 1px solid #ffffff30;
+  width: 83px;
+  height: 75px;
+  font-size: 30px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: .2s;
+  color: white;
+}
+.hotspot:hover { border-color: var(--red); background: #4b2929dd; transform: scale(1.06); }
+.hotspot small { font: 7px 'DM Mono', monospace; letter-spacing: 1px; }
+.clock { left: 13%; top: 12%; }
+.desk { left: 44%; top: 50%; }
+.cup { right: 15%; top: 54%; }
+.window { right: 12%; top: 12%; }
+.floor { left: 17%; bottom: 12%; }
+.scene-label { position: absolute; bottom: 12px; right: 14px; font: 8px 'DM Mono', monospace; color: #aaa; }
+.scene-tip { margin-top: 15px; color: var(--red); font: 9px 'DM Mono', monospace; letter-spacing: 1px; }
+
+.evidence-list, .suspect-list, .timeline-list, .accusation-options { display: grid; gap: 12px; margin-top: 25px; }
+
+.evidence-card, .suspect-card, .timeline-item, .accusation-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 17px;
+}
+.evidence-card { display: flex; align-items: center; gap: 15px; }
+.evidence-icon { font-size: 30px; width: 45px; text-align: center; }
+.evidence-card h4, .suspect-card h4 { margin: 0 0 6px; font: 17px 'Special Elite', serif; }
+.evidence-card p, .suspect-card p { color: var(--muted); font-size: 11px; line-height: 1.7; margin: 0; }
+.evidence-tag { font: 8px 'DM Mono', monospace; color: var(--red); margin-top: 8px; display: block; }
+
+.suspect-card { display: grid; grid-template-columns: 60px 1fr; gap: 15px; }
+.suspect-avatar { font-size: 38px; display: grid; place-items: center; background: var(--panel2); height: 60px; }
+.suspect-card button { grid-column: 2; justify-self: start; }
+.action-btn, #checkTimeline { border: 1px solid var(--red); background: transparent; color: var(--red); padding: 10px 13px; font: 9px 'DM Mono', monospace; cursor: pointer; }
+.action-btn:hover, #checkTimeline:hover { background: var(--red); color: white; }
+
+.timeline-item { display: flex; gap: 20px; align-items: center; }
+.timeline-item strong { color: var(--red); font: 13px 'DM Mono', monospace; }
+.timeline-item span { color: var(--muted); font-size: 11px; }
+.timeline-controls { margin-top: 20px; }
+#timelineResult { color: var(--red); font-size: 11px; margin-left: 12px; }
+
+.accusation-card { display: flex; align-items: center; gap: 15px; cursor: pointer; }
+.accusation-card.selected { border-color: var(--red); background: #302222; }
+.accusation-card input { accent-color: var(--red); }
+.accusation-card span { font-size: 24px; }
+.accusation-card strong { font: 14px 'Special Elite', serif; }
+
+.ending { margin-top: 25px; padding: 20px; background: #25211c; border-left: 3px solid var(--red); display: none; line-height: 1.8; font-size: 12px; }
+.ending.show { display: block; }
+.bottom-status { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 20px 0 0; }
+.bottom-status strong { font: 13px 'DM Mono', monospace; }
+.bottom-status button { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 10px; cursor: pointer; font: 9px 'DM Mono', monospace; }
+
+.modal { display: none; position: fixed; inset: 0; background: #000c; z-index: 20; place-items: center; padding: 20px; }
+.modal.open { display: grid; }
+.modal-card { position: relative; width: min(470px,100%); background: #1d2221; border: 1px solid var(--red); padding: 35px; }
+#closeModal { position: absolute; right: 15px; top: 15px; color: var(--muted); border: 0; background: none; cursor: pointer; }
+.modal-icon { font-size: 50px; margin: 25px 0; }
+.modal-card h2 { font: 28px 'Special Elite', serif; }
+.modal-card p { color: var(--muted); line-height: 1.8; font-size: 12px; }
+.modal-extra { color: var(--red); font: 9px/1.8 'DM Mono', monospace; margin-top: 20px; }
+#modalAction { background: var(--red); color: white; border: 0; padding: 13px 16px; margin-top: 25px; cursor: pointer; font: 9px 'DM Mono', monospace; }
+
+footer { padding: 25px 7%; border-top: 1px solid var(--border); display: flex; justify-content: space-between; color: var(--muted); font: 8px 'DM Mono', monospace; letter-spacing: 1px; }
+
+@media(max-width:700px) {
+  header { padding: 0 17px; }
+  main { padding: 0 12px; }
+  .intro { padding: 65px 0; }
+  .game { padding: 12px; }
+  .case-overview { grid-template-columns: repeat(2,1fr); }
+  .case-overview div:nth-child(2) { border-right: 0; }
+  .case-overview div:nth-child(-n+2) { border-bottom: 1px solid var(--border); }
+  .tab-page { padding: 15px; }
+  .crime-scene { height: 290px; }
+  .hotspot { width: 66px; height: 65px; font-size: 23px; }
+  .bottom-status { flex-wrap: wrap; }
+  .bottom-status > div { width: 28%; }
+  .bottom-status button { margin-left: auto; }
+  footer { padding: 20px 13px; font-size: 7px; }
+}

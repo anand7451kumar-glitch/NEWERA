@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CASE ZERO — Investigation Files</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="brand">C<span>/</span>Z <small>INVESTIGATION DIVISION</small></div>
+  <div class="case-status"><span class="dot"></span> ACTIVE CASE · 001</div>
+</header>
+
+<main>
+  <section class="intro">
+    <div class="eyebrow">CLASSIFIED INVESTIGATION FILE · 2041</div>
+    <h1>CASE<br><span>ZERO.</span></h1>
+    <p>A scientist disappeared. A locked apartment. A clock that stopped at the wrong time.</p>
+    <button id="startButton">OPEN CASE FILE <span>↗</span></button>
+  </section>
+
+  <section class="game">
+    <div class="case-heading">
+      <div>
+        <div class="eyebrow">INVESTIGATION 001 / THE VOSS DISAPPEARANCE</div>
+        <h2>The Disappearance</h2>
+      </div>
+      <div class="case-clock" id="caseClock">23:47:00</div>
+    </div>
+
+    <div class="case-overview">
+      <div><span>VICTIM</span><strong>DR. ELIAS VOSS</strong></div>
+      <div><span>LOCATION</span><strong>APARTMENT 09</strong></div>
+      <div><span>LAST SEEN</span><strong>22:15 · NOV 17</strong></div>
+      <div><span>STATUS</span><strong class="red">MISSING</strong></div>
+    </div>
+
+    <div class="workspace">
+      <nav class="tabs">
+        <button class="tab active" data-tab="scene">01 · SCENE</button>
+        <button class="tab" data-tab="evidence">02 · EVIDENCE</button>
+        <button class="tab" data-tab="suspects">03 · SUSPECTS</button>
+        <button class="tab" data-tab="timeline">04 · TIMELINE</button>
+        <button class="tab" data-tab="accuse">05 · CONCLUSION</button>
+      </nav>
+
+      <section class="tab-page active" id="page-scene">
+        <div class="page-heading">
+          <div class="eyebrow">LOCATION ANALYSIS</div>
+          <h3>Apartment 09</h3>
+          <p>Click on objects in the room to investigate them. Some clues require other discoveries first.</p>
+        </div>
+        <div class="crime-scene">
+          <div class="scene-wall"></div>
+          <button class="hotspot clock" data-clue="clock">🕰️<small>THE CLOCK</small></button>
+          <button class="hotspot desk" data-clue="letter">📄<small>THE LETTER</small></button>
+          <button class="hotspot cup" data-clue="cup">☕<small>THE CUP</small></button>
+          <button class="hotspot window" data-clue="window">🪟<small>THE WINDOW</small></button>
+          <button class="hotspot floor" data-clue="footprint">👣<small>FOOTPRINTS</small></button>
+          <div class="scene-label">APARTMENT 09 · CRIME SCENE</div>
+        </div>
+        <div class="scene-tip">◉ SEARCH THE ROOM · INVESTIGATE EVERY OBJECT</div>
+      </section>
+
+      <section class="tab-page" id="page-evidence">
+        <div class="page-heading">
+          <div class="eyebrow">FORENSIC DEPARTMENT</div>
+          <h3>Evidence Archive</h3>
+          <p>Collected clues and forensic reports.</p>
+        </div>
+        <div id="evidenceList" class="evidence-list"></div>
+      </section>
+
+      <section class="tab-page" id="page-suspects">
+        <div class="page-heading">
+          <div class="eyebrow">PERSONS OF INTEREST</div>
+          <h3>Interrogation Room</h3>
+          <p>Question each suspect. Compare their statements with your evidence.</p>
+        </div>
+        <div id="suspectList" class="suspect-list"></div>
+      </section>
+
+      <section class="tab-page" id="page-timeline">
+        <div class="page-heading">
+          <div class="eyebrow">EVENT RECONSTRUCTION</div>
+          <h3>Timeline</h3>
+          <p>Put together the events of November 17.</p>
+        </div>
+        <div id="timelineList" class="timeline-list"></div>
+        <div class="timeline-controls">
+          <button id="checkTimeline">VERIFY RECONSTRUCTION</button>
+          <span id="timelineResult"></span>
+        </div>
+      </section>
+
+      <section class="tab-page" id="page-accuse">
+        <div class="page-heading">
+          <div class="eyebrow">FINAL INVESTIGATIVE REPORT</div>
+          <h3>Make Your Conclusion</h3>
+          <p>Choose who you believe is responsible. Your evidence determines the outcome.</p>
+        </div>
+        <div id="accusationOptions" class="accusation-options"></div>
+        <button id="submitAccusation" class="submit-btn">SUBMIT FINAL REPORT →</button>
+        <div id="ending" class="ending"></div>
+      </section>
+    </div>
+
+    <aside class="bottom-status">
+      <div><span>CLUES FOUND</span><strong id="clueCount">0 / 5</strong></div>
+      <div><span>INTERVIEWS</span><strong id="interviewCount">0 / 3</strong></div>
+      <div><span>CASE PROGRESS</span><strong id="progress">0%</strong></div>
+      <button id="resetButton">RESET CASE ↻</button>
+    </aside>
+  </section>
+</main>
+
+<div id="modal" class="modal">
+  <div class="modal-card">
+    <button id="closeModal">✕</button>
+    <div class="eyebrow" id="modalType">EVIDENCE DISCOVERED</div>
+    <div id="modalIcon" class="modal-icon">🔎</div>
+    <h2 id="modalTitle">Clue found</h2>
+    <p id="modalDescription"></p>
+    <div id="modalExtra" class="modal-extra"></div>
+    <button id="modalAction">ADD TO CASE FILE</button>
+  </div>
+</div>
+
+<footer>
+  <span>CASE ZERO · FICTIONAL INVESTIGATION</span>
+  <span>TRUTH LEAVES A TRACE.</span>
+</footer>
+
+<script src="game.js"></script>
+</body>
+</html>
