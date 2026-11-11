@@ -1,0 +1,373 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg: #101a16;
+  --panel: #192720;
+  --panel-light: #21342a;
+  --green: #a8e6a0;
+  --muted: #8da398;
+  --text: #edf5ed;
+  --border: #2b4034;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: "DM Sans", sans-serif;
+  padding: 28px;
+  min-height: 100vh;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.topbar {
+  max-width: 1450px;
+  margin: 0 auto 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.brand-icon {
+  font-size: 34px;
+}
+
+.brand h1 {
+  letter-spacing: 3px;
+  font-size: 20px;
+}
+
+.brand p, .small-text, .eyebrow {
+  color: var(--muted);
+}
+
+.brand p {
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+.day-display {
+  text-align: right;
+}
+
+.day-display span, .eyebrow {
+  font: 11px "DM Mono", monospace;
+  letter-spacing: 1.5px;
+}
+
+.day-display strong {
+  display: block;
+  font: 20px "DM Mono", monospace;
+  color: var(--green);
+  margin-top: 5px;
+}
+
+.layout, .bottom-grid {
+  max-width: 1450px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(290px, 0.8fr);
+  gap: 20px;
+}
+
+.world-panel, .stats-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 17px;
+}
+
+.world-panel {
+  padding: 23px;
+  min-width: 0;
+}
+
+.world-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.world-heading h2 {
+  font-size: 25px;
+  margin-top: 5px;
+}
+
+.weather-pill {
+  background: var(--panel-light);
+  padding: 10px 14px;
+  border-radius: 30px;
+  font-size: 13px;
+}
+
+.island-wrap {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #9ccf91;
+}
+
+#world {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.world-overlay {
+  position: absolute;
+  left: 13px;
+  bottom: 13px;
+  background: #102019d9;
+  color: #e4f4dd;
+  padding: 9px 13px;
+  border-radius: 8px;
+  font-size: 12px;
+  pointer-events: none;
+}
+
+.world-controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 17px;
+  flex-wrap: wrap;
+}
+
+.control-btn {
+  background: var(--panel-light);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-size: 12px;
+}
+
+.control-btn:hover, .action-btn:hover {
+  border-color: var(--green);
+}
+
+.control-btn.reset {
+  margin-left: auto;
+  color: #f1b5a3;
+}
+
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stats-card {
+  padding: 19px;
+}
+
+.health-number {
+  margin: 12px 0;
+}
+
+.health-number strong {
+  font-size: 38px;
+  color: var(--green);
+}
+
+.health-number span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.health-track, .meter, .mission-progress {
+  height: 7px;
+  background: #304137;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.health-track div, .meter div, .mission-progress div {
+  height: 100%;
+  width: 50%;
+  background: var(--green);
+  border-radius: inherit;
+  transition: width 0.3s;
+}
+
+.small-text {
+  font-size: 11px;
+  margin-top: 10px;
+}
+
+.population-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin-top: 17px;
+}
+
+.population {
+  background: var(--panel-light);
+  border-radius: 10px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  align-items: center;
+}
+
+.population span {
+  grid-row: span 2;
+  font-size: 22px;
+}
+
+.population strong {
+  font: 20px "DM Mono", monospace;
+}
+
+.population small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.actions-card {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.actions-card .eyebrow {
+  margin-bottom: 5px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 11px;
+  background: var(--panel-light);
+  border: 1px solid transparent;
+  color: var(--text);
+  border-radius: 9px;
+  padding: 10px;
+}
+
+.action-btn > span {
+  font-size: 22px;
+}
+
+.action-btn div {
+  flex: 1;
+}
+
+.action-btn strong, .action-btn small {
+  display: block;
+}
+
+.action-btn strong {
+  font-size: 12px;
+}
+
+.action-btn small {
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+.action-btn b {
+  color: var(--green);
+  font: 14px "DM Mono", monospace;
+}
+
+.mission-card h3 {
+  margin: 12px 0 7px;
+}
+
+.mission-card p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 13px;
+}
+
+.mission-card > small {
+  color: var(--muted);
+  display: block;
+  margin-top: 8px;
+  font-size: 10px;
+}
+
+.bottom-grid {
+  margin-top: 20px;
+  grid-template-columns: 1fr 1.8fr;
+}
+
+.condition-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin: 17px 0 7px;
+}
+
+.condition-row strong {
+  font: 12px "DM Mono", monospace;
+  color: var(--green);
+}
+
+.log-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.log-heading span {
+  color: var(--muted);
+  font: 9px "DM Mono", monospace;
+}
+
+#log {
+  margin-top: 13px;
+  max-height: 140px;
+  overflow: auto;
+}
+
+#log p {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  color: #c6d5c9;
+  font-size: 11px;
+}
+
+footer {
+  max-width: 1450px;
+  margin: 30px auto 0;
+  text-align: center;
+  color: #607568;
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 900px) {
+  body { padding: 16px; }
+  .layout { grid-template-columns: 1fr; }
+  .side-panel { display: grid; grid-template-columns: 1fr 1fr; }
+  .bottom-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 550px) {
+  .side-panel { display: flex; }
+  .world-panel { padding: 13px; }
+  .world-heading h2 { font-size: 20px; }
+  .day-display strong { font-size: 15px; }
+}

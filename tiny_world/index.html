@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TINY WILD — Ecosystem Simulator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-icon">🌿</span>
+      <div>
+        <h1>TINY WILD</h1>
+        <p>A little world of its own</p>
+      </div>
+    </div>
+    <div class="day-display">
+      <span>ISLAND AGE</span>
+      <strong id="day">DAY 01</strong>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="world-panel">
+      <div class="world-heading">
+        <div>
+          <p class="eyebrow">YOUR PERSONAL ECOSYSTEM</p>
+          <h2>Will it thrive?</h2>
+        </div>
+        <div class="weather-pill" id="weather">☀️ Sunny</div>
+      </div>
+
+      <div class="island-wrap">
+        <canvas id="world" width="900" height="560"></canvas>
+        <div class="world-overlay">
+          <span id="world-message">A new world is waking up...</span>
+        </div>
+      </div>
+
+      <div class="world-controls">
+        <button id="playBtn" class="control-btn">Ⅱ Pause</button>
+        <button id="speedBtn" class="control-btn">Speed: 1×</button>
+        <button id="restartBtn" class="control-btn reset">↻ Restart</button>
+      </div>
+    </section>
+
+    <aside class="side-panel">
+      <section class="stats-card">
+        <p class="eyebrow">ECOSYSTEM HEALTH</p>
+        <div class="health-number">
+          <strong id="health">100</strong>
+          <span>/ 100</span>
+        </div>
+        <div class="health-track">
+          <div id="healthBar"></div>
+        </div>
+        <p class="small-text" id="healthText">Your ecosystem is flourishing.</p>
+      </section>
+
+      <section class="stats-card">
+        <p class="eyebrow">LIVING POPULATION</p>
+        <div class="population-grid">
+          <div class="population">
+            <span>🌳</span>
+            <strong id="plants">0</strong>
+            <small>Plants</small>
+          </div>
+          <div class="population">
+            <span>🐇</span>
+            <strong id="rabbits">0</strong>
+            <small>Rabbits</small>
+          </div>
+          <div class="population">
+            <span>🦊</span>
+            <strong id="foxes">0</strong>
+            <small>Foxes</small>
+          </div>
+          <div class="population">
+            <span>🦋</span>
+            <strong id="butterflies">0</strong>
+            <small>Butterflies</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-card actions-card">
+        <p class="eyebrow">SHAPE YOUR WORLD</p>
+        <button class="action-btn" data-action="plant">
+          <span>🌱</span>
+          <div><strong>Plant a tree</strong><small>Encourage new growth</small></div>
+          <b>+1</b>
+        </button>
+        <button class="action-btn" data-action="rabbit">
+          <span>🐇</span>
+          <div><strong>Introduce a rabbit</strong><small>Add a herbivore</small></div>
+          <b>+1</b>
+        </button>
+        <button class="action-btn" data-action="fox">
+          <span>🦊</span>
+          <div><strong>Introduce a fox</strong><small>Add a predator</small></div>
+          <b>+1</b>
+        </button>
+        <button class="action-btn" data-action="rain">
+          <span>🌧️</span>
+          <div><strong>Call the rain</strong><small>Give plants some water</small></div>
+          <b>↗</b>
+        </button>
+      </section>
+
+      <section class="stats-card mission-card">
+        <p class="eyebrow">CURRENT CHALLENGE</p>
+        <h3>Reach day 100</h3>
+        <p>Keep your ecosystem alive and maintain a healthy balance between plants, herbivores and predators.</p>
+        <div class="mission-progress">
+          <div id="missionBar"></div>
+        </div>
+        <small id="missionText">1 / 100 days</small>
+      </section>
+    </aside>
+  </main>
+
+  <section class="bottom-grid">
+    <div class="stats-card">
+      <p class="eyebrow">ISLAND CONDITIONS</p>
+      <div class="condition-row">
+        <span>💧 Water</span>
+        <strong id="waterValue">75%</strong>
+      </div>
+      <div class="meter"><div id="waterBar"></div></div>
+      <div class="condition-row">
+        <span>🌤️ Sunlight</span>
+        <strong id="sunValue">80%</strong>
+      </div>
+      <div class="meter"><div id="sunBar"></div></div>
+      <div class="condition-row">
+        <span>🌼 Biodiversity</span>
+        <strong id="bioValue">0%</strong>
+      </div>
+      <div class="meter"><div id="bioBar"></div></div>
+    </div>
+
+    <div class="stats-card log-card">
+      <div class="log-heading">
+        <p class="eyebrow">FIELD NOTES</p>
+        <span>LIVE OBSERVATIONS</span>
+      </div>
+      <div id="log">
+        <p>🌱 Your island has been created.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>MADE FOR CURIOUS MINDS · TINY WILD © 2026</footer>
+  <script src="game.js"></script>
+</body>
+</html>
