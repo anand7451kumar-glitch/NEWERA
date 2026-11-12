@@ -1,0 +1,599 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TYPE//RUSH</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #101018;
+  --panel: #191923;
+  --border: #303044;
+  --text: #f0efff;
+  --muted: #89899e;
+  --purple: #a78bfa;
+  --cyan: #67e8f9;
+  --green: #6ee7a0;
+  --red: #fb7185;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 28px;
+  background:
+    radial-gradient(circle at 50% 0%, #30204d 0, transparent 40%),
+    var(--bg);
+  color: var(--text);
+  font-family: "Space Grotesk", sans-serif;
+}
+
+button, select, textarea { font: inherit; }
+
+.app {
+  max-width: 1000px;
+  margin: auto;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 55px;
+}
+
+.logo {
+  font-size: 23px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+.logo span { color: var(--purple); }
+
+.tagline {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.status {
+  font: 11px "DM Mono", monospace;
+  color: var(--green);
+  letter-spacing: 1px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.eyebrow {
+  color: var(--purple);
+  font: 11px "DM Mono", monospace;
+  letter-spacing: 3px;
+}
+
+h1 {
+  font-size: clamp(36px, 7vw, 65px);
+  line-height: 1;
+  margin: 15px 0;
+  letter-spacing: -3px;
+}
+
+h1 span { color: var(--purple); }
+
+.hero p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.panel {
+  background: #191923eF;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 20px 70px #0005;
+}
+
+.settings {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 25px;
+}
+
+select, .btn {
+  background: #252536;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 9px;
+  padding: 11px 15px;
+}
+
+select { cursor: pointer; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.stat {
+  background: #222230;
+  padding: 17px 10px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.stat strong {
+  display: block;
+  font: 27px "DM Mono", monospace;
+  color: var(--cyan);
+}
+
+.stat small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 6px;
+  letter-spacing: 1px;
+}
+
+.timer {
+  font: 12px "DM Mono", monospace;
+  color: var(--muted);
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress {
+  height: 5px;
+  background: #303044;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.progress div {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  transition: width 0.2s;
+}
+
+.prompt {
+  background: #11111a;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 25px;
+  min-height: 155px;
+  font: 17px/2 "DM Mono", monospace;
+  letter-spacing: 0.3px;
+  overflow-wrap: anywhere;
+  color: #77778c;
+  user-select: none;
+}
+
+.prompt .correct { color: var(--green); }
+.prompt .wrong {
+  color: var(--red);
+  background: #fb718522;
+  border-radius: 3px;
+}
+.prompt .current {
+  border-left: 2px solid var(--cyan);
+  margin-left: -2px;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  margin-top: 18px;
+  height: 115px;
+  resize: vertical;
+  background: #11111a;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 17px;
+  color: var(--text);
+  outline: none;
+  font: 14px/1.8 "DM Mono", monospace;
+}
+
+textarea:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px #a78bfa18;
+}
+
+textarea:disabled { opacity: 0.7; }
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  border-color: var(--purple);
+  transform: translateY(-1px);
+}
+
+.primary {
+  background: var(--purple);
+  color: #171020;
+  border-color: var(--purple);
+  font-weight: 700;
+}
+
+.primary:hover {
+  background: #c4b5fd;
+}
+
+.hint {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.result {
+  display: none;
+  margin-top: 22px;
+  padding: 20px;
+  border-radius: 12px;
+  background: #252536;
+  text-align: center;
+}
+
+.result.show { display: block; }
+
+.result h2 { margin: 0 0 8px; }
+
+.result p {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.result strong {
+  color: var(--green);
+  font: 25px "DM Mono", monospace;
+}
+
+footer {
+  text-align: center;
+  margin-top: 35px;
+  color: #626276;
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 2px;
+}
+
+@media (max-width: 600px) {
+  body { padding: 15px; }
+  header { margin-bottom: 40px; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .panel { padding: 15px; }
+  .prompt { padding: 16px; font-size: 14px; }
+  h1 { letter-spacing: -2px; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header>
+  <div>
+    <div class="logo">TYPE<span>//</span>RUSH</div>
+    <div class="tagline">Train your fingers. Beat your limits.</div>
+  </div>
+  <div class="status">● SYSTEM READY</div>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">THE TYPING ARENA</div>
+  <h1>FIND YOUR <span>FLOW.</span></h1>
+  <p>Every second counts. How fast can you really type?</p>
+</section>
+
+<main class="panel">
+
+  <div class="settings">
+    <div>
+      <div class="eyebrow">DIFFICULTY</div>
+      <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+    </div>
+
+    <button class="btn" id="restart">↻ New challenge</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <strong id="wpm">0</strong>
+      <small>WPM</small>
+    </div>
+    <div class="stat">
+      <strong id="accuracy">100%</strong>
+      <small>ACCURACY</small>
+    </div>
+    <div class="stat">
+      <strong id="errors">0</strong>
+      <small>ERRORS</small>
+    </div>
+    <div class="stat">
+      <strong id="best">0</strong>
+      <small>PERSONAL BEST</small>
+    </div>
+  </div>
+
+  <div class="timer">
+    <span>TIME REMAINING</span>
+    <strong id="time">60 seconds</strong>
+  </div>
+
+  <div class="progress">
+    <div id="progressBar"></div>
+  </div>
+
+  <div class="prompt" id="prompt"></div>
+
+  <textarea
+    id="typing"
+    placeholder="Click here and start typing..."
+    spellcheck="false"
+    autocomplete="off"
+    autocorrect="off"
+    autocapitalize="off"
+  ></textarea>
+
+  <div class="actions">
+    <span class="hint" id="hint">Your timer starts with your first keystroke.</span>
+    <button class="btn primary" id="focusBtn">Start typing →</button>
+  </div>
+
+  <div class="result" id="result">
+    <h2 id="resultTitle">Challenge complete!</h2>
+    <p id="resultMessage"></p>
+    <strong id="finalScore">0 WPM</strong>
+    <p>Ready to beat your score?</p>
+    <button class="btn primary" id="againBtn">Play again ↗</button>
+  </div>
+
+</main>
+
+<footer>TYPE//RUSH · BUILT TO TEST YOUR LIMITS · 2026</footer>
+</div>
+
+<script>
+const passages = {
+  easy: [
+    "The sun rises in the east and sets in the west. Every new day gives us another chance to learn something interesting and make progress.",
+    "A small step every day can lead to a big achievement. Stay curious, keep learning, and never stop trying to improve yourself.",
+    "The best way to learn a new skill is to practice regularly. Take your time, stay focused, and enjoy the journey."
+  ],
+
+  medium: [
+    "Technology changes the way we live, work, and communicate. The future belongs to people who stay curious and adapt to new challenges.",
+    "Success is not always about being the fastest person in the room. It is about consistency, patience, and the willingness to keep improving.",
+    "A great idea becomes valuable when someone takes action. Planning is important, but execution is what turns imagination into reality."
+  ],
+
+  hard: [
+    "Programming is the art of translating human ideas into instructions that computers can understand. Precision, creativity, and persistence matter.",
+    "Artificial intelligence, cybersecurity, and quantum computing are reshaping the technological landscape. Tomorrow's innovations begin with today's experiments.",
+    "Debugging requires patience: investigate the symptoms, isolate the cause, test your assumptions, and verify that your solution actually works."
+  ]
+};
+
+const $ = id => document.getElementById(id);
+
+let target = "";
+let started = false;
+let finished = false;
+let remaining = 60;
+let startTime = 0;
+let interval = null;
+
+function getBest() {
+  return Number(localStorage.getItem("typeRushBest_" + $("difficulty").value) || 0);
+}
+
+function loadBest() {
+  $("best").textContent = getBest();
+}
+
+function newChallenge() {
+  clearInterval(interval);
+
+  const level = $("difficulty").value;
+  const options = passages[level];
+
+  target = options[Math.floor(Math.random() * options.length)];
+
+  started = false;
+  finished = false;
+  remaining = 60;
+  startTime = 0;
+
+  $("typing").value = "";
+  $("typing").disabled = false;
+  $("typing").maxLength = target.length;
+
+  $("time").textContent = "60 seconds";
+  $("wpm").textContent = "0";
+  $("accuracy").textContent = "100%";
+  $("errors").textContent = "0";
+  $("progressBar").style.width = "100%";
+  $("hint").textContent = "Your timer starts with your first keystroke.";
+
+  $("result").classList.remove("show");
+  $("focusBtn").textContent = "Start typing →";
+
+  loadBest();
+  renderPrompt();
+}
+
+function renderPrompt() {
+  const typed = $("typing").value;
+  const container = $("prompt");
+
+  container.innerHTML = "";
+
+  for (let i = 0; i < target.length; i++) {
+    const span = document.createElement("span");
+    span.textContent = target[i];
+
+    if (i < typed.length) {
+      span.className = typed[i] === target[i] ? "correct" : "wrong";
+    } else if (i === typed.length) {
+      span.className = "current";
+    }
+
+    container.appendChild(span);
+  }
+}
+
+function calculateStats() {
+  const typed = $("typing").value;
+  let correct = 0;
+  let errors = 0;
+
+  for (let i = 0; i < typed.length; i++) {
+    if (typed[i] === target[i]) correct++;
+    else errors++;
+  }
+
+  const elapsed = started
+    ? Math.max((Date.now() - startTime) / 60000, 1 / 60)
+    : 0;
+
+  const wpm = elapsed > 0
+    ? Math.round((correct / 5) / elapsed)
+    : 0;
+
+  const accuracy = typed.length > 0
+    ? Math.round((correct / typed.length) * 100)
+    : 100;
+
+  $("wpm").textContent = wpm;
+  $("accuracy").textContent = accuracy + "%";
+  $("errors").textContent = errors;
+
+  return { wpm, accuracy, errors };
+}
+
+function startTimer() {
+  if (started || finished) return;
+
+  started = true;
+  startTime = Date.now();
+
+  $("hint").textContent = "Keep going! You're doing great.";
+  $("focusBtn").textContent = "Typing in progress...";
+
+  interval = setInterval(() => {
+    remaining--;
+
+    $("time").textContent = remaining + " seconds";
+    $("progressBar").style.width = (remaining / 60 * 100) + "%";
+
+    calculateStats();
+
+    if (remaining <= 0) {
+      endChallenge();
+    }
+  }, 1000);
+}
+
+function endChallenge() {
+  if (finished) return;
+
+  finished = true;
+  clearInterval(interval);
+
+  $("typing").disabled = true;
+
+  const stats = calculateStats();
+  const previousBest = getBest();
+
+  let title = "Challenge complete!";
+  let message = "Keep practicing to improve your score.";
+
+  if (stats.wpm > previousBest) {
+    localStorage.setItem(
+      "typeRushBest_" + $("difficulty").value,
+      stats.wpm
+    );
+
+    title = "🏆 NEW PERSONAL BEST!";
+    message = "Amazing work! You've beaten your previous record.";
+  } else if (stats.accuracy >= 95) {
+    title = "🎯 Excellent accuracy!";
+    message = "Your typing was incredibly precise.";
+  } else if (stats.wpm >= 40) {
+    title = "⚡ Nice speed!";
+    message = "You're building some serious typing speed.";
+  }
+
+  $("resultTitle").textContent = title;
+  $("resultMessage").textContent =
+    `${stats.accuracy}% accuracy · ${stats.errors} errors`;
+
+  $("finalScore").textContent = stats.wpm + " WPM";
+
+  $("result").classList.add("show");
+  $("focusBtn").textContent = "Challenge finished";
+
+  loadBest();
+}
+
+$("typing").addEventListener("input", () => {
+  if (finished) return;
+
+  if (!started && $("typing").value.length > 0) {
+    startTimer();
+  }
+
+  renderPrompt();
+  calculateStats();
+
+  if ($("typing").value.length >= target.length) {
+    endChallenge();
+  }
+});
+
+$("typing").addEventListener("paste", event => {
+  event.preventDefault();
+});
+
+$("focusBtn").addEventListener("click", () => {
+  if (!finished) $("typing").focus();
+});
+
+$("restart").addEventListener("click", newChallenge);
+$("againBtn").addEventListener("click", newChallenge);
+$("difficulty").addEventListener("change", newChallenge);
+
+newChallenge();
+</script>
+</body>
+</html>
