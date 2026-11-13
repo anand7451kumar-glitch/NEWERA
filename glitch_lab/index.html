@@ -1,0 +1,274 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLITCH//LAB</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;600;700&display=swap');
+
+*{box-sizing:border-box}
+body{
+ margin:0;background:#080b12;color:#eaf2ff;
+ font-family:'Space Grotesk',sans-serif;overflow:hidden
+}
+header{
+ height:76px;padding:0 28px;display:flex;align-items:center;
+ justify-content:space-between;border-bottom:1px solid #20283a;
+ background:#0b101b
+}
+.logo{font-size:21px;font-weight:700;letter-spacing:2px}
+.logo span{color:#5df5d0}
+.status{font:11px 'Space Mono';color:#5df5d0}
+main{display:grid;grid-template-columns:1fr 290px;height:calc(100vh - 76px)}
+#stage{position:relative;min-width:0;background:#070a10}
+canvas{width:100%;height:100%;display:block}
+.hint{
+ position:absolute;bottom:20px;left:20px;
+ color:#75839a;font:11px 'Space Mono';pointer-events:none
+}
+.panel{
+ background:#0c1220;border-left:1px solid #20283a;
+ padding:24px 20px;overflow:auto
+}
+h3{font-size:12px;letter-spacing:2px;color:#8293ad;margin:8px 0 22px}
+.stat{
+ background:#111b2c;border:1px solid #25334a;
+ padding:14px;border-radius:10px;margin-bottom:10px
+}
+.stat small{color:#8392a9;font:10px 'Space Mono'}
+.stat strong{display:block;font-size:25px;margin-top:5px}
+.control{margin:25px 0}
+.control label{
+ display:flex;justify-content:space-between;
+ color:#a9b7ca;font-size:12px;margin-bottom:12px
+}
+.control output{color:#5df5d0;font-family:'Space Mono'}
+input[type=range]{width:100%;accent-color:#5df5d0}
+button{
+ border:1px solid #30415b;background:#121d30;color:#dceaff;
+ padding:11px 12px;border-radius:7px;cursor:pointer;
+ font:11px 'Space Mono';transition:.2s
+}
+button:hover{border-color:#5df5d0;color:#5df5d0}
+button.active{background:#15372f;border-color:#5df5d0;color:#5df5d0}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.full{width:100%;margin-top:9px}
+.footer{font:10px 'Space Mono';color:#53627a;margin-top:25px;line-height:2}
+@media(max-width:700px){
+ main{grid-template-columns:1fr;grid-template-rows:1fr auto}
+ .panel{border-left:0;border-top:1px solid #20283a;max-height:42vh}
+ header{padding:0 15px}
+ .status{font-size:9px}
+}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">GLITCH<span>//</span>LAB</div>
+ <div class="status">● EXPERIMENT RUNNING</div>
+</header>
+
+<main>
+ <section id="stage">
+  <canvas id="world"></canvas>
+  <div class="hint">CLICK TO CREATE AN ENERGY BURST · MOVE TO DISTURB PARTICLES</div>
+ </section>
+
+ <aside class="panel">
+  <h3>EXPERIMENT DATA</h3>
+  <div class="stat"><small>ACTIVE PARTICLES</small><strong id="count">0</strong></div>
+  <div class="stat"><small>ENERGY LEVEL</small><strong id="energy">0%</strong></div>
+
+  <h3 style="margin-top:30px">PARTICLE SETTINGS</h3>
+  <div class="control">
+   <label>Particle count <output id="countOut">180</output></label>
+   <input id="amount" type="range" min="30" max="500" value="180">
+  </div>
+  <div class="control">
+   <label>Gravity <output id="gravityOut">0.5</output></label>
+   <input id="gravity" type="range" min="-2" max="2" step=".1" value=".5">
+  </div>
+  <div class="control">
+   <label>Particle speed <output id="speedOut">1.0</output></label>
+   <input id="speed" type="range" min=".2" max="4" step=".1" value="1">
+  </div>
+
+  <h3>FIELD MODE</h3>
+  <div class="modes">
+   <button class="active" data-mode="attract">ATTRACT</button>
+   <button data-mode="repel">REPEL</button>
+   <button data-mode="orbit">ORBIT</button>
+   <button data-mode="chaos">CHAOS</button>
+  </div>
+
+  <h3 style="margin-top:28px">CONTROLS</h3>
+  <div class="actions">
+   <button id="pause">Ⅱ PAUSE</button>
+   <button id="burst">✦ BURST</button>
+  </div>
+  <button id="reset" class="full">↻ RESET EXPERIMENT</button>
+
+  <div class="footer">
+   GLITCH LAB v1.0<br>
+   PHYSICS ENGINE: PARTICLE FIELD<br>
+   STATUS: <span style="color:#5df5d0">STABLE</span>
+  </div>
+ </aside>
+</main>
+
+<script>
+const canvas=document.getElementById("world");
+const ctx=canvas.getContext("2d");
+const $=id=>document.getElementById(id);
+
+let W,H,particles=[],mode="attract",paused=false;
+let mouse={x:-1000,y:-1000,active:false};
+let amount=180,gravity=.5,speed=1;
+
+function resize(){
+ const rect=canvas.getBoundingClientRect();
+ const dpr=Math.min(devicePixelRatio||1,2);
+ W=rect.width;H=rect.height;
+ canvas.width=W*dpr;canvas.height=H*dpr;
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener("resize",resize);
+resize();
+
+function makeParticle(x=Math.random()*W,y=Math.random()*H){
+ return {
+  x,y,
+  vx:(Math.random()-.5)*1.5,
+  vy:(Math.random()-.5)*1.5,
+  size:Math.random()*2+1,
+  hue:Math.random()*100+150
+ };
+}
+function reset(){
+ particles=Array.from({length:amount},()=>makeParticle());
+}
+reset();
+
+function burst(x=W/2,y=H/2){
+ for(let i=0;i<particles.length;i++){
+  const p=particles[i];
+  const dx=p.x-x,dy=p.y-y;
+  const d=Math.sqrt(dx*dx+dy*dy)+1;
+  const force=5+Math.random()*5;
+  p.vx+=dx/d*force;
+  p.vy+=dy/d*force;
+ }
+}
+
+canvas.addEventListener("mousemove",e=>{
+ const r=canvas.getBoundingClientRect();
+ mouse.x=e.clientX-r.left;
+ mouse.y=e.clientY-r.top;
+ mouse.active=true;
+});
+canvas.addEventListener("mouseleave",()=>mouse.active=false);
+canvas.addEventListener("click",e=>{
+ const r=canvas.getBoundingClientRect();
+ burst(e.clientX-r.left,e.clientY-r.top);
+});
+
+document.querySelectorAll("[data-mode]").forEach(btn=>{
+ btn.onclick=()=>{
+  mode=btn.dataset.mode;
+  document.querySelectorAll("[data-mode]").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+ };
+});
+
+$("amount").oninput=e=>{
+ amount=+e.target.value;
+ $("countOut").textContent=amount;
+ reset();
+};
+$("gravity").oninput=e=>{
+ gravity=+e.target.value;
+ $("gravityOut").textContent=gravity.toFixed(1);
+};
+$("speed").oninput=e=>{
+ speed=+e.target.value;
+ $("speedOut").textContent=speed.toFixed(1);
+};
+$("pause").onclick=()=>{
+ paused=!paused;
+ $("pause").textContent=paused?"▶ RESUME":"Ⅱ PAUSE";
+};
+$("burst").onclick=()=>burst();
+$("reset").onclick=()=>reset();
+
+function animate(){
+ requestAnimationFrame(animate);
+ ctx.fillStyle="rgba(7,10,16,.22)";
+ ctx.fillRect(0,0,W,H);
+ if(paused)return;
+
+ let totalEnergy=0;
+ const centerX=W/2,centerY=H/2;
+
+ for(const p of particles){
+  let dx=0,dy=0;
+
+  if(mouse.active){
+   dx=mouse.x-p.x;
+   dy=mouse.y-p.y;
+  }else{
+   dx=centerX-p.x;
+   dy=centerY-p.y;
+  }
+
+  const distance=Math.sqrt(dx*dx+dy*dy)+1;
+  const strength=Math.min(3,200/distance)*gravity;
+
+  if(mode==="attract"){
+   p.vx+=dx/distance*strength*.04;
+   p.vy+=dy/distance*strength*.04;
+  }
+  if(mode==="repel"){
+   p.vx-=dx/distance*strength*.08;
+   p.vy-=dy/distance*strength*.08;
+  }
+  if(mode==="orbit"){
+   p.vx+=(-dy/distance)*strength*.06;
+   p.vy+=(dx/distance)*strength*.06;
+   p.vx+=dx/distance*strength*.008;
+   p.vy+=dy/distance*strength*.008;
+  }
+  if(mode==="chaos"){
+   p.vx+=(Math.random()-.5)*.3;
+   p.vy+=(Math.random()-.5)*.3;
+  }
+
+  p.vx*=.995;
+  p.vy*=.995;
+  p.x+=p.vx*speed;
+  p.y+=p.vy*speed;
+
+  if(p.x<0||p.x>W)p.vx*=-1;
+  if(p.y<0||p.y>H)p.vy*=-1;
+  p.x=Math.max(0,Math.min(W,p.x));
+  p.y=Math.max(0,Math.min(H,p.y));
+
+  totalEnergy+=Math.hypot(p.vx,p.vy);
+  ctx.beginPath();
+  ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+  ctx.fillStyle=`hsla(${p.hue},100%,70%,.9)`;
+  ctx.shadowBlur=12;
+  ctx.shadowColor=`hsl(${p.hue},100%,60%)`;
+  ctx.fill();
+ }
+ ctx.shadowBlur=0;
+
+ $("count").textContent=particles.length;
+ $("energy").textContent=Math.min(999,Math.round(totalEnergy/particles.length*100))+"%";
+}
+animate();
+</script>
+</body>
+</html>
