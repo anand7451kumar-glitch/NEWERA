@@ -1,0 +1,335 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FRAME//FORGE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b0d14;color:#e9edfa;font-family:Arial,sans-serif}
+header{height:68px;padding:0 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #252a3a}
+.logo{font-weight:900;letter-spacing:2px;font-size:20px}
+.logo span{color:#9b8cff}
+header small{color:#7f8ba5;font-size:11px}
+main{display:grid;grid-template-columns:210px 1fr 230px;min-height:calc(100vh - 68px)}
+aside{padding:20px;border-right:1px solid #252a3a;background:#10131e}
+aside:last-child{border-right:0;border-left:1px solid #252a3a}
+h3{font-size:11px;color:#9b8cff;letter-spacing:2px;margin:8px 0 18px}
+label{display:block;font-size:12px;color:#aab2c8;margin:16px 0 8px}
+button,select,input{font:inherit}
+button,select{background:#1a2030;border:1px solid #343d54;color:#e9edfa;padding:9px;border-radius:6px;cursor:pointer}
+button:hover{border-color:#9b8cff}
+button.active{background:#342c60;border-color:#9b8cff}
+input[type=color]{width:100%;height:38px;background:#1a2030;border:1px solid #343d54;border-radius:6px}
+input[type=range]{width:100%;accent-color:#9b8cff}
+input[type=number]{width:100%;padding:9px;background:#1a2030;border:1px solid #343d54;color:white;border-radius:6px}
+.center{padding:24px;display:flex;flex-direction:column;align-items:center;gap:20px;min-width:0}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+#pixelCanvas{width:min(100%,480px);aspect-ratio:1;background-color:#161b28;background-image:linear-gradient(45deg,#202638 25%,transparent 25%),linear-gradient(-45deg,#202638 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#202638 75%),linear-gradient(-45deg,transparent 75%,#202638 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0;border:2px solid #343d54;image-rendering:pixelated;touch-action:none;cursor:crosshair}
+.frames{width:min(100%,480px)}
+.frame-list{display:flex;gap:9px;overflow-x:auto;padding:10px 0}
+.frame{flex:0 0 76px;height:76px;padding:5px;background:#171c2b;border:2px solid #343d54;border-radius:7px}
+.frame.active{border-color:#9b8cff}
+.frame canvas{width:100%;height:100%;image-rendering:pixelated}
+.frame span{font-size:10px;color:#9ba6bd}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.full{width:100%;margin-top:9px}
+.palette{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.swatch{height:30px;border-radius:5px;border:2px solid #414b60;cursor:pointer}
+.swatch.selected{outline:2px solid white}
+#preview{width:130px;height:130px;background-color:#171c2b;image-rendering:pixelated;border:1px solid #343d54}
+small{color:#7e8ba4}
+@media(max-width:850px){main{grid-template-columns:1fr}aside,aside:last-child{border:0;border-top:1px solid #252a3a}.center{order:-1}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">FRAME<span>//</span>FORGE</div>
+ <small>PIXEL ANIMATION STUDIO · v1.0</small>
+</header>
+<main>
+<aside>
+ <h3>TOOLS</h3>
+ <div class="actions">
+  <button id="pen" class="active">✎ Pen</button>
+  <button id="eraser">⌫ Eraser</button>
+  <button id="eyedrop">◉ Pick</button>
+  <button id="clear">Clear</button>
+ </div>
+ <label>Brush size</label>
+ <input id="brush" type="range" min="1" max="8" value="1">
+ <label>Canvas resolution</label>
+ <select id="resolution">
+  <option value="16">16 × 16</option>
+  <option value="24">24 × 24</option>
+  <option value="32" selected>32 × 32</option>
+  <option value="48">48 × 48</option>
+ </select>
+ <label>Color</label>
+ <input type="color" id="color" value="#9b8cff">
+ <label>Quick palette</label>
+ <div class="palette" id="palette"></div>
+ <button id="undo" class="full">↶ Undo</button>
+</aside>
+
+<section class="center">
+ <div class="toolbar">
+  <button id="add">＋ New frame</button>
+  <button id="duplicate">Duplicate</button>
+  <button id="delete">Delete frame</button>
+ </div>
+ <canvas id="pixelCanvas" width="32" height="32"></canvas>
+ <div class="frames">
+  <small>ANIMATION TIMELINE</small>
+  <div class="frame-list" id="frameList"></div>
+  <div class="toolbar">
+   <button id="play">▶ Play</button>
+   <button id="stop">■ Stop</button>
+   <button id="onion" class="active">Onion skin: ON</button>
+  </div>
+ </div>
+</section>
+
+<aside>
+ <h3>ANIMATION</h3>
+ <label>Playback speed (FPS)</label>
+ <input id="fps" type="range" min="1" max="24" value="6">
+ <div><small id="fpsValue">6 FPS</small></div>
+ <label>Preview</label>
+ <canvas id="preview" width="128" height="128"></canvas>
+ <h3 style="margin-top:28px">PROJECT</h3>
+ <button id="save" class="full">Save project</button>
+ <button id="load" class="full">Load project</button>
+ <button id="export" class="full">Export sprite sheet PNG</button>
+ <div style="margin-top:22px;line-height:1.8">
+  <small>Canvas: <b id="resText">32 × 32</b><br>
+  Frames: <b id="frameCount">1</b><br>
+  Current: <b id="currentFrame">1</b><br>
+  Storage: Browser local storage</small>
+ </div>
+</aside>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const canvas=$("pixelCanvas"),ctx=canvas.getContext("2d");
+const preview=$("preview"),pctx=preview.getContext("2d");
+
+let size=32,frames=[makeFrame()],current=0;
+let color="#9b8cff",tool="pen",brush=1;
+let drawing=false,playing=false,onion=true,history=[];
+let timer=null;
+
+function makeFrame(){
+ return Array(size*size).fill("");
+}
+function snapshot(){
+ history.push(JSON.stringify(frames));
+ if(history.length>30)history.shift();
+}
+function restore(){
+ if(!history.length)return;
+ frames=JSON.parse(history.pop());
+ current=Math.min(current,frames.length-1);
+ render();
+}
+function index(x,y){return y*size+x}
+function setPixel(x,y,value){
+ const b=Math.floor(brush/2);
+ for(let dy=-b;dy<=b;dy++){
+  for(let dx=-b;dx<=b;dx++){
+   const px=x+dx,py=y+dy;
+   if(px>=0&&py>=0&&px<size&&py<size)
+    frames[current][index(px,py)]=value;
+  }
+ }
+}
+function drawFrame(target,frame){
+ target.clearRect(0,0,target.canvas.width,target.canvas.height);
+ const scale=target.canvas.width/size;
+ frame.forEach((c,i)=>{
+  if(!c)return;
+  target.fillStyle=c;
+  target.fillRect((i%size)*scale,Math.floor(i/size)*scale,scale,scale);
+ });
+}
+function render(){
+ ctx.clearRect(0,0,size,size);
+ if(onion&&current>0){
+  frames[current-1].forEach((c,i)=>{
+   if(c){
+    ctx.fillStyle="rgba(255,100,120,.25)";
+    ctx.fillRect(i%size,Math.floor(i/size),1,1);
+   }
+  });
+ }
+ drawFrame(ctx,frames[current]);
+ $("frameCount").textContent=frames.length;
+ $("currentFrame").textContent=current+1;
+ $("resText").textContent=size+" × "+size;
+ $("frameList").innerHTML="";
+ frames.forEach((f,i)=>{
+  const el=document.createElement("div");
+  el.className="frame"+(i===current?" active":"");
+  const mini=document.createElement("canvas");
+  mini.width=size;mini.height=size;
+  drawFrame(mini.getContext("2d"),f);
+  const number=document.createElement("span");
+  number.textContent="Frame "+(i+1);
+  el.append(mini,number);
+  el.onclick=()=>{current=i;render()};
+  $("frameList").append(el);
+ });
+ drawFrame(pctx,frames[current]);
+}
+function position(e){
+ const r=canvas.getBoundingClientRect();
+ return {
+  x:Math.floor((e.clientX-r.left)/r.width*size),
+  y:Math.floor((e.clientY-r.top)/r.height*size)
+ };
+}
+function paint(e){
+ if(!drawing)return;
+ const p=position(e);
+ if(p.x<0||p.y<0||p.x>=size||p.y>=size)return;
+ if(tool==="eyedrop"){
+  const picked=frames[current][index(p.x,p.y)];
+  if(picked){color=picked;$("color").value=color}
+  drawing=false;
+  return;
+ }
+ setPixel(p.x,p.y,tool==="eraser"?"":color);
+ render();
+}
+canvas.addEventListener("pointerdown",e=>{
+ if(playing)return;
+ snapshot();
+ drawing=true;
+ canvas.setPointerCapture(e.pointerId);
+ paint(e);
+});
+canvas.addEventListener("pointermove",paint);
+canvas.addEventListener("pointerup",()=>drawing=false);
+canvas.addEventListener("pointercancel",()=>drawing=false);
+
+function selectTool(t){
+ tool=t;
+ ["pen","eraser","eyedrop"].forEach(id=>{
+  $(id).classList.toggle("active",id===t);
+ });
+}
+$("pen").onclick=()=>selectTool("pen");
+$("eraser").onclick=()=>selectTool("eraser");
+$("eyedrop").onclick=()=>selectTool("eyedrop");
+$("brush").oninput=e=>brush=+e.target.value;
+$("color").oninput=e=>color=e.target.value;
+$("clear").onclick=()=>{
+ snapshot();frames[current]=makeFrame();render();
+};
+$("undo").onclick=restore;
+
+$("add").onclick=()=>{
+ snapshot();
+ frames.splice(current+1,0,makeFrame());
+ current++;
+ render();
+};
+$("duplicate").onclick=()=>{
+ snapshot();
+ frames.splice(current+1,0,[...frames[current]]);
+ current++;
+ render();
+};
+$("delete").onclick=()=>{
+ if(frames.length===1){frames[0]=makeFrame()}
+ else{snapshot();frames.splice(current,1);current=Math.max(0,current-1)}
+ render();
+};
+$("onion").onclick=()=>{
+ onion=!onion;
+ $("onion").textContent="Onion skin: "+(onion?"ON":"OFF");
+ $("onion").classList.toggle("active",onion);
+ render();
+};
+$("fps").oninput=e=>{
+ $("fpsValue").textContent=e.target.value+" FPS";
+ if(playing)startPlayback();
+};
+function stopPlayback(){
+ playing=false;
+ clearInterval(timer);
+ $("play").textContent="▶ Play";
+}
+function startPlayback(){
+ clearInterval(timer);
+ playing=true;
+ $("play").textContent="Ⅱ Pause";
+ timer=setInterval(()=>{
+  current=(current+1)%frames.length;
+  render();
+ },1000/+ $("fps").value);
+}
+$("play").onclick=()=>playing?stopPlayback():startPlayback();
+$("stop").onclick=()=>{stopPlayback();current=0;render()};
+
+$("resolution").onchange=e=>{
+ snapshot();
+ size=+e.target.value;
+ frames=[makeFrame()];
+ current=0;history=[];
+ canvas.width=size;canvas.height=size;
+ render();
+};
+$("save").onclick=()=>{
+ localStorage.setItem("frameForge",JSON.stringify({size,frames}));
+ alert("Project saved!");
+};
+$("load").onclick=()=>{
+ const data=localStorage.getItem("frameForge");
+ if(!data){alert("No saved project found.");return}
+ const project=JSON.parse(data);
+ stopPlayback();
+ size=project.size;frames=project.frames;
+ current=0;history=[];
+ canvas.width=size;canvas.height=size;
+ $("resolution").value=size;
+ render();
+};
+$("export").onclick=()=>{
+ stopPlayback();
+ const sheet=document.createElement("canvas");
+ sheet.width=size*frames.length;
+ sheet.height=size;
+ const sctx=sheet.getContext("2d");
+ frames.forEach((f,i)=>{
+  const temp=document.createElement("canvas");
+  temp.width=size;temp.height=size;
+  drawFrame(temp.getContext("2d"),f);
+  sctx.drawImage(temp,i*size,0);
+ });
+ const a=document.createElement("a");
+ a.download="frame-forge-spritesheet.png";
+ a.href=sheet.toDataURL("image/png");
+ a.click();
+};
+
+const colors=["#ffffff","#000000","#ff5c78","#ffb347",
+ "#ffe66d","#5df5d0","#48a9ff","#9b8cff",
+ "#b8f28b","#a56bff","#ff7de9","#53627a"];
+colors.forEach(c=>{
+ const sw=document.createElement("div");
+ sw.className="swatch";
+ sw.style.background=c;
+ sw.onclick=()=>{
+  color=c;$("color").value=c;
+  document.querySelectorAll(".swatch").forEach(s=>s.classList.remove("selected"));
+  sw.classList.add("selected");
+ };
+ $("palette").append(sw);
+});
+render();
+</script>
+</body>
+</html>
