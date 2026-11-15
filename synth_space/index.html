@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SYNTH//SPACE</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090914;color:#eeeafa;font-family:Arial,sans-serif}
+header{height:70px;padding:0 25px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #29243d}
+.logo{font-size:21px;font-weight:900;letter-spacing:3px}
+.logo span{color:#b28aff}
+.status{font-size:11px;color:#8f83ac}
+main{max-width:1100px;margin:auto;padding:25px}
+h2{font-size:12px;letter-spacing:2px;color:#a997d6;margin:0 0 17px}
+.visual{
+ height:230px;border:1px solid #302746;border-radius:13px;
+ background:radial-gradient(ellipse at center,#251744 0%,#111023 50%,#0b0b16 100%);
+ overflow:hidden;position:relative
+}
+canvas{width:100%;height:100%;display:block}
+.visual-label{position:absolute;top:15px;left:17px;font-size:10px;color:#a997d6;letter-spacing:2px}
+.panel{margin-top:25px;padding:20px;background:#11111f;border:1px solid #29243d;border-radius:12px}
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+button,select{background:#1b1930;color:#eeeafa;border:1px solid #40365e;padding:10px 14px;border-radius:7px;cursor:pointer}
+button:hover{border-color:#b28aff}
+button.active{background:#51357b;border-color:#b28aff}
+input{accent-color:#b28aff}
+label{font-size:12px;color:#b7abcF}
+.keys{display:flex;justify-content:center;height:155px;gap:3px;margin-top:15px;overflow-x:auto}
+.key{flex:1;min-width:35px;max-width:75px;background:#eeeaf7;border:1px solid #aaa0ba;border-radius:0 0 7px 7px;color:#171321;position:relative;cursor:pointer}
+.key.black{background:#292238;color:white;height:95px;max-width:43px;min-width:26px;margin:0 -18px;z-index:2;border:1px solid #090914}
+.key:active,.key.playing{background:#b28aff;color:#100b1b}
+.key small{position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:10px}
+.seq{display:grid;grid-template-columns:repeat(8,1fr);gap:9px}
+.step{height:55px;border:1px solid #40365e;background:#1b1930;border-radius:7px;color:#a997d6}
+.step.on{background:#6d42a5;color:white;border-color:#c29aff;box-shadow:0 0 15px #8b51c755}
+.step.current{outline:2px solid #5df5d0}
+.row{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.slider{display:flex;align-items:center;gap:10px}
+.slider input{width:110px}
+footer{text-align:center;color:#645c7c;font-size:10px;padding:30px}
+@media(max-width:600px){main{padding:13px}.visual{height:180px}.panel{padding:14px}.keys{height:125px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">SYNTH<span>//</span>SPACE</div>
+ <div class="status">● AUDIO PLAYGROUND</div>
+</header>
+<main>
+ <h2>01 / LIVE FREQUENCY</h2>
+ <div class="visual">
+  <div class="visual-label">REAL-TIME SOUND FIELD</div>
+  <canvas id="visual"></canvas>
+ </div>
+
+ <section class="panel">
+  <div class="row">
+   <h2>02 / SYNTHESIZER</h2>
+   <div class="controls">
+    <button id="audio">ENABLE AUDIO</button>
+    <select id="wave">
+     <option value="sine">Sine</option>
+     <option value="triangle">Triangle</option>
+     <option value="square">Square</option>
+     <option value="sawtooth">Sawtooth</option>
+    </select>
+   </div>
+  </div>
+  <div class="keys" id="keys"></div>
+  <p style="font-size:11px;color:#82799d">Keyboard: A W S E D F T G Y H U J K</p>
+ </section>
+
+ <section class="panel">
+  <div class="row">
+   <h2>03 / STEP SEQUENCER</h2>
+   <div class="controls">
+    <button id="play">▶ PLAY</button>
+    <button id="clear">CLEAR</button>
+   </div>
+  </div>
+  <div class="seq" id="seq"></div>
+  <div class="controls" style="margin-top:22px">
+   <div class="slider">
+    <label>TEMPO</label>
+    <input id="tempo" type="range" min="60" max="180" value="110">
+    <span id="tempoVal">110</span>
+   </div>
+   <div class="slider">
+    <label>VOLUME</label>
+    <input id="volume" type="range" min="0" max="100" value="35">
+   </div>
+  </div>
+ </section>
+ <footer>SYNTH//SPACE · CREATE YOUR OWN FREQUENCY</footer>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+let audio=null,master=null,analyser=null;
+let enabled=false,playing=false;
+let activeOscillators={};
+let sequence=Array(8).fill(false);
+let step=0,timer=null;
+const notes=[
+ ["C4","a",261.63],["C#4","w",277.18],
+ ["D4","s",293.66],["D#4","e",311.13],
+ ["E4","d",329.63],["F4","f",349.23],
+ ["F#4","t",369.99],["G4","g",392],
+ ["G#4","y",415.30],["A4","h",440],
+ ["A#4","u",466.16],["B4","j",493.88],
+ ["C5","k",523.25]
+];
+
+function enableAudio(){
+ if(enabled)return;
+ audio=new(window.AudioContext||window.webkitAudioContext)();
+ master=audio.createGain();
+ analyser=audio.createAnalyser();
+ analyser.fftSize=256;
+ master.gain.value=+$("volume").value/100;
+ master.connect(analyser);
+ analyser.connect(audio.destination);
+ enabled=true;
+ $("audio").textContent="AUDIO ENABLED";
+ $("audio").classList.add("active");
+}
+$("audio").onclick=async()=>{
+ enableAudio();
+ await audio.resume();
+};
+
+$("volume").oninput=e=>{
+ if(master)master.gain.setTargetAtTime(+e.target.value/100,audio.currentTime,.03);
+};
+
+function playNote(name,freq){
+ enableAudio();
+ audio.resume();
+ if(activeOscillators[name])return;
+ const osc=audio.createOscillator();
+ const gain=audio.createGain();
+ osc.type=$("wave").value;
+ osc.frequency.value=freq;
+ gain.gain.setValueAtTime(.0001,audio.currentTime);
+ gain.gain.exponentialRampToValueAtTime(.3,audio.currentTime+.025);
+ osc.connect(gain);
+ gain.connect(master);
+ osc.start();
+ activeOscillators[name]={osc,gain};
+}
+function stopNote(name){
+ const item=activeOscillators[name];
+ if(!item)return;
+ item.gain.gain.setTargetAtTime(.0001,audio.currentTime,.04);
+ item.osc.stop(audio.currentTime+.2);
+ delete activeOscillators[name];
+}
+
+notes.forEach(([name,key,freq])=>{
+ const el=document.createElement("button");
+ el.className="key"+(name.includes("#")?" black":"");
+ el.innerHTML="<small>"+key.toUpperCase()+"</small>";
+ el.title=name;
+ $("keys").append(el);
+ const down=e=>{e.preventDefault();playNote(name,freq);el.classList.add("playing")};
+ const up=()=>{stopNote(name);el.classList.remove("playing")};
+ el.addEventListener("pointerdown",down);
+ el.addEventListener("pointerup",up);
+ el.addEventListener("pointerleave",up);
+ el.addEventListener("pointercancel",up);
+});
+
+const keyboard={};
+notes.forEach(([name,key,freq])=>keyboard[key]={name,freq});
+window.addEventListener("keydown",e=>{
+ if(e.repeat||e.target.tagName==="INPUT")return;
+ const n=keyboard[e.key.toLowerCase()];
+ if(n)playNote(n.name,n.freq);
+});
+window.addEventListener("keyup",e=>{
+ const n=keyboard[e.key.toLowerCase()];
+ if(n)stopNote(n.name);
+});
+window.addEventListener("blur",()=>{
+ Object.keys(activeOscillators).forEach(stopNote);
+});
+
+sequence.forEach((_,i)=>{
+ const btn=document.createElement("button");
+ btn.className="step";
+ btn.textContent=i+1;
+ btn.onclick=()=>{
+  sequence[i]=!sequence[i];
+  btn.classList.toggle("on",sequence[i]);
+ };
+ $("seq").append(btn);
+});
+
+function stopSequencer(){
+ playing=false;
+ clearInterval(timer);
+ $("play").textContent="▶ PLAY";
+ document.querySelectorAll(".step").forEach(b=>b.classList.remove("current"));
+}
+function startSequencer(){
+ if(!enabled)enableAudio();
+ audio.resume();
+ playing=true;
+ $("play").textContent="Ⅱ PAUSE";
+ clearInterval(timer);
+ timer=setInterval(()=>{
+  document.querySelectorAll(".step").forEach(b=>b.classList.remove("current"));
+  const buttons=$("seq").children;
+  buttons[step].classList.add("current");
+  if(sequence[step]){
+   const note=notes[step*1+2];
+   playNote(note[0],note[2]);
+   setTimeout(()=>stopNote(note[0]),180);
+  }
+  step=(step+1)%8;
+ },60000/(+$("tempo").value)/2);
+}
+$("play").onclick=()=>{
+ if(playing)stopSequencer();
+ else startSequencer();
+};
+$("clear").onclick=()=>{
+ sequence.fill(false);
+ [...$("seq").children].forEach(b=>b.classList.remove("on"));
+ stopSequencer();
+};
+$("tempo").oninput=e=>{
+ $("tempoVal").textContent=e.target.value;
+ if(playing)startSequencer();
+};
+
+const visual=$("visual"),vctx=visual.getContext("2d");
+let width,height,particles=[];
+function resize(){
+ const r=visual.getBoundingClientRect();
+ const dpr=Math.min(devicePixelRatio||1,2);
+ width=r.width;height=r.height;
+ visual.width=width*dpr;visual.height=height*dpr;
+ vctx.setTransform(dpr,0,0,dpr,0,0);
+ particles=Array.from({length:75},()=>({
+  x:Math.random()*width,y:Math.random()*height,
+  vx:(Math.random()-.5)*.6,vy:(Math.random()-.5)*.6,
+  phase:Math.random()*Math.PI*2
+ }));
+}
+window.addEventListener("resize",resize);
+resize();
+
+function animate(){
+ requestAnimationFrame(animate);
+ vctx.fillStyle="rgba(9,9,20,.22)";
+ vctx.fillRect(0,0,width,height);
+ const data=new Uint8Array(analyser?analyser.frequencyBinCount:128);
+ if(analyser)analyser.getByteFrequencyData(data);
+ const energy=analyser?data.reduce((a,b)=>a+b,0)/data.length/255:0;
+ const time=performance.now()*.001;
+ particles.forEach((p,i)=>{
+  p.phase+=.015+energy*.2;
+  p.x+=p.vx*(1+energy*4);
+  p.y+=p.vy*(1+energy*4);
+  if(p.x<0||p.x>width)p.vx*=-1;
+  if(p.y<0||p.y>height)p.vy*=-1;
+  const radius=2+Math.sin(p.phase)*2+energy*12;
+  vctx.beginPath();
+  vctx.arc(p.x,p.y,radius,0,Math.PI*2);
+  vctx.fillStyle=`hsla(${260+i%80},100%,${65+energy*25}%,.8)`;
+  vctx.shadowBlur=12+energy*20;
+  vctx.shadowColor="#a77aff";
+  vctx.fill();
+ });
+ vctx.shadowBlur=0;
+}
+animate();
+</script>
+</body>
+</html>
