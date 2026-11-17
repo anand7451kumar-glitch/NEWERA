@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIGNAL//ATLAS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:#080c12;
+  --panel:#101722;
+  --line:#202d3b;
+  --text:#e5edf5;
+  --muted:#75879a;
+  --cyan:#48e5d1;
+  --green:#8be5a1;
+  --red:#ff777e;
+  --yellow:#f3cb70;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+  min-height:100vh;
+}
+header{
+  padding:22px 5%;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;
+  gap:20px;flex-wrap:wrap;
+}
+.logo{font-size:21px;font-weight:700;letter-spacing:2px}
+.logo span{color:var(--cyan)}
+.mono{font-family:'DM Mono',monospace}
+.header-right{display:flex;gap:18px;align-items:center;color:var(--muted);font-size:12px}
+.live-dot{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:var(--green);margin-right:7px;box-shadow:0 0 12px var(--green);
+}
+main{max-width:1400px;margin:auto;padding:32px 5%}
+.eyebrow{color:var(--cyan);font-size:11px;letter-spacing:3px}
+h1{font-size:clamp(30px,5vw,48px);margin:10px 0 5px;letter-spacing:-2px}
+.subtitle{color:var(--muted);font-size:14px}
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin:28px 0;
+}
+.stat,.panel{
+  background:var(--panel);border:1px solid var(--line);border-radius:12px;
+}
+.stat{padding:18px}
+.stat small{color:var(--muted);font-size:11px;letter-spacing:1px}
+.stat strong{display:block;font-size:27px;margin-top:8px}
+.stat em{font-size:11px;color:var(--green);font-style:normal}
+.layout{
+  display:grid;grid-template-columns:minmax(0,1.65fr) minmax(270px,.8fr);
+  gap:16px;align-items:start;
+}
+.panel{padding:20px;min-width:0}
+.panel-heading{
+  display:flex;justify-content:space-between;align-items:center;
+  gap:10px;margin-bottom:16px;
+}
+.panel-heading h2{font-size:14px;margin:0;letter-spacing:1px}
+.small{font-size:10px;color:var(--muted)}
+.map{
+  height:370px;position:relative;overflow:hidden;border-radius:9px;
+  background:
+    linear-gradient(rgba(72,229,209,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(72,229,209,.045) 1px,transparent 1px),
+    radial-gradient(ellipse at center,#142a35 0%,#0c1721 58%,#09111a 100%);
+  background-size:32px 32px,32px 32px,100% 100%;
+}
+.map:before,.map:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+}
+.map:before{
+  background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.12) 4px);
+}
+.map:after{
+  background:radial-gradient(ellipse,transparent 35%,rgba(0,0,0,.42) 100%);
+}
+.continent{
+  position:absolute;background:#28414a;opacity:.55;
+  filter:drop-shadow(0 0 9px rgba(72,229,209,.12));
+}
+.north-america{
+  left:9%;top:20%;width:27%;height:33%;
+  clip-path:polygon(8% 8%,34% 0,58% 12%,78% 7%,100% 32%,83% 50%,72% 79%,47% 92%,29% 68%,11% 54%,0 28%);
+}
+.south-america{
+  left:34%;top:53%;width:13%;height:39%;
+  clip-path:polygon(0 0,80% 8%,100% 30%,70% 56%,60% 82%,35% 100%,18% 68%,25% 40%);
+}
+.europe{
+  left:47%;top:23%;width:18%;height:20%;
+  clip-path:polygon(0 32%,18% 4%,45% 0,63% 18%,100% 27%,83% 58%,55% 90%,30% 78%,8% 63%);
+}
+.africa{
+  left:48%;top:41%;width:17%;height:38%;
+  clip-path:polygon(24% 0,74% 9%,100% 34%,77% 68%,53% 100%,30% 77%,0 38%);
+}
+.asia{
+  left:62%;top:15%;width:34%;height:46%;
+  clip-path:polygon(0 23%,14% 4%,42% 0,59% 13%,100% 10%,89% 41%,74% 58%,58% 85%,30% 72%,19% 47%);
+}
+.australia{
+  left:82%;top:70%;width:12%;height:17%;
+  clip-path:polygon(8% 23%,47% 0,100% 29%,78% 77%,36% 100%,0 61%);
+}
+.map-label{
+  position:absolute;color:#759ba0;font:9px 'DM Mono';letter-spacing:2px;
+  z-index:2;opacity:.8;
+}
+.marker{
+  position:absolute;z-index:4;transform:translate(-50%,-50%);
+  border:0;background:none;cursor:pointer;color:var(--cyan);
+  padding:10px;
+}
+.marker:before{
+  content:"";display:block;width:9px;height:9px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 0 5px rgba(139,229,161,.13),0 0 18px var(--green);
+  transition:.2s;
+}
+.marker.warning:before{background:var(--yellow);box-shadow:0 0 0 5px rgba(243,203,112,.13),0 0 18px var(--yellow)}
+.marker.critical:before{background:var(--red);box-shadow:0 0 0 5px rgba(255,119,126,.13),0 0 18px var(--red)}
+.marker:hover:before,.marker.active:before{transform:scale(1.6)}
+.marker span{
+  position:absolute;left:19px;top:5px;white-space:nowrap;
+  font:10px 'DM Mono';color:#c9dce3;text-shadow:0 1px 5px #000;
+}
+.map-footer{
+  display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  color:var(--muted);font:10px 'DM Mono';margin-top:13px;
+}
+.legend{display:flex;gap:15px;flex-wrap:wrap}
+.legend i{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px}
+.right-stack{display:grid;gap:16px}
+.detail{min-height:230px}
+.detail h3{font-size:25px;margin:15px 0 4px}
+.status{font:11px 'DM Mono';letter-spacing:1px}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.detail-grid small{color:var(--muted);font-size:10px}
+.detail-grid strong{display:block;margin-top:5px;font-size:19px}
+.bar{height:5px;background:#263541;border-radius:8px;margin-top:9px;overflow:hidden}
+.bar span{height:100%;display:block;background:var(--cyan);border-radius:8px}
+.search{
+  width:100%;background:#0b121b;border:1px solid var(--line);
+  border-radius:7px;padding:11px;color:var(--text);
+  font:12px 'DM Mono';outline:none;margin-bottom:12px;
+}
+.search:focus{border-color:var(--cyan)}
+.region-list{display:grid;gap:7px}
+.region{
+  width:100%;display:flex;justify-content:space-between;align-items:center;
+  text-align:left;background:#0c141e;border:1px solid transparent;
+  color:var(--text);padding:12px;border-radius:7px;cursor:pointer;
+  font:12px 'DM Mono';transition:.2s;
+}
+.region:hover,.region.selected{border-color:#3c8f88;background:#12242a}
+.region small{color:var(--muted)}
+.activity-list{display:grid;gap:13px}
+.activity{display:flex;gap:11px;font-size:12px;align-items:flex-start}
+.activity .bullet{width:7px;height:7px;border-radius:50%;margin-top:4px;flex:none}
+.activity p{margin:0;line-height:1.5}
+.activity time{color:var(--muted);font:10px 'DM Mono'}
+button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+footer{
+  text-align:center;padding:30px;color:#506171;
+  font:10px 'DM Mono';letter-spacing:1px;
+}
+@media(max-width:850px){
+  .layout{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:500px){
+  main{padding:25px 4%}
+  .map{height:300px}
+  .map-label{font-size:7px}
+  .header-right{gap:8px}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">SIGNAL<span>//</span>ATLAS</div>
+  <div class="header-right mono">
+    <span><i class="live-dot"></i>SIMULATION ONLINE</span>
+    <span id="clock">00:00:00</span>
+  </div>
+</header>
+
+<main>
+  <div class="eyebrow mono">GLOBAL NETWORK INTELLIGENCE / 001</div>
+  <h1>Explore the signal.</h1>
+  <p class="subtitle">A fictional real-time network monitoring simulation. Every signal is simulated.</p>
+
+  <section class="stats">
+    <div class="stat">
+      <small>ACTIVE REGIONS</small>
+      <strong id="activeCount">08</strong>
+      <em>● Network nodes online</em>
+    </div>
+    <div class="stat">
+      <small>GLOBAL LATENCY</small>
+      <strong id="latency">42 ms</strong>
+      <em>↓ Simulated average</em>
+    </div>
+    <div class="stat">
+      <small>DATA FLOW</small>
+      <strong id="flow">8.4 TB</strong>
+      <em>↑ Simulated traffic</em>
+    </div>
+    <div class="stat">
+      <small>NETWORK HEALTH</small>
+      <strong id="health">96.8%</strong>
+      <em>● System integrity</em>
+    </div>
+  </section>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="panel-heading">
+        <h2>GLOBAL SIGNAL MAP</h2>
+        <span class="small mono">EARTH / VIEW 01</span>
+      </div>
+      <div class="map" id="map">
+        <div class="continent north-america"></div>
+        <div class="continent south-america"></div>
+        <div class="continent europe"></div>
+        <div class="continent africa"></div>
+        <div class="continent asia"></div>
+        <div class="continent australia"></div>
+        <span class="map-label" style="left:17%;top:43%">NORTH AMERICA</span>
+        <span class="map-label" style="left:51%;top:31%">EUROPE</span>
+        <span class="map-label" style="left:52%;top:59%">AFRICA</span>
+        <span class="map-label" style="left:76%;top:37%">ASIA</span>
+      </div>
+      <div class="map-footer">
+        <span>COORDINATES: SIMULATED</span>
+        <div class="legend">
+          <span><i style="background:var(--green)"></i>NORMAL</span>
+          <span><i style="background:var(--yellow)"></i>WARNING</span>
+          <span><i style="background:var(--red)"></i>CRITICAL</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="right-stack">
+      <section class="panel detail">
+        <div class="panel-heading">
+          <h2>NODE INSPECTOR</h2>
+          <span class="small mono">SELECT A NODE</span>
+        </div>
+        <div id="details">
+          <div class="eyebrow mono">AWAITING SELECTION</div>
+          <h3>Choose a region.</h3>
+          <p class="subtitle">Select any glowing point on the map or a region below to inspect its signal.</p>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading">
+          <h2>REGION DIRECTORY</h2>
+          <span class="small mono" id="regionCount">08 NODES</span>
+        </div>
+        <input class="search" id="search" placeholder="Search a region..." autocomplete="off">
+        <div class="region-list" id="regionList"></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel" style="margin-top:16px">
+    <div class="panel-heading">
+      <h2>NETWORK ACTIVITY LOG</h2>
+      <span class="small mono">LATEST EVENTS</span>
+    </div>
+    <div class="activity-list" id="activity"></div>
+  </section>
+</main>
+
+<footer>SIGNAL//ATLAS · FICTIONAL DATA ENVIRONMENT · NO REAL NETWORK CONNECTION</footer>
+
+<script>
+const regions = [
+  {id:"nyc",name:"New York",country:"United States",x:25,y:35,latency:32,status:"NORMAL",load:67,traffic:"1.8 TB",color:"normal"},
+  {id:"lon",name:"London",country:"United Kingdom",x:51,y:29,latency:48,status:"NORMAL",load:52,traffic:"1.2 TB",color:"normal"},
+  {id:"ber",name:"Berlin",country:"Germany",x:56,y:32,latency:55,status:"WARNING",load:89,traffic:"940 GB",color:"warning"},
+  {id:"mum",name:"Mumbai",country:"India",x:69,y:52,latency:41,status:"NORMAL",load:73,traffic:"2.1 TB",color:"normal"},
+  {id:"tok",name:"Tokyo",country:"Japan",x:85,y:39,latency:29,status:"NORMAL",load:46,traffic:"1.5 TB",color:"normal"},
+  {id:"sin",name:"Singapore",country:"Singapore",x:77,y:65,latency:38,status:"CRITICAL",load:97,traffic:"1.1 TB",color:"critical"},
+  {id:"syd",name:"Sydney",country:"Australia",x:87,y:79,latency:63,status:"NORMAL",load:61,traffic:"760 GB",color:"normal"},
+  {id:"sao",name:"São Paulo",country:"Brazil",x:39,y:70,latency:72,status:"WARNING",load:84,traffic:"880 GB",color:"warning"}
+];
+
+let selected = null;
+let events = [
+  {text:"Tokyo node completed a routine signal check.",time:"09:42:18",type:"normal"},
+  {text:"Berlin node approaching capacity threshold.",time:"09:41:52",type:"warning"},
+  {text:"Singapore node reported elevated network load.",time:"09:40:31",type:"critical"},
+  {text:"Mumbai node established stable connection.",time:"09:39:10",type:"normal"}
+];
+
+const $ = id => document.getElementById(id);
+
+function renderMap(){
+  document.querySelectorAll(".marker").forEach(e=>e.remove());
+  regions.forEach(r=>{
+    const b=document.createElement("button");
+    b.className="marker "+r.color+(selected===r.id?" active":"");
+    b.style.left=r.x+"%";
+    b.style.top=r.y+"%";
+    b.setAttribute("aria-label",r.name);
+    b.innerHTML=`<span>${r.name.toUpperCase()}</span>`;
+    b.onclick=()=>selectRegion(r.id);
+    $("map").appendChild(b);
+  });
+}
+
+function renderList(){
+  const query=$("search").value.toLowerCase();
+  const filtered=regions.filter(r=>
+    r.name.toLowerCase().includes(query)||
+    r.country.toLowerCase().includes(query)
+  );
+  $("regionCount").textContent=filtered.length+" NODES";
+  $("regionList").innerHTML="";
+  filtered.forEach(r=>{
+    const b=document.createElement("button");
+    b.className="region "+(selected===r.id?"selected":"");
+    b.innerHTML=`<span>${r.name}<br><small>${r.country}</small></span>
+      <span style="color:${statusColor(r.color)}">${r.status}</span>`;
+    b.onclick=()=>selectRegion(r.id);
+    $("regionList").appendChild(b);
+  });
+  if(!filtered.length){
+    $("regionList").textContent="No matching regions found.";
+  }
+}
+
+function statusColor(status){
+  return status==="critical"?"var(--red)":status==="warning"?"var(--yellow)":"var(--green)";
+}
+
+function selectRegion(id){
+  selected=id;
+  const r=regions.find(x=>x.id===id);
+  const color=statusColor(r.color);
+  $("details").innerHTML=`
+    <div class="eyebrow mono">NODE IDENTIFIER / ${r.id.toUpperCase()}</div>
+    <h3>${r.name}</h3>
+    <p class="subtitle">${r.country}</p>
+    <div class="status" style="color:${color}">● ${r.status} CONNECTION</div>
+    <div class="detail-grid">
+      <div><small>LATENCY</small><strong>${r.latency} ms</strong></div>
+      <div><small>DATA TRANSFER</small><strong>${r.traffic}</strong></div>
+      <div>
+        <small>NETWORK LOAD / ${r.load}%</small>
+        <div class="bar"><span style="width:${r.load}%;background:${color}"></span></div>
+      </div>
+      <div><small>NODE HEALTH</small><strong>${100-Math.max(0,r.load-80)}%</strong></div>
+    </div>`;
+  renderMap();
+  renderList();
+}
+
+function renderEvents(){
+  $("activity").innerHTML="";
+  events.slice(0,5).forEach(e=>{
+    const div=document.createElement("div");
+    div.className="activity";
+    div.innerHTML=`
+      <i class="bullet" style="background:${statusColor(e.type)}"></i>
+      <div><p>${e.text}</p><time>${e.time} UTC · SIMULATED</time></div>`;
+    $("activity").appendChild(div);
+  });
+}
+
+function tick(){
+  const now=new Date();
+  $("clock").textContent=now.toLocaleTimeString("en-GB");
+  // Small random changes create a live simulation.
+  regions.forEach(r=>{
+    r.latency=Math.max(15,Math.min(110,r.latency+Math.round(Math.random()*6-3)));
+    r.load=Math.max(25,Math.min(99,r.load+Math.round(Math.random()*4-2)));
+  });
+  const avg=Math.round(regions.reduce((s,r)=>s+r.latency,0)/regions.length);
+  const avgLoad=regions.reduce((s,r)=>s+r.load,0)/regions.length;
+  $("latency").textContent=avg+" ms";
+  $("health").textContent=(100-avgLoad*.035).toFixed(1)+"%";
+  $("flow").textContent=(8.4+Math.random()*.4).toFixed(1)+" TB";
+}
+
+function addEvent(){
+  const r=regions[Math.floor(Math.random()*regions.length)];
+  const messages=[
+    `${r.name} node completed a signal integrity check.`,
+    `${r.name} node exchanged simulated data packets.`,
+    `${r.name} node reported a connection update.`,
+    `${r.name} node completed a routing cycle.`
+  ];
+  const type=r.color;
+  events.unshift({
+    text:messages[Math.floor(Math.random()*messages.length)],
+    time:new Date().toLocaleTimeString("en-GB"),
+    type
+  });
+  events=events.slice(0,5);
+  renderEvents();
+}
+
+$("search").addEventListener("input",renderList);
+$("activeCount").textContent=String(regions.length).padStart(2,"0");
+
+renderMap();
+renderList();
+renderEvents();
+tick();
+setInterval(tick,2500);
+setInterval(addEvent,7000);
+</script>
+</body>
+</html>
