@@ -1,0 +1,459 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VOID//ARCHIVE</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+*{box-sizing:border-box}
+:root{
+  --bg:#0b0a10;
+  --panel:#13121b;
+  --line:#282536;
+  --muted:#8c879d;
+  --text:#eeeaf7;
+  --purple:#9b8cff;
+  --gold:#e5c58b;
+}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:'Space Grotesk',sans-serif;
+}
+header{
+  padding:22px 6%;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:15px;
+}
+.logo{font-size:20px;font-weight:700;letter-spacing:2px}
+.logo span{color:var(--purple)}
+.mono{font-family:'DM Mono',monospace}
+header small{font:11px 'DM Mono';color:var(--muted)}
+main{max-width:1250px;margin:auto;padding:45px 6%}
+.hero{padding:20px 0 30px}
+.eyebrow{color:var(--purple);font:11px 'DM Mono';letter-spacing:3px}
+h1{font-size:clamp(38px,7vw,76px);letter-spacing:-4px;margin:15px 0}
+.hero p{color:var(--muted);max-width:600px;line-height:1.8;font-size:14px}
+.stats{
+  display:flex;gap:30px;flex-wrap:wrap;margin-top:28px
+}
+.stat small{font:10px 'DM Mono';color:var(--muted)}
+.stat strong{display:block;font-size:20px;margin-top:5px}
+.toolbar{
+  display:flex;gap:10px;flex-wrap:wrap;margin:22px 0
+}
+input,button{
+  font-family:'DM Mono',monospace;font-size:12px
+}
+input{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:8px;padding:13px;color:var(--text);
+  outline:none;
+}
+input:focus{border-color:var(--purple)}
+#search{flex:1;min-width:190px}
+button{
+  cursor:pointer;transition:.2s
+}
+.filter{
+  padding:11px 15px;background:var(--panel);
+  border:1px solid var(--line);color:var(--muted);
+  border-radius:8px;
+}
+.filter:hover,.filter.active{
+  border-color:var(--purple);color:var(--purple)
+}
+.grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px
+}
+.card{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:13px;overflow:hidden;transition:.25s;
+}
+.card:hover{
+  transform:translateY(-4px);border-color:#57506e;
+}
+.art{
+  height:180px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  background:radial-gradient(ellipse,#28223e,#11111b 70%);
+}
+.art:before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(transparent 70%,rgba(0,0,0,.4));
+}
+.symbol{
+  font-size:65px;filter:drop-shadow(0 0 25px rgba(155,140,255,.5));
+  transition:.3s;
+}
+.card:hover .symbol{transform:scale(1.1) rotate(5deg)}
+.art .serial{
+  position:absolute;left:14px;top:14px;
+  font:10px 'DM Mono';color:#c0b6df;
+}
+.art .category{
+  position:absolute;right:14px;top:14px;
+  font:9px 'DM Mono';color:var(--purple)
+}
+.card-body{padding:18px}
+.card-body h3{font-size:19px;margin:0 0 8px}
+.card-body p{
+  font-size:12px;line-height:1.7;color:var(--muted);
+  min-height:40px;
+}
+.card-bottom{
+  display:flex;justify-content:space-between;
+  align-items:center;margin-top:15px;
+}
+.card-bottom small{font:10px 'DM Mono';color:var(--muted)}
+.open{
+  background:#211d34;color:var(--purple);
+  border:1px solid #393250;border-radius:7px;
+  padding:10px 12px;
+}
+.open:hover{background:#302648}
+.saved{
+  color:var(--gold)!important;border-color:#655437!important;
+}
+.section-title{
+  display:flex;justify-content:space-between;align-items:center;
+  margin:30px 0 15px;
+}
+.section-title h2{font-size:14px;letter-spacing:1px}
+.section-title small{color:var(--muted);font:10px 'DM Mono'}
+.empty{
+  padding:50px;text-align:center;color:var(--muted);
+  border:1px dashed var(--line);border-radius:12px
+}
+.modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.8);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;z-index:10;backdrop-filter:blur(6px)
+}
+.modal.show{display:flex}
+.modal-content{
+  max-width:550px;width:100%;background:#14131d;
+  border:1px solid #48405e;border-radius:15px;
+  padding:30px;max-height:90vh;overflow:auto
+}
+.modal-symbol{
+  height:150px;display:grid;place-items:center;
+  font-size:75px;background:radial-gradient(ellipse,#302744,#15131e);
+  border-radius:10px;margin-bottom:20px
+}
+.modal-content h2{font-size:29px;margin:10px 0}
+.modal-content p{font-size:13px;line-height:1.9;color:#aaa4bc}
+.meta{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:10px;margin:20px 0
+}
+.meta div{background:#0e0d14;padding:13px;border-radius:8px}
+.meta small{font:9px 'DM Mono';color:var(--muted)}
+.meta strong{display:block;margin-top:8px;font-size:13px}
+.modal-buttons{display:flex;gap:10px;flex-wrap:wrap}
+.modal-buttons button{
+  padding:12px;border-radius:8px;border:1px solid var(--line);
+  background:var(--panel);color:var(--text)
+}
+.modal-buttons button:hover{border-color:var(--purple)}
+.close{margin-left:auto;display:block;color:var(--muted)}
+.unlock{
+  margin-top:30px;border:1px solid var(--line);
+  padding:20px;border-radius:12px;background:var(--panel)
+}
+.unlock h3{font-size:14px}
+.unlock p{font-size:12px;color:var(--muted)}
+.unlock-row{display:flex;gap:10px}
+.unlock-row input{min-width:0;flex:1}
+.unlock-row button{
+  background:var(--purple);color:#0b0a10;
+  border:none;border-radius:8px;padding:12px
+}
+#message{font:11px 'DM Mono';margin-top:12px;color:var(--gold)}
+footer{text-align:center;color:var(--muted);font:10px 'DM Mono';padding:30px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){
+  main{padding:30px 5%}
+  .grid{grid-template-columns:1fr}
+  h1{letter-spacing:-2px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">VOID<span>//</span>ARCHIVE</div>
+  <small>ARCHIVE SYSTEM / VERSION 1.04</small>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="eyebrow">RESTRICTED COLLECTION / 2097</div>
+    <h1>Things that<br>shouldn't exist.</h1>
+    <p>
+      A digital collection of strange objects, forgotten transmissions,
+      impossible discoveries and fragments of unknown history.
+      The archive is incomplete. Some records remain locked.
+    </p>
+    <div class="stats">
+      <div class="stat"><small>KNOWN RECORDS</small><strong id="total">0</strong></div>
+      <div class="stat"><small>DISCOVERED</small><strong id="found">0</strong></div>
+      <div class="stat"><small>RESTRICTED</small><strong id="locked">0</strong></div>
+    </div>
+  </section>
+
+  <div class="section-title">
+    <h2>THE COLLECTION</h2>
+    <small>SELECT A RECORD</small>
+  </div>
+
+  <div class="toolbar">
+    <input id="search" placeholder="Search artifacts..." autocomplete="off">
+    <button class="filter active" data-filter="all">ALL</button>
+    <button class="filter" data-filter="objects">OBJECTS</button>
+    <button class="filter" data-filter="signals">SIGNALS</button>
+    <button class="filter" data-filter="documents">DOCUMENTS</button>
+    <button class="filter" data-filter="saved">SAVED ★</button>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <section class="unlock">
+    <div class="eyebrow">ENCRYPTED RECORD / 001-X</div>
+    <h3>Something is hidden here.</h3>
+    <p>A recovered note mentions a password. It says: "The silence between stars."</p>
+    <div class="unlock-row">
+      <input id="secret" placeholder="Enter access phrase..." autocomplete="off">
+      <button id="unlockBtn">DECRYPT</button>
+    </div>
+    <div id="message"></div>
+  </section>
+</main>
+
+<footer>VOID//ARCHIVE — FICTIONAL UNIVERSE — ALL RECORDS ARE IMAGINARY</footer>
+
+<div class="modal" id="modal">
+  <div class="modal-content" id="modalContent"></div>
+</div>
+
+<script>
+const records=[
+{
+ id:"001",name:"The Glass Moon",symbol:"◉",category:"objects",
+ type:"OBJECT / CELESTIAL",year:"2041",origin:"Lunar Sector 7",
+ description:"A translucent sphere recovered from an abandoned lunar station. It reflects a moon that does not exist in our solar system. Scientists have been unable to explain the second reflection.",
+ detail:"The sphere was discovered inside a sealed chamber. When photographed, it appears to contain a miniature landscape. The landscape changes between photographs, despite the sphere remaining untouched.",
+ clue:"The reflection shows a city with lights. No city was ever built on the Moon.",
+ unlocked:true
+},
+{
+ id:"002",name:"Signal 88",symbol:"⌁",category:"signals",
+ type:"TRANSMISSION",year:"1988",origin:"Unknown frequency",
+ description:"A radio transmission recorded in 1988. The voice repeats a date. The date is exactly 40 years after the recording.",
+ detail:"The recording contains 14 seconds of noise followed by a voice. Spectral analysis revealed no known broadcasting signature. The date repeated is 17 November 2028.",
+ clue:"The transmission has not been heard again.",
+ unlocked:true
+},
+{
+ id:"003",name:"The Empty Passport",symbol:"▤",category:"documents",
+ type:"DOCUMENT",year:"Unknown",origin:"Archive Room 12",
+ description:"A passport with no country, no name, and no photograph. All 32 pages contain the same handwritten sentence.",
+ detail:"The sentence reads: 'You have already been here.' The passport was found in a locked desk that had been sealed for 60 years.",
+ clue:"The handwriting matches nobody in the archive.",
+ unlocked:true
+},
+{
+ id:"004",name:"Clockwork Seed",symbol:"✳",category:"objects",
+ type:"OBJECT / BIOLOGICAL",year:"2091",origin:"Sector Green",
+ description:"A metallic seed discovered beneath a tree that had never been planted. It pulses every 12 hours.",
+ detail:"The seed contains microscopic gears and an unidentified material. It produces no heat but has been observed rotating internally.",
+ clue:"The seed has never opened.",
+ unlocked:true
+},
+{
+ id:"005",name:"Room 0",symbol:"▣",category:"signals",
+ type:"SPATIAL ANOMALY",year:"2066",origin:"Station Meridian",
+ description:"A room listed on every floor plan of Station Meridian. No architect recalls designing it. No entrance has ever been found.",
+ detail:"The room's dimensions are listed as 4 x 4 x 4 metres. Every blueprint has the room in a different location. Thermal scans show a cold square in the centre of the station.",
+ clue:"Someone once reported hearing footsteps inside.",
+ unlocked:true
+},
+{
+ id:"006",name:"Last Letter",symbol:"✉",category:"documents",
+ type:"DOCUMENT / LETTER",year:"2100",origin:"Future archive",
+ description:"A letter dated 31 December 2100. It is addressed to the person who discovers it. The archive was built in 2097.",
+ detail:"The letter contains a single paragraph: 'If you are reading this, the experiment worked. Do not open the next record.'",
+ clue:"The next record is currently sealed.",
+ unlocked:true
+},
+{
+ id:"007",name:"Black Sun",symbol:"☼",category:"objects",
+ type:"OBJECT / UNKNOWN",year:"2075",origin:"Desert excavation",
+ description:"A perfectly black disc found buried 8 metres underground. It absorbs light. Its shadow points upward.",
+ detail:"The disc's shadow was measured at noon. It extended vertically into the sky, regardless of the sun's position. The shadow vanished when the object was covered.",
+ clue:"No known material behaves this way.",
+ unlocked:true
+},
+{
+ id:"008",name:"The Observer",symbol:"◌",category:"signals",
+ type:"SIGNAL / UNKNOWN",year:"Unknown",origin:"Encrypted channel",
+ description:"An encrypted signal intercepted from an unidentified source. The signal appears to respond to searches within this archive.",
+ detail:"The signal's structure changes whenever a new record is opened. The archive has never intentionally transmitted a response.",
+ clue:"There is a hidden record associated with this signal.",
+ unlocked:true
+},
+{
+ id:"009",name:"The Seventh Door",symbol:"⬡",category:"objects",
+ type:"OBJECT / RESTRICTED",year:"2097",origin:"Archive basement",
+ description:"A door with no hinges and no handle. It appears only in photographs of the archive basement.",
+ detail:"The door's surface contains a repeating pattern of seven shapes. The shapes correspond to no known alphabet. The door was not present during the original construction.",
+ clue:"The access phrase is SILENCE.",
+ unlocked:false
+}
+];
+
+let saved=JSON.parse(localStorage.getItem("voidSaved")||"[]");
+let discovered=JSON.parse(localStorage.getItem("voidFound")||"[]");
+let filter="all";
+
+const grid=document.getElementById("grid");
+const modal=document.getElementById("modal");
+const modalContent=document.getElementById("modalContent");
+
+function stats(){
+  document.getElementById("total").textContent=records.length;
+  document.getElementById("found").textContent=discovered.length;
+  document.getElementById("locked").textContent=records.filter(r=>!r.unlocked).length;
+}
+
+function render(){
+  const q=document.getElementById("search").value.toLowerCase();
+  const list=records.filter(r=>{
+    const matchesSearch=(r.name+" "+r.description+" "+r.type).toLowerCase().includes(q);
+    const matchesFilter=filter==="all"||
+      filter===r.category||
+      (filter==="saved"&&saved.includes(r.id));
+    return matchesSearch&&matchesFilter;
+  });
+
+  grid.innerHTML="";
+  if(!list.length){
+    grid.innerHTML='<div class="empty" style="grid-column:1/-1">NO RECORDS FOUND.</div>';
+    return;
+  }
+
+  list.forEach(r=>{
+    const isSaved=saved.includes(r.id);
+    const card=document.createElement("article");
+    card.className="card";
+    card.innerHTML=`
+      <div class="art">
+        <span class="serial">FILE ${r.id}</span>
+        <span class="category">${r.category.toUpperCase()}</span>
+        <div class="symbol">${r.unlocked?r.symbol:"🔒"}</div>
+      </div>
+      <div class="card-body">
+        <h3>${r.unlocked?r.name:"RESTRICTED RECORD"}</h3>
+        <p>${r.unlocked?r.description:"This file requires an access phrase to reveal its contents."}</p>
+        <div class="card-bottom">
+          <small>${r.unlocked?r.type:"CLASSIFIED"}</small>
+          <button class="open ${isSaved?"saved":""}">${r.unlocked?"INSPECT":"LOCKED"} ${isSaved?"★":""}</button>
+        </div>
+      </div>`;
+    card.querySelector(".open").onclick=()=>openRecord(r.id);
+    grid.appendChild(card);
+  });
+}
+
+function openRecord(id){
+  const r=records.find(x=>x.id===id);
+  if(!r.unlocked){
+    modalContent.innerHTML=`
+      <button class="close" onclick="closeModal()">CLOSE ×</button>
+      <div class="eyebrow">ACCESS DENIED / ${r.id}</div>
+      <h2>Restricted record.</h2>
+      <p>This record requires a valid access phrase. Return to the archive console.</p>`;
+    modal.classList.add("show");
+    return;
+  }
+
+  if(!discovered.includes(id)){
+    discovered.push(id);
+    localStorage.setItem("voidFound",JSON.stringify(discovered));
+  }
+  stats();
+
+  const isSaved=saved.includes(id);
+  modalContent.innerHTML=`
+    <button class="close" onclick="closeModal()">CLOSE ×</button>
+    <div class="modal-symbol">${r.symbol}</div>
+    <div class="eyebrow">RECORD ${r.id} / ${r.type}</div>
+    <h2>${r.name}</h2>
+    <p>${r.description}</p>
+    <p>${r.detail}</p>
+    <div class="meta">
+      <div><small>RECORDED</small><strong>${r.year}</strong></div>
+      <div><small>ORIGIN</small><strong>${r.origin}</strong></div>
+    </div>
+    <p style="color:var(--gold)">ARCHIVE NOTE: ${r.clue}</p>
+    <div class="modal-buttons">
+      <button id="saveBtn">${isSaved?"★ REMOVE BOOKMARK":"☆ SAVE RECORD"}</button>
+      <button onclick="closeModal()">RETURN</button>
+    </div>`;
+  modal.classList.add("show");
+  document.getElementById("saveBtn").onclick=()=>{
+    if(saved.includes(id))saved=saved.filter(x=>x!==id);
+    else saved.push(id);
+    localStorage.setItem("voidSaved",JSON.stringify(saved));
+    render();
+    openRecord(id);
+  };
+}
+
+function closeModal(){modal.classList.remove("show")}
+
+document.querySelectorAll(".filter").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".filter").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    filter=btn.dataset.filter;
+    render();
+  };
+});
+
+document.getElementById("search").oninput=render;
+
+document.getElementById("unlockBtn").onclick=()=>{
+  const input=document.getElementById("secret");
+  const message=document.getElementById("message");
+  if(input.value.trim().toUpperCase()==="SILENCE"){
+    const r=records.find(x=>x.id==="009");
+    r.unlocked=true;
+    message.textContent="ACCESS GRANTED. RECORD 009 DECRYPTED.";
+    message.style.color="#9b8cff";
+    render();
+    stats();
+    setTimeout(()=>openRecord("009"),500);
+  }else{
+    message.textContent="ACCESS DENIED. INCORRECT PHRASE.";
+    message.style.color="#e58b8b";
+  }
+};
+document.getElementById("secret").addEventListener("keydown",e=>{
+  if(e.key==="Enter")document.getElementById("unlockBtn").click();
+});
+modal.addEventListener("click",e=>{
+  if(e.target===modal)closeModal();
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape")closeModal();
+});
+
+stats();
+render();
+</script>
+</body>
+</html>
