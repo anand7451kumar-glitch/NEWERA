@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TERRAFORM//ZERO</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root{
+  --bg:#090e11;--panel:#121b1d;--line:#263638;
+  --text:#e6f0e9;--muted:#82958d;
+  --green:#8ce6ae;--cyan:#7dded9;--orange:#e8ae70;--red:#ef7777;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif}
+header{padding:20px 5%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font-weight:700;letter-spacing:2px;font-size:19px}
+.logo span{color:var(--green)}
+.mono{font-family:'DM Mono',monospace}
+header small{font:10px 'DM Mono';color:var(--muted)}
+main{max-width:1250px;margin:auto;padding:30px 5%}
+.eyebrow{font:10px 'DM Mono';letter-spacing:2px;color:var(--green)}
+h1{font-size:clamp(30px,5vw,54px);margin:10px 0 5px;letter-spacing:-2px}
+.subtitle{color:var(--muted);font-size:13px;line-height:1.7}
+.top{display:flex;justify-content:space-between;align-items:end;gap:15px;flex-wrap:wrap}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+button{font:11px 'DM Mono';cursor:pointer;transition:.2s}
+.btn{background:#172522;border:1px solid #385349;color:var(--green);padding:11px 14px;border-radius:7px}
+.btn:hover{background:#223b30}
+.btn.secondary{background:var(--panel);color:var(--muted);border-color:var(--line)}
+.resources{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:25px 0}
+.resource,.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px}
+.resource{padding:15px}
+.resource small{font:9px 'DM Mono';color:var(--muted);letter-spacing:1px}
+.resource strong{display:block;font-size:23px;margin:8px 0 5px}
+.resource span{font:10px 'DM Mono';color:var(--muted)}
+.planet{
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 110%,#9b603b 0%,#523d34 30%,#18282b 75%);
+  min-height:330px;position:relative;display:flex;align-items:center;justify-content:center;
+}
+.planet:before{
+  content:"";position:absolute;width:290px;height:290px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#d18b60,#9d573f 45%,#502d2b 80%);
+  box-shadow:0 0 50px #d18b6044, inset -30px -25px 55px #170d18;
+  transition:background 1s;
+}
+.planet.green:before{
+  background:radial-gradient(circle at 35% 30%,#8ed39a,#488a69 50%,#20443d 85%);
+}
+.planet.moregreen:before{
+  background:radial-gradient(circle at 35% 30%,#b0e7a0,#488d69 45%,#1c5148 85%);
+}
+.planet:after{
+  content:"";position:absolute;width:360px;height:70px;border:1px solid #d4c7a433;border-radius:50%;
+  transform:rotate(-17deg);
+}
+.planet-label{position:absolute;top:18px;left:20px;font:10px 'DM Mono';color:#e4d5c4;letter-spacing:2px}
+.planet-bottom{position:absolute;bottom:18px;left:20px;right:20px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font:10px 'DM Mono';color:#e4d5c4}
+.planet-stats{display:flex;gap:16px}
+.content{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-top:15px;align-items:start}
+.panel{padding:19px}
+.panel h2{font-size:13px;letter-spacing:1px;margin:0}
+.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}
+.muted{color:var(--muted);font-size:11px}
+.meter{margin:15px 0}
+.meter-head{display:flex;justify-content:space-between;font:11px 'DM Mono';margin-bottom:7px}
+.track{height:7px;background:#263534;border-radius:10px;overflow:hidden}
+.track span{display:block;height:100%;border-radius:10px;transition:width .4s}
+.buildings{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.building{padding:13px;border:1px solid var(--line);background:#0d1517;border-radius:8px}
+.building strong{font-size:12px}
+.building p{font-size:10px;color:var(--muted);line-height:1.5;min-height:30px}
+.building .cost{font:10px 'DM Mono';color:var(--orange);margin:8px 0}
+.building button{width:100%;padding:9px;border-radius:6px;background:#1b3229;color:var(--green);border:1px solid #365a46}
+.building button:disabled{opacity:.4;cursor:not-allowed}
+.tech{display:grid;gap:9px}
+.tech-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;background:#0d1517;border:1px solid var(--line);border-radius:8px}
+.tech-item strong{font-size:12px}
+.tech-item small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.tech-item button{background:#24352c;border:1px solid #49634e;color:var(--green);padding:9px;border-radius:6px;white-space:nowrap}
+.log{display:grid;gap:11px;max-height:180px;overflow:auto}
+.log-entry{display:flex;gap:10px;font-size:11px;line-height:1.5;color:#c6d2cb}
+.log-entry i{width:6px;height:6px;border-radius:50%;background:var(--green);margin-top:5px;flex:none}
+.log-entry time{color:var(--muted);font:9px 'DM Mono'}
+.event{padding:17px;border:1px solid #745c39;background:#261e15;border-radius:10px;margin-top:14px}
+.event h3{margin:0 0 6px;font-size:13px;color:var(--orange)}
+.event p{font-size:11px;color:#c9b69a;line-height:1.6}
+.event button{background:#3a2b1b;color:var(--orange);border:1px solid #795d36;padding:10px;border-radius:6px}
+footer{text-align:center;padding:30px;color:#52645e;font:10px 'DM Mono'}
+@media(max-width:850px){.resources{grid-template-columns:repeat(3,1fr)}.content{grid-template-columns:1fr}}
+@media(max-width:500px){.resources{grid-template-columns:repeat(2,1fr)}.buildings{grid-template-columns:1fr}.planet:before{width:230px;height:230px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">TERRAFORM<span>//</span>ZERO</div>
+  <small>COLONY SIMULATION / BUILD 001</small>
+</header>
+
+<main>
+  <div class="top">
+    <div>
+      <div class="eyebrow">MISSION CONTROL / PLANET X-01</div>
+      <h1>Make this world alive.</h1>
+      <div class="subtitle">You are the commander of humanity's first terraforming mission.</div>
+    </div>
+    <div class="actions">
+      <button class="btn secondary" onclick="saveGame()">SAVE GAME</button>
+      <button class="btn secondary" onclick="resetGame()">RESET</button>
+      <button class="btn" onclick="nextDay()">⏵ ADVANCE DAY</button>
+    </div>
+  </div>
+
+  <section class="resources">
+    <div class="resource"><small>OXYGEN</small><strong id="oxygen">12</strong><span>O₂ UNITS</span></div>
+    <div class="resource"><small>WATER</small><strong id="water">35</strong><span>H₂O UNITS</span></div>
+    <div class="resource"><small>ENERGY</small><strong id="energy">50</strong><span>POWER UNITS</span></div>
+    <div class="resource"><small>MINERALS</small><strong id="minerals">60</strong><span>RAW MATERIAL</span></div>
+    <div class="resource"><small>POPULATION</small><strong id="population">5</strong><span>COLONISTS</span></div>
+  </section>
+
+  <section class="planet" id="planet">
+    <div class="planet-label">X-01 / ATMOSPHERIC SCAN</div>
+    <div class="planet-bottom">
+      <span>DAY <b id="day">01</b></span>
+      <div class="planet-stats">
+        <span>TEMP <b id="temperature">-48°C</b></span>
+        <span>O₂ <b id="atmosphere">2%</b></span>
+      </div>
+    </div>
+  </section>
+
+  <div class="content">
+    <div>
+      <section class="panel">
+        <div class="panel-head">
+          <h2>PLANETARY CONDITIONS</h2>
+          <span class="muted">LIVE STATUS</span>
+        </div>
+        <div id="meters"></div>
+      </section>
+
+      <section class="panel" style="margin-top:14px">
+        <div class="panel-head">
+          <h2>COLONY INFRASTRUCTURE</h2>
+          <span class="muted">CONSTRUCTION</span>
+        </div>
+        <div class="buildings" id="buildings"></div>
+      </section>
+
+      <section class="panel" style="margin-top:14px">
+        <div class="panel-head">
+          <h2>RESEARCH PROGRAM</h2>
+          <span class="muted">UPGRADES</span>
+        </div>
+        <div class="tech" id="tech"></div>
+      </section>
+    </div>
+
+    <div>
+      <section class="panel">
+        <div class="panel-head">
+          <h2>MISSION OBJECTIVES</h2>
+          <span class="muted">PROGRESS</span>
+        </div>
+        <div id="objectives"></div>
+      </section>
+
+      <section id="eventBox"></section>
+
+      <section class="panel" style="margin-top:14px">
+        <div class="panel-head">
+          <h2>MISSION LOG</h2>
+          <span class="muted">RECENT EVENTS</span>
+        </div>
+        <div class="log" id="log"></div>
+      </section>
+    </div>
+  </div>
+</main>
+<footer>TERRAFORM//ZERO · SIMULATED PLANETARY SCIENCE · NO REAL-WORLD DATA</footer>
+
+<script>
+const initial={
+ day:1,oxygen:12,water:35,energy:50,minerals:60,population:5,
+ temperature:-48,atmosphere:2,waterLevel:5,greenery:0,
+ buildings:{oxygen:0,water:0,solar:0,greenhouse:0},
+ research:{efficiency:0,biology:0,climate:0},
+ log:["Mission initiated. Humanity has arrived on X-01."],
+ event:null,gameOver:false
+};
+let s=loadGame()||structuredClone(initial);
+
+const buildingData=[
+ {id:"oxygen",name:"Oxygen Generator",desc:"Produces oxygen every day.",cost:{minerals:20,energy:10},emoji:"◉"},
+ {id:"water",name:"Water Extractor",desc:"Extracts underground ice deposits.",cost:{minerals:15,energy:8},emoji:"◇"},
+ {id:"solar",name:"Solar Array",desc:"Generates additional energy.",cost:{minerals:18},emoji:"☼"},
+ {id:"greenhouse",name:"Bio Dome",desc:"Grows plants and improves the biosphere.",cost:{minerals:25,water:10,energy:12},emoji:"♧"}
+];
+const techData=[
+ {id:"efficiency",name:"Advanced Engineering",desc:"All generators become 25% more productive.",cost:35},
+ {id:"biology",name:"Synthetic Biology",desc:"Greenhouses generate extra oxygen.",cost:40},
+ {id:"climate",name:"Atmospheric Engineering",desc:"Improves the terraforming process.",cost:50}
+];
+
+function loadGame(){
+ try{return JSON.parse(localStorage.getItem("terraformZero"))}catch(e){return null}
+}
+function saveGame(){
+ localStorage.setItem("terraformZero",JSON.stringify(s));
+ notify("Mission progress saved locally.");
+}
+function notify(message){
+ s.log.unshift(message);
+ s.log=s.log.slice(0,12);
+ renderLog();
+}
+function spend(cost){
+ for(const key in cost)if(s[key]<cost[key])return false;
+ for(const key in cost)s[key]-=cost[key];
+ return true;
+}
+function canAfford(cost){
+ return Object.entries(cost).every(([k,v])=>s[k]>=v);
+}
+function formatCost(cost){
+ return Object.entries(cost).map(([k,v])=>v+" "+k).join(" · ");
+}
+
+function build(id){
+ if(s.gameOver)return;
+ const b=buildingData.find(x=>x.id===id);
+ if(!spend(b.cost)){notify("Insufficient resources for "+b.name+".");return}
+ s.buildings[id]++;
+ notify(b.name+" constructed successfully.");
+ render();
+}
+function research(id){
+ if(s.gameOver)return;
+ const t=techData.find(x=>x.id===id);
+ if(s.research[id])return;
+ if(s.minerals<t.cost){notify("Not enough minerals for research.");return}
+ s.minerals-=t.cost;
+ s.research[id]=1;
+ notify("Research complete: "+t.name+".");
+ render();
+}
+function nextDay(){
+ if(s.gameOver)return;
+ if(s.event){notify("Resolve the planetary event before advancing.");return}
+
+ s.day++;
+ const multiplier=1+s.research.efficiency*.25;
+ const b=s.buildings;
+
+ s.energy+=Math.floor(b.solar*9*multiplier)-2;
+ s.oxygen+=Math.floor(b.oxygen*5*multiplier)+
+   Math.floor(b.greenhouse*(s.research.biology?4:2))-1;
+ s.water+=Math.floor(b.water*7*multiplier)-Math.ceil(s.population*.4);
+ s.minerals+=2;
+
+ s.oxygen=Math.min(100,s.oxygen);
+ s.water=Math.min(100,s.water);
+ s.energy=Math.min(150,s.energy);
+ s.minerals=Math.min(150,s.minerals);
+
+ const climateBonus=s.research.climate?1.4:1;
+ s.atmosphere=Math.min(100,s.atmosphere+
+   (s.oxygen>15?0.8:0.2)*climateBonus+
+   b.greenhouse*.15);
+ s.temperature=Math.min(20,s.temperature+
+   (b.greenhouse*.35+b.oxygen*.05)*climateBonus);
+ s.waterLevel=Math.min(100,s.waterLevel+b.water*.35);
+ s.greenery=Math.min(100,s.greenery+b.greenhouse*1.4+
+   (s.atmosphere>20?.3:0));
+
+ // Colonist consumption
+ if(s.oxygen<5||s.water<5){
+   s.population=Math.max(0,s.population-1);
+   notify("CRITICAL: Resource shortage. One colonist was lost.");
+ }else if(s.day%5===0&&s.population<15&&s.oxygen>20&&s.water>20){
+   s.population++;
+   notify("A new colonist has joined the settlement.");
+ }
+
+ if(s.energy<0)s.energy=0;
+ if(s.oxygen<0)s.oxygen=0;
+ if(s.water<0)s.water=0;
+
+ if(s.population===0){
+   s.gameOver=true;
+   notify("MISSION FAILED: The colony has no surviving colonists.");
+ }else if(s.day%4===0){
+   triggerEvent();
+ }else{
+   notify("Day "+s.day+": planetary systems updated.");
+ }
+ render();
+}
+function triggerEvent(){
+ const events=[
+  {title:"Solar storm",description:"A solar storm is approaching. Lose 12 energy or spend 8 minerals to protect the colony.",choices:[
+    {label:"ABSORB DAMAGE",run:()=>s.energy=Math.max(0,s.energy-12)},
+    {label:"BUILD SHIELD",run:()=>s.minerals>=8?(s.minerals-=8,notify("Shield absorbed the solar storm.")):notify("Not enough minerals!")}
+  ]},
+  {title:"Ice discovery",description:"Your explorers have discovered a frozen underground reservoir. Collect 15 water units.",choices:[
+    {label:"EXTRACT WATER",run:()=>s.water=Math.min(100,s.water+15)},
+    {label:"LEAVE IT",run:()=>notify("The reservoir remains untouched.")}
+  ]},
+  {title:"Mineral deposit",description:"A geological scan reveals a rich mineral deposit. Spend 5 energy to collect 20 minerals.",choices:[
+    {label:"MINE DEPOSIT",run:()=>s.energy>=5?(s.energy-=5,s.minerals+=20):notify("Insufficient energy!")},
+    {label:"IGNORE",run:()=>notify("Mining operation cancelled.")}
+  ]}
+ ];
+ s.event=events[Math.floor(Math.random()*events.length)];
+}
+function resolveEvent(index){
+ if(!s.event)return;
+ const choice=s.event.choices[index];
+ if(choice){
+   choice.run();
+   s.event=null;
+   render();
+ }
+}
+function resetGame(){
+ if(!confirm("Start a completely new mission? This deletes the saved game."))return;
+ localStorage.removeItem("terraformZero");
+ s=structuredClone(initial);
+ render();
+}
+function objective(label,value,target){
+ const pct=Math.min(100,value/target*100);
+ return `<div class="meter">
+  <div class="meter-head"><span>${label}</span><span>${Math.floor(value)}/${target}</span></div>
+  <div class="track"><span style="width:${pct}%;background:var(--green)"></span></div>
+ </div>`;
+}
+function render(){
+ const ids=["oxygen","water","energy","minerals","population"];
+ ids.forEach(id=>document.getElementById(id).textContent=s[id]);
+ document.getElementById("day").textContent=String(s.day).padStart(2,"0");
+ document.getElementById("temperature").textContent=s.temperature.toFixed(1)+"°C";
+ document.getElementById("atmosphere").textContent=s.atmosphere.toFixed(1)+"%";
+
+ const planet=document.getElementById("planet");
+ planet.classList.toggle("green",s.greenery>=20);
+ planet.classList.toggle("moregreen",s.greenery>=60);
+
+ document.getElementById("meters").innerHTML=
+ objective("ATMOSPHERIC OXYGEN",s.atmosphere,100)+
+ objective("SURFACE WATER",s.waterLevel,100)+
+ objective("GLOBAL TEMPERATURE",s.temperature+50,70)+
+ objective("BIOSPHERE COVERAGE",s.greenery,100);
+
+ document.getElementById("buildings").innerHTML=buildingData.map(b=>{
+   const cost=canAfford(b.cost);
+   return `<div class="building">
+     <strong>${b.emoji} ${b.name}</strong>
+     <p>${b.desc}<br>Owned: ${s.buildings[b.id]}</p>
+     <div class="cost">${formatCost(b.cost)}</div>
+     <button onclick="build('${b.id}')" ${!cost||s.gameOver?"disabled":""}>CONSTRUCT</button>
+   </div>`;
+ }).join("");
+
+ document.getElementById("tech").innerHTML=techData.map(t=>`
+  <div class="tech-item">
+    <div><strong>${t.name}</strong><small>${t.desc}</small></div>
+    <button onclick="research('${t.id}')" ${s.research[t.id]||s.minerals<t.cost||s.gameOver?"disabled":""}>
+      ${s.research[t.id]?"COMPLETED":t.cost+" MIN"}
+    </button>
+  </div>`).join("");
+
+ document.getElementById("objectives").innerHTML=
+ objective("OXYGEN LEVEL",s.atmosphere,100)+
+ objective("WATER LEVEL",s.waterLevel,100)+
+ objective("TEMPERATURE",s.temperature+50,70)+
+ objective("GREEN COVERAGE",s.greenery,100)+
+ `<p class="muted">Primary mission: achieve 100% in all four planetary conditions while keeping at least one colonist alive.</p>`;
+
+ const eventBox=document.getElementById("eventBox");
+ if(s.event){
+   eventBox.innerHTML=`<div class="event">
+     <div class="eyebrow" style="color:var(--orange)">UNEXPECTED EVENT</div>
+     <h3>${s.event.title}</h3>
+     <p>${s.event.description}</p>
+     ${s.event.choices.map((c,i)=>`<button onclick="resolveEvent(${i})" style="margin:3px">${c.label}</button>`).join("")}
+   </div>`;
+ }else if(s.gameOver){
+   eventBox.innerHTML='<div class="event"><h3>MISSION FAILED</h3><p>Your colony has collapsed. Reset the mission to try again.</p></div>';
+ }else{
+   eventBox.innerHTML="";
+ }
+ renderLog();
+}
+function renderLog(){
+ document.getElementById("log").innerHTML=s.log.map(x=>
+   `<div class="log-entry"><i></i><span>${x}</span></div>`
+ ).join("");
+}
+render();
+</script>
+</body>
+</html>
