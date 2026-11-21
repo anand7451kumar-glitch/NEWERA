@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOTANICA // GENESIS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg:#101712; --panel:#19251d; --panel2:#202e24;
+  --line:#304335; --green:#b8ed91; --muted:#91a493;
+  --text:#eff6e9; --gold:#e7c77b; --red:#ed907d;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
+button{font:inherit;cursor:pointer}
+header{padding:25px 5%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:15px}
+.logo{font-weight:800;letter-spacing:3px;font-size:19px}
+.logo span{color:var(--green)}
+.mono{font-family:'DM Mono',monospace}
+.small{font-size:11px;color:var(--muted);letter-spacing:1px}
+main{max-width:1200px;margin:auto;padding:28px 5% 60px}
+.top{display:flex;justify-content:space-between;align-items:end;gap:15px;margin-bottom:25px}
+h1{font-size:clamp(27px,5vw,43px);margin:8px 0}
+p{color:var(--muted);line-height:1.6}
+.stats{display:flex;gap:9px;flex-wrap:wrap}
+.stat{background:var(--panel);border:1px solid var(--line);padding:10px 15px;border-radius:10px;min-width:95px}
+.stat b{display:block;font-size:20px;color:var(--green)}
+.stat span{font-size:10px;color:var(--muted);letter-spacing:1px}
+.layout{display:grid;grid-template-columns:1.2fr .8fr;gap:17px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}
+.panel-head h2{font-size:14px;letter-spacing:1.5px;margin:0}
+.garden{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.plot{background:var(--panel2);border:1px solid var(--line);border-radius:13px;min-height:175px;padding:13px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.plot.selected{border-color:var(--green);box-shadow:inset 0 0 0 1px var(--green)}
+.plot button{background:none;border:0;color:inherit;text-align:left;padding:0}
+.plant-icon{font-size:48px;text-align:center;padding:10px 0;filter:drop-shadow(0 8px 9px #0006)}
+.empty{font-size:32px;text-align:center;color:#59705e;padding:18px 0}
+.plot-name{font-size:12px;font-weight:700}
+.plot-meta{font-size:10px;color:var(--muted);margin-top:4px}
+.tag{font-size:9px;color:var(--green);letter-spacing:1px}
+.controls{display:grid;gap:14px}
+.control{background:var(--panel2);padding:14px;border-radius:11px}
+.control-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:10px}
+.control-top strong{color:var(--green);font-family:'DM Mono',monospace}
+input[type=range]{width:100%;accent-color:var(--green)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.action{border:1px solid var(--line);background:#26382b;color:var(--text);padding:12px;border-radius:9px;font-size:12px;font-weight:700}
+.action.primary{background:var(--green);color:#152018;border-color:var(--green)}
+.action:hover{filter:brightness(1.12)}
+.action:disabled{opacity:.35;cursor:not-allowed}
+.detail{margin-top:15px;padding:14px;background:#142019;border-radius:10px}
+.detail h3{margin:0 0 8px;font-size:16px}
+.detail p{font-size:12px;margin:5px 0}
+.bar{height:6px;background:#304335;border-radius:8px;overflow:hidden;margin-top:5px}
+.bar i{display:block;height:100%;background:var(--green);border-radius:8px}
+.collection{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.specimen{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}
+.specimen .emoji{font-size:26px}
+.specimen b{display:block;font-size:10px;margin-top:5px}
+.specimen small{font-size:9px;color:var(--muted)}
+.log{display:grid;gap:9px;max-height:200px;overflow:auto}
+.log-item{font-size:11px;color:var(--muted);border-left:2px solid var(--green);padding:5px 10px}
+.footer{margin-top:20px;text-align:center;color:var(--muted);font-size:10px}
+.notice{color:var(--gold);font-size:11px;min-height:18px;margin-top:10px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.top{align-items:start;flex-direction:column}.garden{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:400px){.garden{grid-template-columns:1fr 1fr}.collection{grid-template-columns:repeat(3,1fr)}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">BOTANICA<span>//</span>GENESIS</div>
+  <div class="small mono">BIOLOGY SIMULATOR · v1.0</div>
+</header>
+
+<main>
+  <div class="top">
+    <div>
+      <div class="small mono">GREENHOUSE 001 / RESEARCH DIVISION</div>
+      <h1>Grow something <span style="color:var(--green)">extraordinary.</span></h1>
+      <p style="margin:0">Experiment. Mutate. Discover new botanical life.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="credits">100</b><span>CREDITS</span></div>
+      <div class="stat"><b id="discovered">0</b><span>DISCOVERED</span></div>
+      <div class="stat"><b id="days">1</b><span>GROWTH DAY</span></div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <section class="panel">
+      <div class="panel-head">
+        <h2>01 / GREENHOUSE PLOTS</h2>
+        <span class="small mono" id="plotCount">0 / 6 ACTIVE</span>
+      </div>
+      <div class="garden" id="garden"></div>
+      <div class="notice" id="notice">Select an occupied plot to inspect your plant.</div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>02 / LABORATORY CONTROLS</h2>
+        <span class="small mono">ENVIRONMENT</span>
+      </div>
+      <div class="controls">
+        <div class="control">
+          <div class="control-top"><span>☀ SUNLIGHT INTENSITY</span><strong id="sunValue">60%</strong></div>
+          <input id="sun" type="range" min="0" max="100" value="60">
+        </div>
+        <div class="control">
+          <div class="control-top"><span>💧 WATER SUPPLY</span><strong id="waterValue">50%</strong></div>
+          <input id="water" type="range" min="0" max="100" value="50">
+        </div>
+        <div class="control">
+          <div class="control-top"><span>🌡 GREENHOUSE TEMPERATURE</span><strong id="tempValue">24°C</strong></div>
+          <input id="temp" type="range" min="10" max="40" value="24">
+        </div>
+      </div>
+      <div class="detail" id="details">
+        <h3>Awaiting specimen...</h3>
+        <p>Plant a seed to begin your research.</p>
+      </div>
+      <div class="actions" style="margin-top:13px">
+        <button class="action primary" id="seedBtn">＋ Plant seed · 15</button>
+        <button class="action" id="waterBtn">💧 Water · 5</button>
+        <button class="action" id="harvestBtn">✦ Harvest</button>
+        <button class="action" id="crossBtn">🧬 Crossbreed · 20</button>
+        <button class="action" id="advanceBtn" style="grid-column:1/-1">⏩ Advance one growth day</button>
+      </div>
+      <div class="notice" id="actionNotice"></div>
+    </section>
+  </div>
+
+  <section class="panel" style="margin-top:17px">
+    <div class="panel-head">
+      <h2>03 / SPECIMEN COLLECTION</h2>
+      <span class="small mono" id="collectionCount">0 SPECIES</span>
+    </div>
+    <div class="collection" id="collection"></div>
+  </section>
+
+  <section class="panel" style="margin-top:17px">
+    <div class="panel-head">
+      <h2>04 / RESEARCH JOURNAL</h2>
+      <span class="small mono">LATEST ACTIVITY</span>
+    </div>
+    <div class="log" id="journal"></div>
+  </section>
+  <div class="footer mono">BOTANICA GENESIS · ALL SPECIMENS ARE PROCEDURALLY GENERATED · LOCAL SAVE ENABLED</div>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const names = ["Mossling","Solara","Moonpetal","Thornwhisp","Emberleaf","Cloudroot","Starbloom","Velvetfern","Dreamvine","Frostbud","Wildspark","Duskmint"];
+const emojis = ["🌱","🌿","🍀","🌵","🌸","🌻","🪴","🌾","🍃","🌷","🌺","🪻"];
+const colors = ["Emerald","Violet","Amber","Azure","Crimson","Silver","Golden","Jade","Coral","Indigo"];
+const state = {
+  credits:100, day:1, plants:Array(6).fill(null),
+  collection:[], journal:[], selected:0, sun:60, water:50, temp:24
+};
+let nextId=1;
+
+function save(){localStorage.setItem("botanicaGenesis",JSON.stringify(state));}
+function load(){
+  try{
+    const data=JSON.parse(localStorage.getItem("botanicaGenesis"));
+    if(data && Array.isArray(data.plants) && data.plants.length===6){
+      Object.assign(state,data);
+      nextId=Math.max(1,...state.plants.filter(Boolean).map(p=>p.id+1));
+    }
+  }catch(e){}
+}
+function log(message){
+  state.journal.unshift(`DAY ${state.day} — ${message}`);
+  state.journal=state.journal.slice(0,30);
+}
+function message(msg){$("actionNotice").textContent=msg;}
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function makePlant(parentA=null,parentB=null){
+  const mutation=Math.random()<0.28;
+  const parent=parentA || {};
+  return {
+    id:nextId++,
+    name:mutation?rand(names)+" X":parentA&&parentB?rand(names)+" Hybrid":rand(names),
+    emoji:mutation?rand(emojis):parentA?parentA.emoji:rand(emojis),
+    color:parentA&&parentB&&Math.random()<.7?rand([parentA.color,parentB.color]):rand(colors),
+    growth:0, health:100, generation:parentA?Math.max(parentA.generation,parentB?.generation||0)+1:1,
+    mutation, watered:0
+  };
+}
+function selectedPlant(){return state.plants[state.selected];}
+function update(){
+  $("credits").textContent=state.credits;
+  $("discovered").textContent=state.collection.length;
+  $("days").textContent=state.day;
+  $("plotCount").textContent=state.plants.filter(Boolean).length+" / 6 ACTIVE";
+  $("sunValue").textContent=state.sun+"%";
+  $("waterValue").textContent=state.water+"%";
+  $("tempValue").textContent=state.temp+"°C";
+  $("sun").value=state.sun;$("water").value=state.water;$("temp").value=state.temp;
+  renderGarden();renderDetails();renderCollection();renderJournal();save();
+}
+function renderGarden(){
+  $("garden").innerHTML=state.plants.map((p,i)=>`
+    <div class="plot ${state.selected===i?'selected':''}">
+      <button onclick="selectPlot(${i})" style="width:100%;height:100%">
+        <div class="small mono">PLOT 0${i+1}</div>
+        ${p?`<div class="plant-icon">${p.emoji}</div>
+        <div class="plot-name">${p.name}</div>
+        <div class="plot-meta">Growth ${p.growth}% · Health ${p.health}%</div>
+        <div class="bar"><i style="width:${p.growth}%"></i></div>`
+        :`<div class="empty">＋</div><div class="plot-name">Empty plot</div><div class="plot-meta">Ready for planting</div>`}
+      </button>
+    </div>`).join("");
+}
+function selectPlot(i){state.selected=i;update();}
+function renderDetails(){
+  const p=selectedPlant();
+  if(!p){
+    $("details").innerHTML="<h3>Empty plot</h3><p>Plant a seed here to begin growing a new specimen.</p>";
+    return;
+  }
+  $("details").innerHTML=`
+    <h3>${p.emoji} ${p.name}</h3>
+    <p>Colour: <b>${p.color}</b> · Generation: <b>${p.generation}</b></p>
+    <p>Growth: ${p.growth}%</p><div class="bar"><i style="width:${p.growth}%"></i></div>
+    <p>Health: ${p.health}%</p><div class="bar"><i style="width:${p.health}%"></i></div>
+    <p>Genetic mutation: <b style="color:var(--green)">${p.mutation?'DETECTED':'NOT DETECTED'}</b></p>
+  `;
+}
+function renderCollection(){
+  $("collectionCount").textContent=state.collection.length+" SPECIES";
+  $("collection").innerHTML=state.collection.length?state.collection.map(p=>`
+    <div class="specimen"><div class="emoji">${p.emoji}</div><b>${p.name}</b><small>${p.color} · G${p.generation}</small></div>
+  `).join(""):'<p class="small">No discoveries yet. Grow and harvest your first plant!</p>';
+}
+function renderJournal(){
+  $("journal").innerHTML=state.journal.length?state.journal.map(x=>`<div class="log-item">${x}</div>`).join(""):'<div class="small">Your research log is empty.</div>';
+}
+function spend(amount){
+  if(state.credits<amount){message("Not enough credits. Harvest mature plants to earn more.");return false;}
+  state.credits-=amount;return true;
+}
+$("seedBtn").onclick=()=>{
+  const i=state.selected;
+  if(state.plants[i])return message("This plot is occupied. Select an empty plot.");
+  if(!spend(15))return;
+  state.plants[i]=makePlant();
+  log("A new seed was planted in plot 0"+(i+1)+".");
+  message("Seed planted. Adjust the environment and advance a day.");
+  update();
+};
+$("waterBtn").onclick=()=>{
+  const p=selectedPlant();
+  if(!p)return message("Select a plant first.");
+  if(!spend(5))return;
+  p.health=Math.min(100,p.health+15);
+  p.watered=2;
+  log(p.name+" received a water treatment.");
+  message("Water treatment applied. Health improved.");
+  update();
+};
+$("harvestBtn").onclick=()=>{
+  const p=selectedPlant();
+  if(!p)return message("There is nothing to harvest.");
+  if(p.growth<100)return message("This plant is not mature yet. Growth must reach 100%.");
+  state.collection.push({...p});
+  state.credits+=30+Math.round(p.health/5)+(p.mutation?20:0);
+  state.plants[state.selected]=null;
+  log(p.name+" was harvested and added to the collection.");
+  message("Harvest complete! Credits awarded.");
+  update();
+};
+$("crossBtn").onclick=()=>{
+  const p=selectedPlant();
+  if(!p)return message("Select a parent plant first.");
+  const otherIndex=state.plants.findIndex((x,i)=>x&&i!==state.selected);
+  if(otherIndex<0)return message("You need two plants in different plots to crossbreed.");
+  const other=state.plants[otherIndex];
+  if(p.growth<50||other.growth<50)return message("Both plants need at least 50% growth.");
+  const empty=state.plants.findIndex(x=>!x);
+  if(empty<0)return message("You need an empty plot for the hybrid.");
+  if(!spend(20))return;
+  const baby=makePlant(p,other);
+  state.plants[empty]=baby;
+  log("Crossbreeding produced "+baby.name+(baby.mutation?" — MUTATION DETECTED!":"")+".");
+  message("Hybrid created in plot 0"+(empty+1)+".");
+  state.selected=empty;update();
+};
+$("advanceBtn").onclick=()=>{
+  state.day++;
+  let growing=0;
+  state.plants.forEach((p,i)=>{
+    if(!p)return;
+    growing++;
+    const light=100-Math.abs(state.sun-65);
+    const moisture=100-Math.abs(state.water-55);
+    const temperature=100-Math.abs(state.temp-24)*5;
+    const condition=(light+moisture+temperature)/3;
+    const growth=Math.max(1,Math.round(condition/18));
+    p.growth=Math.min(100,p.growth+growth);
+    if(condition<50)p.health=Math.max(0,p.health-10);
+    else p.health=Math.min(100,p.health+2);
+    if(p.watered>0){p.health=Math.min(100,p.health+5);p.watered--;}
+    if(p.health===0)p.growth=Math.max(0,p.growth-5);
+    if(p.growth===100)log(p.name+" has reached full maturity.");
+  });
+  log(growing?growing+" specimen(s) advanced through a growth cycle.":"The greenhouse had no active plants.");
+  message("Growth day "+state.day+" completed.");
+  update();
+};
+["sun","water","temp"].forEach(id=>{
+  $(id).oninput=()=>{
+    state[id]=Number($(id).value);
+    $(id+"Value").textContent=state[id]+(id==="temp"?"°C":"%");
+    save();
+  };
+});
+load();
+update();
+</script>
+</body>
+</html>
