@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PALATE // ARCHITECT</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700;800&display=swap');
+:root{--bg:#151310;--panel:#211e19;--panel2:#2b261f;--line:#443b2e;--gold:#e9bd72;--text:#f5eee2;--muted:#a99d8c;--green:#a9cf91;--red:#e68d7c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
+button,select{font:inherit}
+button{cursor:pointer}
+header{padding:22px 5%;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:15px}
+.logo{font-size:18px;font-weight:800;letter-spacing:3px}.logo span{color:var(--gold)}
+.mono,.small{font-family:'DM Mono',monospace}
+.small{font-size:10px;color:var(--muted);letter-spacing:1px}
+main{max-width:1150px;margin:auto;padding:27px 5% 60px}
+.hero{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:24px}
+h1{font-size:clamp(28px,5vw,44px);margin:8px 0}
+p{color:var(--muted);line-height:1.6}
+.stats{display:flex;flex-wrap:wrap;gap:8px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px;min-width:85px}
+.stat b{display:block;font-size:19px;color:var(--gold)}
+.stat span{font-size:9px;color:var(--muted);letter-spacing:1px}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:15px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:19px;min-width:0}
+.heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:15px}
+.heading h2{font-size:13px;letter-spacing:1.5px;margin:0}
+.restaurant{min-height:240px;border-radius:12px;background:linear-gradient(140deg,#443424,#211b16);padding:20px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}
+.restaurant:after{content:"";position:absolute;width:190px;height:190px;border:1px solid #ffffff19;border-radius:50%;right:-50px;top:-50px;box-shadow:0 0 0 25px #ffffff08,0 0 0 50px #ffffff06}
+.restaurant h2{font-size:26px;margin:6px 0}
+.restaurant .scene{font-size:58px;text-align:center;padding:10px}
+.scene-label{font-size:10px;color:#e8d1a9;letter-spacing:2px}
+.restaurant-footer{display:flex;justify-content:space-between;gap:10px;align-items:end}
+.restaurant-footer strong{font-size:12px}
+.meters{display:grid;gap:13px;margin-top:16px}
+.meter-head{display:flex;justify-content:space-between;font-size:11px;margin-bottom:6px}
+.meter{height:7px;background:#393228;border-radius:10px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--gold);border-radius:10px}
+.controls{display:grid;gap:12px}
+.control{background:var(--panel2);padding:13px;border-radius:10px}
+.control label{display:block;font-size:11px;margin-bottom:8px;color:var(--muted)}
+select{width:100%;background:#171510;color:var(--text);border:1px solid var(--line);padding:10px;border-radius:8px}
+.btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:11px;border-radius:8px;font-size:11px;font-weight:700}
+.btn.gold{background:var(--gold);color:#20180e;border-color:var(--gold)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn:hover:not(:disabled){filter:brightness(1.15)}
+.menu{display:grid;gap:9px}
+.dish{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--line);padding:11px;border-radius:10px}
+.dish .emoji{font-size:27px}
+.dish-info{flex:1;min-width:0}
+.dish-info b{display:block;font-size:12px}
+.dish-info small{font-size:10px;color:var(--muted)}
+.price{color:var(--gold);font-family:'DM Mono',monospace;font-size:12px}
+.dish button{background:none;color:var(--gold);border:0;font-size:17px}
+.menu-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.service{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.service-card{background:var(--panel2);padding:14px;border-radius:10px}
+.service-card b{font-size:20px;color:var(--gold);display:block}
+.service-card small{color:var(--muted);font-size:10px}
+.customers{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.customer{font-size:23px;background:var(--panel2);padding:8px;border-radius:9px}
+.log{display:grid;gap:8px;max-height:185px;overflow:auto}
+.log div{font-size:11px;color:var(--muted);border-left:2px solid var(--gold);padding:5px 10px}
+.toast{min-height:18px;font-size:11px;color:var(--gold);margin-top:10px}
+.footer{text-align:center;margin-top:22px;color:var(--muted);font-size:10px}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.hero{flex-direction:column;align-items:start}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">PALATE<span>//</span>ARCHITECT</div>
+  <div class="small">RESTAURANT SIMULATOR · 01.0</div>
+</header>
+
+<main>
+  <div class="hero">
+    <div>
+      <div class="small">HOSPITALITY DIVISION / YOUR FIRST RESTAURANT</div>
+      <h1>Build a place worth <span style="color:var(--gold)">remembering.</span></h1>
+      <p style="margin:0">Design the atmosphere. Craft the menu. Earn your reputation.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="cash">₹5,000</b><span>CAPITAL</span></div>
+      <div class="stat"><b id="rating">★ 1.0</b><span>RATING</span></div>
+      <div class="stat"><b id="day">01</b><span>DAY</span></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <section class="panel">
+      <div class="heading">
+        <h2>01 / YOUR RESTAURANT</h2>
+        <span class="small">LIVE PREVIEW</span>
+      </div>
+      <div class="restaurant">
+        <div>
+          <div class="scene-label" id="styleLabel">THE COZY CORNER</div>
+          <h2 id="restaurantName">The Little Table</h2>
+          <div class="small" id="tagline">GOOD FOOD. GOOD COMPANY.</div>
+        </div>
+        <div class="scene" id="scene">🪴 🪑 🕯️</div>
+        <div class="restaurant-footer">
+          <div><div class="small">ATMOSPHERE</div><strong id="styleName">Cozy Café</strong></div>
+          <div style="text-align:right"><div class="small">REPUTATION</div><strong id="rep">New Arrival</strong></div>
+        </div>
+      </div>
+
+      <div class="meters">
+        <div><div class="meter-head"><span>Interior quality</span><b id="interiorText">20%</b></div><div class="meter"><i id="interiorBar" style="width:20%"></i></div></div>
+        <div><div class="meter-head"><span>Customer satisfaction</span><b id="satisfactionText">50%</b></div><div class="meter"><i id="satisfactionBar" style="width:50%"></i></div></div>
+        <div><div class="meter-head"><span>Brand reputation</span><b id="reputationText">10%</b></div><div class="meter"><i id="reputationBar" style="width:10%"></i></div></div>
+      </div>
+      <div class="toast" id="designNotice"></div>
+    </section>
+
+    <section class="panel">
+      <div class="heading"><h2>02 / DESIGN STUDIO</h2><span class="small">CUSTOMIZE</span></div>
+      <div class="controls">
+        <div class="control">
+          <label>RESTAURANT NAME</label>
+          <input id="nameInput" maxlength="25" value="The Little Table" style="width:100%;background:#171510;color:white;border:1px solid var(--line);padding:10px;border-radius:8px">
+        </div>
+        <div class="control">
+          <label>INTERIOR STYLE</label>
+          <select id="style">
+            <option value="cozy">🪴 Cozy Café — ₹0</option>
+            <option value="modern">✨ Modern Minimalist — ₹500</option>
+            <option value="jungle">🌴 Tropical Garden — ₹700</option>
+            <option value="royal">👑 Royal Dining — ₹1,200</option>
+            <option value="retro">🎷 Retro Bistro — ₹900</option>
+          </select>
+        </div>
+        <div class="control">
+          <label>RESTAURANT TAGLINE</label>
+          <select id="tagline">
+            <option>GOOD FOOD. GOOD COMPANY.</option>
+            <option>A LITTLE MAGIC ON EVERY PLATE.</option>
+            <option>MADE WITH LOVE, SERVED WITH SOUL.</option>
+            <option>YOUR TABLE, YOUR STORY.</option>
+            <option>WHERE FLAVOUR MEETS ART.</option>
+          </select>
+        </div>
+        <button class="btn gold" id="designBtn">APPLY DESIGN</button>
+        <div class="small">Changing your interior costs money. Your current design stays until you apply a new one.</div>
+      </div>
+      <div class="toast" id="designResult"></div>
+    </section>
+
+    <section class="panel">
+      <div class="heading"><h2>03 / MENU ENGINEERING</h2><span class="small" id="dishCount">0 DISHES</span></div>
+      <div class="menu" id="menu"></div>
+      <div class="menu-actions">
+        <button class="btn" id="addDish">＋ ADD DISH · ₹250</button>
+        <button class="btn" id="priceBtn">↗ OPTIMIZE PRICES</button>
+      </div>
+      <div class="toast" id="menuNotice"></div>
+    </section>
+
+    <section class="panel">
+      <div class="heading"><h2>04 / DAILY OPERATIONS</h2><span class="small">SERVICE DESK</span></div>
+      <div class="service">
+        <div class="service-card"><b id="customers">0</b><small>CUSTOMERS TODAY</small></div>
+        <div class="service-card"><b id="revenue">₹0</b><small>DAILY REVENUE</small></div>
+        <div class="service-card"><b id="profit">₹0</b><small>NET PROFIT</small></div>
+        <div class="service-card"><b id="orders">0</b><small>TOTAL ORDERS</small></div>
+      </div>
+      <div class="small" style="margin-top:18px">TODAY'S GUESTS</div>
+      <div class="customers" id="guestList"><span class="small">No guests yet.</span></div>
+      <button class="btn gold" id="openBtn" style="width:100%;margin-top:18px;padding:14px">▶ OPEN RESTAURANT FOR THE DAY</button>
+      <div class="toast" id="serviceNotice"></div>
+    </section>
+  </div>
+
+  <section class="panel" style="margin-top:15px">
+    <div class="heading"><h2>05 / BUSINESS JOURNAL</h2><span class="small">RECENT EVENTS</span></div>
+    <div class="log" id="journal"><div>Your restaurant story begins here.</div></div>
+  </section>
+  <div class="footer mono">PALATE//ARCHITECT · BUILD YOUR LEGACY ONE PLATE AT A TIME</div>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>"₹"+Math.floor(n).toLocaleString("en-IN");
+
+const styles={
+ cozy:{name:"Cozy Café",label:"THE COZY CORNER",scene:"🪴 🪑 🕯️",cost:0,quality:20,background:"linear-gradient(140deg,#443424,#211b16)"},
+ modern:{name:"Modern Minimalist",label:"LESS IS MORE",scene:"🪟 🪑 ✨",cost:500,quality:45,background:"linear-gradient(140deg,#35444a,#192226)"},
+ jungle:{name:"Tropical Garden",label:"DINE IN THE WILD",scene:"🌴 🌺 🍃",cost:700,quality:55,background:"linear-gradient(140deg,#294b35,#16251b)"},
+ royal:{name:"Royal Dining",label:"A TASTE OF GRANDEUR",scene:"👑 🥂 🕯️",cost:1200,quality:75,background:"linear-gradient(140deg,#62452b,#271b15)"},
+ retro:{name:"Retro Bistro",label:"A CLASSIC NEVER DIES",scene:"🎷 🍷 💡",cost:900,quality:65,background:"linear-gradient(140deg,#633b37,#251817)"}
+};
+
+const dishes=[
+ {name:"Garden Pasta",emoji:"🍝",cost:90,price:180},
+ {name:"Golden Burger",emoji:"🍔",cost:100,price:200},
+ {name:"Mango Cheesecake",emoji:"🍰",cost:70,price:160},
+ {name:"Masala Noodles",emoji:"🍜",cost:55,price:130},
+ {name:"Signature Pizza",emoji:"🍕",cost:120,price:250},
+ {name:"Iced Mocha",emoji:"🧋",cost:40,price:110},
+ {name:"Truffle Fries",emoji:"🍟",cost:50,price:120},
+ {name:"Berry Pancakes",emoji:"🥞",cost:65,price:150},
+ {name:"Lemon Tart",emoji:"🥧",cost:55,price:140},
+ {name:"Fresh Salad",emoji:"🥗",cost:45,price:120}
+];
+
+let s={
+ cash:5000,day:1,rating:1,interior:20,satisfaction:50,reputation:10,
+ style:"cozy",name:"The Little Table",
+ tagline:"GOOD FOOD. GOOD COMPANY.",
+ menu:[],customers:0,orders:0,revenue:0,profit:0,journal:[],opened:false
+};
+
+function save(){localStorage.setItem("palateArchitect",JSON.stringify(s));}
+function log(msg){
+ s.journal.unshift("DAY "+String(s.day).padStart(2,"0")+" — "+msg);
+ s.journal=s.journal.slice(0,25);
+}
+function notice(id,msg){$(id).textContent=msg;}
+function load(){
+ try{
+  const d=JSON.parse(localStorage.getItem("palateArchitect"));
+  if(d&&Array.isArray(d.menu)&&Array.isArray(d.journal))s={...s,...d,opened:false};
+ }catch(e){}
+}
+function render(){
+ $("cash").textContent=fmt(s.cash);
+ $("rating").textContent="★ "+s.rating.toFixed(1);
+ $("day").textContent=String(s.day).padStart(2,"0");
+ $("restaurantName").textContent=s.name;
+ $("tagline").textContent=s.tagline;
+ $("nameInput").value=s.name;
+ $("tagline").value=s.tagline;
+ $("style").value=s.style;
+ const st=styles[s.style];
+ $("styleName").textContent=st.name;
+ $("styleLabel").textContent=st.label;
+ $("scene").textContent=st.scene;
+ document.querySelector(".restaurant").style.background=st.background;
+ $("interiorText").textContent=s.interior+"%";
+ $("interiorBar").style.width=s.interior+"%";
+ $("satisfactionText").textContent=s.satisfaction+"%";
+ $("satisfactionBar").style.width=s.satisfaction+"%";
+ $("reputationText").textContent=s.reputation+"%";
+ $("reputationBar").style.width=s.reputation+"%";
+ $("rep").textContent=s.reputation>75?"Local Legend":s.reputation>50?"Popular Spot":s.reputation>25?"Getting Noticed":"New Arrival";
+ $("dishCount").textContent=s.menu.length+" DISHES";
+ $("customers").textContent=s.customers;
+ $("revenue").textContent=fmt(s.revenue);
+ $("profit").textContent=fmt(s.profit);
+ $("orders").textContent=s.orders;
+ $("menu").innerHTML=s.menu.length?s.menu.map((d,i)=>`
+  <div class="dish">
+   <div class="emoji">${d.emoji}</div>
+   <div class="dish-info"><b>${d.name}</b><small>Ingredient cost ${fmt(d.cost)}</small></div>
+   <div class="price">${fmt(d.price)}</div>
+   <button title="Remove dish" onclick="removeDish(${i})">×</button>
+  </div>`).join(""):'<div class="small">Your menu is empty. Add a dish to start serving.</div>';
+ $("journal").innerHTML=s.journal.length?s.journal.map(x=>`<div>${x}</div>`).join(""):'<div>Your restaurant story begins here.</div>';
+ $("openBtn").disabled=s.opened;
+ $("openBtn").textContent=s.opened?"✓ TODAY'S SERVICE COMPLETED":"▶ OPEN RESTAURANT FOR THE DAY";
+ save();
+}
+function removeDish(i){
+ s.menu.splice(i,1);
+ notice("menuNotice","Dish removed from your menu.");
+ render();
+}
+$("designBtn").onclick=()=>{
+ const key=$("style").value;
+ const st=styles[key];
+ const cost=st.cost;
+ if(key===s.style)return notice("designResult","You already have this interior style.");
+ if(s.cash<cost)return notice("designResult","Not enough capital for this renovation.");
+ s.cash-=cost;s.style=key;s.interior=st.quality;
+ s.name=$("nameInput").value.trim()||"The Little Table";
+ s.tagline=$("tagline").value;
+ s.reputation=Math.min(100,s.reputation+Math.floor(st.quality/10));
+ log("Renovated the restaurant into a "+st.name+".");
+ notice("designResult","New design applied successfully!");
+ render();
+};
+$("addDish").onclick=()=>{
+ if(s.menu.length>=8)return notice("menuNotice","Your menu is full. Maximum 8 dishes.");
+ if(s.cash<250)return notice("menuNotice","Not enough capital to develop a new dish.");
+ const available=dishes.filter(d=>!s.menu.some(x=>x.name===d.name));
+ if(!available.length)return notice("menuNotice","You have unlocked every available dish.");
+ const d=available[Math.floor(Math.random()*available.length)];
+ s.cash-=250;s.menu.push({...d});
+ log("Added "+d.name+" to the menu.");
+ notice("menuNotice",d.name+" is now available!");
+ render();
+};
+$("priceBtn").onclick=()=>{
+ if(!s.menu.length)return notice("menuNotice","Add a dish first.");
+ s.menu.forEach(d=>d.price=Math.max(d.cost+10,Math.round(d.cost*2.2/10)*10));
+ log("Menu prices were optimized for a balanced margin.");
+ notice("menuNotice","Prices optimized. Higher margins may affect customer demand.");
+ render();
+};
+$("openBtn").onclick=()=>{
+ if(s.opened)return;
+ if(!s.menu.length)return notice("serviceNotice","Your restaurant needs at least one menu item!");
+ if(s.cash<100)return notice("serviceNotice","You need at least ₹100 to cover today's operating expenses.");
+ const count=Math.max(2,Math.floor(2+s.reputation/12+s.interior/20+Math.random()*5));
+ const guests=["🧑‍🍳","👩","🧔","👨‍🦰","👩‍🦱","🧑","👨","👩‍🦳","🧕","👨‍🦱"];
+ let revenue=0,cost=0,served=0;
+ const reactions=[];
+ for(let i=0;i<count;i++){
+  const d=s.menu[Math.floor(Math.random()*s.menu.length)];
+  const quality=(s.satisfaction+s.interior)/2;
+  const overpriced=d.price>d.cost*3;
+  const chance=Math.min(.98,Math.max(.15,.45+quality/200-(overpriced?.18:0)));
+  if(Math.random()<chance){
+   revenue+=d.price;cost+=d.cost;served++;
+   reactions.push("😊");
+  }else reactions.push("😐");
+ }
+ const operating=100+count*15;
+ const net=revenue-cost-operating;
+ s.cash+=net;
+ s.customers=count;
+ s.orders+=served;
+ s.revenue=revenue;
+ s.profit=net;
+ const satisfactionChange=served/count>=.8?5:served/count>=.5?1:-5;
+ s.satisfaction=Math.max(5,Math.min(100,s.satisfaction+satisfactionChange));
+ s.reputation=Math.max(0,Math.min(100,s.reputation+(net>0?3:-2)+(s.satisfaction>70?2:0)));
+ s.rating=Math.max(1,Math.min(5,1+s.reputation/25));
+ s.opened=true;
+ $("guestList").innerHTML=reactions.map(x=>`<span class="customer">${x}</span>`).join("");
+ log("Served "+served+" orders from "+count+" visitors. Net result: "+fmt(net)+".");
+ log(net>=0?"A profitable service day!":"The restaurant operated at a loss.");
+ notice("serviceNotice",`Day complete! ${served}/${count} orders served. Net ${fmt(net)}.`);
+ render();
+};
+$("nameInput").oninput=()=>{
+ s.name=$("nameInput").value.trim()||"The Little Table";
+ $("restaurantName").textContent=s.name;
+ save();
+};
+load();
+render();
+</script>
+</body>
+</html>
