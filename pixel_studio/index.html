@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TYPESET//LAB</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono&family=DM+Sans:wght@400;500;700;800;900&family=Playfair+Display:wght@700;900&family=Space+Grotesk:wght@400;600;700&display=swap');
+*{box-sizing:border-box}
+body{margin:0;background:#111;color:#eee;font-family:'DM Sans',sans-serif}
+header{height:65px;padding:0 25px;border-bottom:1px solid #333;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:900;letter-spacing:3px}.logo span{color:#d6ff63}
+.mono{font-family:'DM Mono',monospace;font-size:10px;color:#999}
+main{display:grid;grid-template-columns:290px 1fr;min-height:calc(100vh - 65px)}
+aside{padding:20px;border-right:1px solid #333;background:#171717;overflow:auto}
+section{margin-bottom:22px}
+h3{font-size:10px;letter-spacing:2px;color:#d6ff63;margin:0 0 13px}
+label{display:block;color:#aaa;font-size:11px;margin:12px 0 6px}
+input,select,textarea{width:100%;padding:10px;background:#242424;color:#eee;border:1px solid #444;border-radius:6px;font:12px 'DM Sans'}
+textarea{resize:vertical;min-height:55px}
+input[type=color]{height:38px;padding:3px}
+input[type=range]{padding:0;accent-color:#d6ff63}
+button{cursor:pointer;font:inherit}
+.btn{width:100%;padding:11px;border:1px solid #444;border-radius:6px;background:#292929;color:white;font-size:11px;font-weight:700;margin-top:7px}
+.btn:hover{border-color:#d6ff63}
+.btn.primary{background:#d6ff63;color:#111;border-color:#d6ff63}
+.workspace{padding:25px;display:flex;flex-direction:column;align-items:center;gap:17px;min-width:0}
+.toolbar{width:min(100%,680px);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.tool{background:#252525;color:#eee;border:1px solid #444;border-radius:6px;padding:9px 12px;font-size:11px}
+.tool.active{background:#d6ff63;color:#111;border-color:#d6ff63}
+.canvas-wrap{width:min(100%,620px);background:#242424;padding:15px;border:1px solid #444;border-radius:9px}
+canvas{display:block;width:100%;height:auto;box-shadow:0 12px 45px #0009}
+.hint{font-size:10px;color:#777;text-align:center}
+.presets{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.preset{height:75px;border:1px solid #444;border-radius:6px;padding:9px;text-align:left;font-weight:900;font-size:12px}
+.preset small{display:block;font-size:9px;margin-top:5px;font-weight:400}
+@media(max-width:760px){main{grid-template-columns:1fr}aside{border-right:0;border-bottom:1px solid #333}.workspace{padding:15px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">TYPESET<span>//</span>LAB</div>
+  <div class="mono">GRAPHIC DESIGN TOOL · 001</div>
+</header>
+
+<main>
+<aside>
+  <section>
+    <h3>01 / CONTENT</h3>
+    <label>MAIN HEADLINE</label>
+    <textarea id="headline">MAKE
+SOMETHING
+MATTERS.</textarea>
+    <label>SUBTITLE</label>
+    <input id="subtitle" value="AN EXPERIMENT IN CREATIVE THINKING">
+    <label>FOOTER TEXT</label>
+    <input id="footer" value="INDEPENDENT DESIGN · VOL. 001">
+  </section>
+
+  <section>
+    <h3>02 / TYPOGRAPHY</h3>
+    <label>FONT FAMILY</label>
+    <select id="font">
+      <option value="DM Sans">DM Sans</option>
+      <option value="Space Grotesk">Space Grotesk</option>
+      <option value="Playfair Display">Playfair Display</option>
+      <option value="DM Mono">DM Mono</option>
+      <option value="Arial">Arial</option>
+    </select>
+    <label>FONT SIZE <span id="sizeVal">88</span></label>
+    <input id="size" type="range" min="30" max="125" value="88">
+    <label>LETTER SPACING</label>
+    <input id="spacing" type="range" min="-5" max="15" value="0">
+    <label>TEXT ALIGNMENT</label>
+    <select id="align">
+      <option value="left">Left</option>
+      <option value="center">Center</option>
+      <option value="right">Right</option>
+    </select>
+  </section>
+
+  <section>
+    <h3>03 / COLOR SYSTEM</h3>
+    <label>BACKGROUND</label>
+    <input id="bg" type="color" value="#e9e4d8">
+    <label>HEADLINE COLOR</label>
+    <input id="fg" type="color" value="#171717">
+    <label>ACCENT COLOR</label>
+    <input id="accent" type="color" value="#ef553d">
+  </section>
+
+  <section>
+    <h3>04 / COMPOSITION</h3>
+    <label>DESIGN STYLE</label>
+    <select id="style">
+      <option value="editorial">Editorial</option>
+      <option value="brutalist">Brutalist</option>
+      <option value="minimal">Minimal</option>
+      <option value="festival">Festival</option>
+      <option value="retro">Retro</option>
+    </select>
+    <label>DECORATIVE SHAPE</label>
+    <select id="shape">
+      <option value="circle">Circle</option>
+      <option value="square">Square</option>
+      <option value="line">Lines</option>
+      <option value="none">None</option>
+    </select>
+    <label>SHAPE SIZE</label>
+    <input id="shapeSize" type="range" min="20" max="300" value="150">
+  </section>
+
+  <section>
+    <h3>05 / QUICK PRESETS</h3>
+    <div class="presets">
+      <button class="preset" style="background:#171717;color:#e9e4d8" onclick="preset('brutalist')">BRUTAL.<small>Black / White / Red</small></button>
+      <button class="preset" style="background:#f2b7a9;color:#381d25" onclick="preset('festival')">FUTURE.<small>Playful / Vibrant</small></button>
+      <button class="preset" style="background:#e9e4d8;color:#171717" onclick="preset('editorial')">FORM.<small>Editorial / Classic</small></button>
+      <button class="preset" style="background:#d6ff63;color:#171717" onclick="preset('minimal')">LESS.<small>Minimal / Clean</small></button>
+    </div>
+  </section>
+
+  <button class="btn primary" id="download">↓ EXPORT POSTER PNG</button>
+  <button class="btn" id="random">✦ RANDOM COMPOSITION</button>
+  <button class="btn" id="reset">RESET DESIGN</button>
+</aside>
+
+<div class="workspace">
+  <div class="toolbar">
+    <div class="mono">ARTBOARD / 600 × 800 PX</div>
+    <div class="tools">
+      <button class="tool active" id="preview">PREVIEW</button>
+      <button class="tool" id="toggleGrid">GRID</button>
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="poster" width="600" height="800"></canvas>
+  </div>
+  <div class="hint">YOUR DESIGN UPDATES LIVE · EXPORT TO SAVE YOUR ARTWORK</div>
+</div>
+</main>
+
+<script>
+const $=id=>document.getElementById(id);
+const canvas=$("poster");
+const ctx=canvas.getContext("2d");
+let showGrid=false;
+
+const ids=["headline","subtitle","footer","font","size","spacing","align","bg","fg","accent","style","shape","shapeSize"];
+
+function val(id){return $(id).value}
+function textLines(text){
+ return text.split("\n");
+}
+
+function draw(){
+ const w=600,h=800;
+ const bg=val("bg"),fg=val("fg"),accent=val("accent");
+ const style=val("style"),shape=val("shape");
+ const font=val("font");
+ const size=Number(val("size"));
+ const spacing=Number(val("spacing"));
+ const shapeSize=Number(val("shapeSize"));
+ const align=val("align");
+
+ ctx.clearRect(0,0,w,h);
+ ctx.fillStyle=bg;
+ ctx.fillRect(0,0,w,h);
+
+ // Style-specific background details
+ if(style==="brutalist"){
+   ctx.fillStyle=accent;
+   ctx.fillRect(0,0,24,h);
+   ctx.fillRect(555,0,45,45);
+ }
+ if(style==="festival"){
+   ctx.fillStyle=accent;
+   ctx.beginPath();ctx.arc(490,135,100,0,Math.PI*2);ctx.fill();
+   ctx.fillStyle=fg;
+   ctx.beginPath();ctx.arc(490,135,52,0,Math.PI*2);ctx.fill();
+ }
+ if(style==="retro"){
+   ctx.strokeStyle=accent;ctx.lineWidth=3;
+   for(let i=0;i<10;i++){
+     ctx.beginPath();ctx.arc(300,400,80+i*20,0,Math.PI*2);ctx.stroke();
+   }
+ }
+ if(style==="minimal"){
+   ctx.fillStyle=accent;
+   ctx.fillRect(50,50,70,6);
+ }
+
+ // Decorative shape
+ ctx.save();
+ ctx.globalAlpha=.9;
+ ctx.fillStyle=accent;
+ ctx.strokeStyle=accent;
+ if(shape==="circle"){
+   ctx.beginPath();ctx.arc(480,style==="festival"?140:610,shapeSize/2,0,Math.PI*2);ctx.fill();
+ }
+ if(shape==="square"){
+   ctx.fillRect(420,570,shapeSize,shapeSize);
+ }
+ if(shape==="line"){
+   ctx.lineWidth=5;
+   for(let i=0;i<5;i++){
+     ctx.beginPath();ctx.moveTo(390,520+i*18);ctx.lineTo(550,520+i*18);ctx.stroke();
+   }
+ }
+ ctx.restore();
+
+ // Main text
+ ctx.fillStyle=fg;
+ ctx.textBaseline="top";
+ ctx.textAlign=align;
+ const x=align==="left"?65:align==="center"?300:535;
+ const lines=textLines(val("headline"));
+ const weight=style==="minimal"?"700":"900";
+ ctx.font=`${weight} ${size}px "${font}"`;
+ let y=style==="editorial"?220:250;
+ if(style==="brutalist")y=180;
+ if(style==="festival")y=270;
+ if(style==="minimal")y=300;
+ if(style==="retro")y=240;
+
+ lines.forEach((line,index)=>{
+   let currentX=x;
+   if(spacing!==0){
+     for(const char of line){
+       ctx.fillText(char,currentX,y+index*(size*1.05));
+       currentX+=ctx.measureText(char).width+spacing;
+     }
+   }else{
+     ctx.fillText(line,x,y+index*(size*1.05));
+   }
+ });
+
+ // Subtitle
+ ctx.fillStyle=accent;
+ ctx.font=`500 13px "DM Mono"`;
+ ctx.textAlign=align;
+ ctx.fillText(val("subtitle").toUpperCase(),x,95);
+
+ // Small design details
+ ctx.fillStyle=fg;
+ ctx.font=`11px "DM Mono"`;
+ ctx.textAlign="left";
+ ctx.fillText("T//L     CREATIVE DEPARTMENT",65,55);
+ ctx.textAlign="right";
+ ctx.fillText("EST. 2026",535,55);
+
+ // Footer
+ ctx.fillStyle=fg;
+ ctx.font=`11px "DM Mono"`;
+ ctx.textAlign=align;
+ ctx.fillText(val("footer").toUpperCase(),x,735);
+
+ ctx.fillStyle=accent;
+ ctx.fillRect(65,710,470,2);
+
+ // Page number
+ ctx.fillStyle=fg;
+ ctx.font=`10px "DM Mono"`;
+ ctx.textAlign="right";
+ ctx.fillText("01 — 01",535,765);
+
+ if(showGrid){
+   ctx.save();
+   ctx.strokeStyle="#88888855";
+   ctx.lineWidth=1;
+   for(let x=0;x<=w;x+=50){
+     ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();
+   }
+   for(let y=0;y<=h;y+=50){
+     ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();
+   }
+   ctx.restore();
+ }
+ $("sizeVal").textContent=size;
+}
+
+ids.forEach(id=>{
+ $(id).addEventListener("input",draw);
+ $(id).addEventListener("change",draw);
+});
+
+function preset(type){
+ const configs={
+  brutalist:{bg:"#171717",fg:"#f4f0e8",accent:"#ff513b",font:"DM Sans",size:93,spacing:-2,align:"left",style:"brutalist",shape:"square",shapeSize:180,headline:"BREAK\nTHE\nPATTERN.",subtitle:"DESIGN IS AN ATTITUDE",footer:"NO RULES. JUST IDEAS."},
+  festival:{bg:"#f2b7a9",fg:"#381d25",accent:"#e84e76",font:"Space Grotesk",size:82,spacing:1,align:"center",style:"festival",shape:"circle",shapeSize:170,headline:"DREAM\nIN FULL\nCOLOUR.",subtitle:"THE CREATIVE FESTIVAL · 2026",footer:"MUSIC · ART · CULTURE"},
+  editorial:{bg:"#e9e4d8",fg:"#171717",accent:"#ef553d",font:"Playfair Display",size:88,spacing:0,align:"left",style:"editorial",shape:"line",shapeSize:130,headline:"The art\nof seeing\nthings.",subtitle:"A STUDY IN CREATIVE THINKING",footer:"VOLUME 01 · THE EDITION"},
+  minimal:{bg:"#d6ff63",fg:"#171717",accent:"#171717",font:"Space Grotesk",size:105,spacing:-3,align:"left",style:"minimal",shape:"none",shapeSize:100,headline:"LESS.\nBUT\nBETTER.",subtitle:"SIMPLICITY IS A SUPERPOWER",footer:"DESIGN / 001"}
+ };
+ const c=configs[type];
+ Object.entries(c).forEach(([id,value])=>$(id).value=value);
+ draw();
+}
+$("toggleGrid").onclick=()=>{
+ showGrid=!showGrid;
+ $("toggleGrid").classList.toggle("active",showGrid);
+ draw();
+};
+$("preview").onclick=()=>{
+ showGrid=false;
+ $("toggleGrid").classList.remove("active");
+ draw();
+};
+$("download").onclick=()=>{
+ draw();
+ const link=document.createElement("a");
+ link.download="typeset-poster.png";
+ link.href=canvas.toDataURL("image/png");
+ link.click();
+};
+$("random").onclick=()=>{
+ const styles=["editorial","brutalist","minimal","festival","retro"];
+ const fonts=["DM Sans","Space Grotesk","Playfair Display","DM Mono"];
+ const colors=["#d6ff63","#e9e4d8","#f2b7a9","#b5c9e8","#171717","#f4d58d"];
+ const headings=["CREATE\nWITHOUT\nLIMITS.","THINK\nDIFFERENT.","MAKE IT\nMATTER.","A NEW\nPERSPECTIVE.","NOTHING\nORDINARY.","FORM\nFOLLOWS\nFEELING."];
+ $("style").value=styles[Math.floor(Math.random()*styles.length)];
+ $("font").value=fonts[Math.floor(Math.random()*fonts.length)];
+ $("bg").value=colors[Math.floor(Math.random()*colors.length)];
+ $("fg").value=colors[Math.floor(Math.random()*colors.length)];
+ $("accent").value=colors[Math.floor(Math.random()*colors.length)];
+ $("headline").value=headings[Math.floor(Math.random()*headings.length)];
+ $("size").value=60+Math.floor(Math.random()*55);
+ $("shape").value=["circle","square","line","none"][Math.floor(Math.random()*4)];
+ $("align").value=["left","center","right"][Math.floor(Math.random()*3)];
+ draw();
+};
+$("reset").onclick=()=>preset("editorial");
+preset("editorial");
+</script>
+</body>
+</html>
