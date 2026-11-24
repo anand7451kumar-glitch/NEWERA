@@ -1,0 +1,592 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CUT//CRAFT</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono&family=DM+Sans:wght@400;500;600;700;800&display=swap');
+:root{--bg:#101114;--panel:#191b20;--panel2:#22252c;--line:#343741;--accent:#b8f36b;--text:#f1f2f4;--muted:#9296a1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+header{height:65px;padding:0 24px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:17px;font-weight:800;letter-spacing:3px}
+.logo span{color:var(--accent)}
+.mono{font-family:'DM Mono',monospace}
+.small{font-size:10px;color:var(--muted)}
+main{max-width:1300px;margin:auto;padding:22px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}
+h1{font-size:25px;margin:0 0 5px}
+.top p{font-size:12px;color:var(--muted);margin:0}
+.btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px 13px;border-radius:7px;font-size:11px;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:#111;border-color:var(--accent)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:15px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:15px;min-width:0}
+.panel-title{font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-bottom:13px}
+.preview{background:#08090b;border-radius:8px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+canvas{width:100%;height:100%;object-fit:contain}
+.placeholder{text-align:center;color:#777;font-size:12px;position:absolute}
+.placeholder strong{display:block;font-size:38px;margin-bottom:10px;color:#555}
+.preview-tools{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;flex-wrap:wrap}
+.row{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.time{font-size:11px;color:var(--accent)}
+.timeline{margin-top:15px}
+.timeline-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.clip-list{display:grid;gap:8px}
+.clip{display:flex;align-items:center;gap:10px;padding:10px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;cursor:pointer;min-width:0}
+.clip.active{border-color:var(--accent)}
+.clip-num{background:#363a43;border-radius:5px;padding:7px;font:10px 'DM Mono';color:var(--accent)}
+.clip-info{flex:1;min-width:0}
+.clip-info b{font-size:11px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.clip-info small{font-size:10px;color:var(--muted)}
+.remove{border:0;background:none;color:#e88d83;font-size:17px}
+.empty{padding:22px;text-align:center;border:1px dashed #424650;border-radius:8px;color:var(--muted);font-size:11px}
+.controls{display:grid;gap:14px}
+.field label{display:block;color:var(--muted);font-size:10px;margin-bottom:6px}
+.field input,.field select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:9px;font-size:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+hr{border:0;border-top:1px solid var(--line);width:100%}
+.status{font-size:10px;color:var(--accent);min-height:18px;line-height:1.5}
+.export-panel{margin-top:15px}
+.progress{height:5px;background:#333740;border-radius:5px;overflow:hidden;margin:10px 0}
+.progress i{height:100%;width:0;background:var(--accent);display:block;transition:width .2s}
+footer{text-align:center;color:var(--muted);font-size:10px;padding:20px}
+@media(max-width:800px){.workspace{grid-template-columns:1fr}.top{align-items:start;flex-direction:column}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">CUT<span>//</span>CRAFT</div>
+  <div class="small mono">VIDEO EDITOR · 001</div>
+</header>
+
+<main>
+  <div class="top">
+    <div>
+      <h1>Your footage. Your story.</h1>
+      <p>Import clips, shape your sequence, and export your edit.</p>
+    </div>
+    <div class="row">
+      <input id="files" type="file" accept="video/*" multiple hidden>
+      <button class="btn primary" id="importBtn">＋ IMPORT FOOTAGE</button>
+    </div>
+  </div>
+
+  <div class="workspace">
+    <div>
+      <section class="panel">
+        <div class="panel-title">01 / VIDEO PREVIEW</div>
+        <div class="preview">
+          <canvas id="screen" width="1280" height="720"></canvas>
+          <div class="placeholder" id="placeholder">
+            <strong>▶</strong>
+            Import a video to begin editing
+          </div>
+        </div>
+        <div class="preview-tools">
+          <div class="row">
+            <button class="btn" id="playBtn" disabled>▶ PLAY CLIP</button>
+            <button class="btn" id="stopBtn" disabled>■ STOP</button>
+          </div>
+          <div class="time mono" id="clock">00:00 / 00:00</div>
+        </div>
+      </section>
+
+      <section class="panel timeline">
+        <div class="timeline-head">
+          <div class="panel-title" style="margin:0">02 / EDIT SEQUENCE</div>
+          <span class="small mono" id="clipCount">0 CLIPS</span>
+        </div>
+        <div class="clip-list" id="clipList">
+          <div class="empty">Your timeline is empty. Import some footage.</div>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <button class="btn" id="moveLeft" disabled>← MOVE LEFT</button>
+          <button class="btn" id="moveRight" disabled>MOVE RIGHT →</button>
+        </div>
+      </section>
+    </div>
+
+    <aside>
+      <section class="panel">
+        <div class="panel-title">03 / CLIP INSPECTOR</div>
+        <div class="controls">
+          <div class="field">
+            <label>SELECTED CLIP</label>
+            <div id="selectedName" class="small">No clip selected</div>
+          </div>
+          <hr>
+          <div class="two">
+            <div class="field">
+              <label>TRIM START (SECONDS)</label>
+              <input id="start" type="number" min="0" step=".1" value="0" disabled>
+            </div>
+            <div class="field">
+              <label>TRIM END (SECONDS)</label>
+              <input id="end" type="number" min="0" step=".1" value="0" disabled>
+            </div>
+          </div>
+          <div class="field">
+            <label>PLAYBACK SPEED</label>
+            <select id="speed" disabled>
+              <option value=".5">0.5× Slow</option>
+              <option value=".75">0.75×</option>
+              <option value="1" selected>1× Normal</option>
+              <option value="1.25">1.25×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2× Fast</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>VISUAL FILTER</label>
+            <select id="filter" disabled>
+              <option value="none">Original</option>
+              <option value="grayscale(1)">Black & White</option>
+              <option value="sepia(1)">Vintage</option>
+              <option value="contrast(1.5)">High Contrast</option>
+              <option value="saturate(2)">Vibrant</option>
+              <option value="brightness(1.25)">Bright</option>
+              <option value="blur(1px)">Soft Focus</option>
+            </select>
+          </div>
+          <button class="btn primary" id="applyBtn" disabled>APPLY CLIP SETTINGS</button>
+          <div class="status" id="editStatus"></div>
+        </div>
+      </section>
+
+      <section class="panel export-panel">
+        <div class="panel-title">04 / EXPORT STUDIO</div>
+        <div class="field">
+          <label>OUTPUT QUALITY</label>
+          <select id="quality">
+            <option value="2500000">Standard · 2.5 Mbps</option>
+            <option value="5000000" selected>High · 5 Mbps</option>
+            <option value="8000000">Ultra · 8 Mbps</option>
+          </select>
+        </div>
+        <div class="small" style="margin-top:12px">FORMAT: WEBM</div>
+        <div class="small" id="duration" style="margin-top:5px">Estimated length: 0 seconds</div>
+        <div class="progress"><i id="progress"></i></div>
+        <button class="btn primary" id="exportBtn" style="width:100%" disabled>↓ EXPORT VIDEO</button>
+        <div class="status" id="exportStatus" style="margin-top:10px"></div>
+      </section>
+    </aside>
+  </div>
+</main>
+
+<footer class="mono">CUT//CRAFT · LOCAL VIDEO WORKSPACE · YOUR MEDIA STAYS IN YOUR BROWSER</footer>
+
+<video id="source" playsinline preload="auto" style="display:none"></video>
+
+<script>
+const $=id=>document.getElementById(id);
+const video=$("source");
+const canvas=$("screen");
+const ctx=canvas.getContext("2d");
+
+let clips=[];
+let selected=-1;
+let playing=false;
+let exporting=false;
+let animationFrame=0;
+let audioContext=null;
+let audioSource=null;
+
+const filters={
+  none:"none",
+  "grayscale(1)":"grayscale(1)",
+  "sepia(1)":"sepia(1)",
+  "contrast(1.5)":"contrast(1.5)",
+  "saturate(2)":"saturate(2)",
+  "brightness(1.25)":"brightness(1.25)",
+  "blur(1px)":"blur(1px)"
+};
+
+function formatTime(seconds){
+  if(!Number.isFinite(seconds))return "00:00";
+  const m=Math.floor(seconds/60);
+  const s=Math.floor(seconds%60);
+  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+
+function activeClip(){return clips[selected]||null}
+
+function clipLength(c){return Math.max(0,c.end-c.start)}
+
+function totalLength(){
+  return clips.reduce((sum,c)=>sum+clipLength(c)/c.speed,0);
+}
+
+function status(id,msg){$(id).textContent=msg}
+
+function draw(){
+  if(video.readyState>=2 && video.videoWidth){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#08090b";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    const scale=Math.min(canvas.width/video.videoWidth,canvas.height/video.videoHeight);
+    const w=video.videoWidth*scale;
+    const h=video.videoHeight*scale;
+    const x=(canvas.width-w)/2;
+    const y=(canvas.height-h)/2;
+
+    ctx.save();
+    ctx.filter=activeClip()?.filter||"none";
+    ctx.drawImage(video,x,y,w,h);
+    ctx.restore();
+
+    $("placeholder").style.display="none";
+  }
+  if(!exporting && !video.paused){
+    $("clock").textContent=formatTime(video.currentTime)+" / "+formatTime(video.duration);
+  }
+  animationFrame=requestAnimationFrame(draw);
+}
+
+function loadClip(index,autoplay=false){
+  if(index<0||index>=clips.length)return;
+  selected=index;
+  const c=clips[index];
+  playing=false;
+  video.pause();
+  video.src=c.url;
+  video.playbackRate=c.speed;
+  video.load();
+  render();
+  status("editStatus","Loading clip...");
+  video.onloadedmetadata=()=>{
+    video.currentTime=Math.min(c.start,Math.max(0,video.duration-.05));
+    status("editStatus","Clip ready.");
+    if(autoplay)playSelected();
+  };
+}
+
+function render(){
+  const list=$("clipList");
+  list.innerHTML="";
+  $("clipCount").textContent=clips.length+" CLIPS";
+
+  if(!clips.length){
+    list.innerHTML='<div class="empty">Your timeline is empty. Import some footage.</div>';
+  }
+
+  clips.forEach((c,i)=>{
+    const item=document.createElement("div");
+    item.className="clip"+(i===selected?" active":"");
+    const number=document.createElement("div");
+    number.className="clip-num";
+    number.textContent=String(i+1).padStart(2,"0");
+
+    const info=document.createElement("div");
+    info.className="clip-info";
+    const name=document.createElement("b");
+    name.textContent=c.name;
+    const meta=document.createElement("small");
+    meta.textContent=formatTime(clipLength(c))+" · "+c.speed+"× · "+c.filterLabel;
+    info.append(name,meta);
+
+    const remove=document.createElement("button");
+    remove.className="remove";
+    remove.textContent="×";
+    remove.title="Remove clip";
+    remove.onclick=e=>{
+      e.stopPropagation();
+      removeClip(i);
+    };
+    item.append(number,info,remove);
+    item.onclick=()=>loadClip(i);
+    list.append(item);
+  });
+
+  const c=activeClip();
+  $("selectedName").textContent=c?c.name:"No clip selected";
+  ["start","end","speed","filter","applyBtn","playBtn","stopBtn","moveLeft","moveRight"].forEach(id=>{
+    $(id).disabled=!c || exporting;
+  });
+  $("exportBtn").disabled=!clips.length||exporting;
+  $("duration").textContent="Estimated length: "+totalLength().toFixed(1)+" seconds";
+
+  if(c){
+    $("start").value=c.start;
+    $("end").value=c.end;
+    $("start").max=c.duration;
+    $("end").max=c.duration;
+    $("speed").value=c.speed;
+    $("filter").value=c.filter;
+  }
+}
+
+$("importBtn").onclick=()=>$("files").click();
+
+$("files").onchange=async e=>{
+  const files=Array.from(e.target.files||[]);
+  for(const file of files){
+    if(!file.type.startsWith("video/"))continue;
+    const url=URL.createObjectURL(file);
+    const duration=await new Promise(resolve=>{
+      const probe=document.createElement("video");
+      probe.preload="metadata";
+      probe.src=url;
+      probe.onloadedmetadata=()=>resolve(probe.duration);
+      probe.onerror=()=>resolve(0);
+    });
+    if(!Number.isFinite(duration)||duration<=0){
+      URL.revokeObjectURL(url);
+      continue;
+    }
+    clips.push({
+      name:file.name,
+      url,
+      duration,
+      start:0,
+      end:duration,
+      speed:1,
+      filter:"none",
+      filterLabel:"Original"
+    });
+  }
+  if(selected<0&&clips.length)loadClip(0);
+  else render();
+  status("editStatus",files.length+" file(s) processed.");
+  e.target.value="";
+};
+
+function removeClip(i){
+  const removed=clips.splice(i,1)[0];
+  URL.revokeObjectURL(removed.url);
+  if(!clips.length){
+    selected=-1;
+    video.pause();
+    video.removeAttribute("src");
+    $("placeholder").style.display="block";
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+  }else{
+    selected=Math.min(selected,clips.length-1);
+    loadClip(selected);
+  }
+  render();
+}
+
+$("applyBtn").onclick=()=>{
+  const c=activeClip();
+  if(!c)return;
+  const start=Number($("start").value);
+  const end=Number($("end").value);
+  if(!Number.isFinite(start)||!Number.isFinite(end)||start<0||end>c.duration||start>=end){
+    return status("editStatus","Invalid trim range. Check start and end.");
+  }
+  c.start=start;
+  c.end=end;
+  c.speed=Number($("speed").value);
+  c.filter=$("filter").value;
+  c.filterLabel=$("filter").selectedOptions[0].text;
+  video.pause();
+  video.playbackRate=c.speed;
+  video.currentTime=start;
+  render();
+  status("editStatus","Clip settings applied.");
+};
+
+$("playBtn").onclick=playSelected;
+$("stopBtn").onclick=()=>{
+  video.pause();
+  playing=false;
+  const c=activeClip();
+  if(c)video.currentTime=c.start;
+  status("editStatus","Playback stopped.");
+};
+
+async function playSelected(){
+  const c=activeClip();
+  if(!c)return;
+  video.pause();
+  video.playbackRate=c.speed;
+  if(video.currentTime<c.start||video.currentTime>=c.end){
+    video.currentTime=c.start;
+  }
+  try{
+    await video.play();
+    playing=true;
+    status("editStatus","Playing selected clip.");
+    const check=()=>{
+      if(!playing)return;
+      if(video.currentTime>=c.end){
+        video.pause();
+        playing=false;
+        video.currentTime=c.start;
+        status("editStatus","Clip preview finished.");
+      }else setTimeout(check,100);
+    };
+    check();
+  }catch(e){
+    status("editStatus","Playback could not start.");
+  }
+}
+
+$("moveLeft").onclick=()=>{
+  if(selected<=0)return;
+  [clips[selected-1],clips[selected]]=[clips[selected],clips[selected-1]];
+  selected--;
+  render();
+};
+$("moveRight").onclick=()=>{
+  if(selected<0||selected>=clips.length-1)return;
+  [clips[selected+1],clips[selected]]=[clips[selected],clips[selected+1]];
+  selected++;
+  render();
+};
+
+async function wait(ms){return new Promise(resolve=>setTimeout(resolve,ms));}
+
+async function playForExport(c){
+  video.pause();
+  video.src=c.url;
+  video.load();
+
+  await new Promise((resolve,reject)=>{
+    if(video.readyState>=1)return resolve();
+    video.onloadedmetadata=resolve;
+    video.onerror=()=>reject(new Error("Could not load "+c.name));
+  });
+
+  await new Promise(resolve=>{
+    const target=Math.min(c.start,Math.max(0,video.duration-.05));
+    if(Math.abs(video.currentTime-target)<.03)return resolve();
+    video.onseeked=resolve;
+    video.currentTime=target;
+  });
+
+  video.playbackRate=c.speed;
+  const duration=clipLength(c)/c.speed;
+  const started=performance.now();
+
+  await video.play();
+
+  while(performance.now()-started<duration*1000){
+    if(!exporting)throw new Error("Export cancelled.");
+    await wait(80);
+  }
+  video.pause();
+}
+
+$("exportBtn").onclick=async()=>{
+  if(!clips.length||exporting)return;
+  if(!window.MediaRecorder||!canvas.captureStream){
+    return status("exportStatus","Your browser does not support video recording.");
+  }
+
+  exporting=true;
+  render();
+  $("progress").style.width="0%";
+  status("exportStatus","Preparing export...");
+
+  let stream=null;
+  let recorder=null;
+  let chunks=[];
+  let audioDestination=null;
+
+  try{
+    audioContext=new (window.AudioContext||window.webkitAudioContext)();
+    await audioContext.resume();
+
+    if(!audioSource){
+      audioSource=audioContext.createMediaElementSource(video);
+      audioSource.connect(audioContext.destination);
+    }
+
+    audioDestination=audioContext.createMediaStreamDestination();
+    audioSource.connect(audioDestination);
+
+    stream=canvas.captureStream(30);
+    audioDestination.stream.getAudioTracks().forEach(t=>stream.addTrack(t));
+
+    const mimeTypes=[
+      "video/webm;codecs=vp9,opus",
+      "video/webm;codecs=vp8,opus",
+      "video/webm"
+    ];
+    const mime=mimeTypes.find(type=>MediaRecorder.isTypeSupported(type));
+    if(!mime)throw new Error("No supported WebM recording format found.");
+
+    recorder=new MediaRecorder(stream,{
+      mimeType:mime,
+      videoBitsPerSecond:Number($("quality").value)
+    });
+
+    const finished=new Promise((resolve,reject)=>{
+      recorder.ondataavailable=e=>{if(e.data.size)chunks.push(e.data);};
+      recorder.onstop=resolve;
+      recorder.onerror=()=>reject(new Error("Recording failed."));
+    });
+
+    recorder.start(500);
+    const total=totalLength();
+    let elapsed=0;
+
+    for(let i=0;i<clips.length;i++){
+      const c=clips[i];
+      status("exportStatus","Rendering clip "+(i+1)+" of "+clips.length+": "+c.name);
+      ctx.filter=c.filter;
+      await playForExport(c);
+      elapsed+=clipLength(c)/c.speed;
+      $("progress").style.width=Math.min(99,elapsed/total*100)+"%";
+    }
+
+    video.pause();
+    recorder.stop();
+    await finished;
+
+    const blob=new Blob(chunks,{type:"video/webm"});
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement("a");
+    link.href=url;
+    link.download="cut-craft-edit.webm";
+    link.click();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+
+    $("progress").style.width="100%";
+    status("exportStatus","Export complete! Your WebM file is ready.");
+  }catch(error){
+    if(recorder&&recorder.state!=="inactive")recorder.stop();
+    status("exportStatus","Export error: "+error.message);
+  }finally{
+    video.pause();
+    if(audioDestination){
+      audioDestination.stream.getTracks().forEach(t=>t.stop());
+      if(audioSource)audioSource.disconnect(audioDestination);
+    }
+    if(stream)stream.getTracks().forEach(t=>t.stop());
+    exporting=false;
+    render();
+  }
+};
+
+video.addEventListener("ended",()=>{playing=false;});
+video.addEventListener("loadeddata",draw);
+video.addEventListener("timeupdate",()=>{
+  const c=activeClip();
+  if(playing&&c&&video.currentTime>=c.end){
+    video.pause();
+    playing=false;
+    video.currentTime=c.start;
+  }
+});
+
+function animation(){
+  draw();
+}
+animation();
+render();
+
+window.addEventListener("beforeunload",()=>{
+  clips.forEach(c=>URL.revokeObjectURL(c.url));
+});
+</script>
+</body>
+</html>
