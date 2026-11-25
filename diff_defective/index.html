@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DIFF//DETECTIVE</title>
+<style>
+:root {
+  --bg:#090b10;
+  --panel:#11151e;
+  --border:#252c39;
+  --muted:#8490a3;
+  --text:#e9edf5;
+  --green:#53dfa0;
+  --red:#ff727c;
+  --blue:#83aaff;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;
+}
+header {
+  padding:25px 7%;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.logo { font-weight:900; letter-spacing:2px; }
+.logo span { color:var(--green); }
+.status { color:var(--muted); font-size:12px; }
+main { max-width:1250px; margin:auto; padding:42px 24px; }
+.intro { margin-bottom:28px; }
+.eyebrow {
+  color:var(--green);
+  font-size:11px;
+  letter-spacing:3px;
+  font-weight:bold;
+}
+h1 { font-size:clamp(30px,5vw,48px); margin:12px 0; }
+.intro p { color:var(--muted); line-height:1.6; }
+.toolbar {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+button {
+  border:1px solid var(--border);
+  background:#171d29;
+  color:var(--text);
+  border-radius:8px;
+  padding:10px 15px;
+  cursor:pointer;
+  font-weight:600;
+}
+button:hover { border-color:var(--green); }
+button.primary {
+  background:var(--green);
+  color:#07140e;
+  border-color:var(--green);
+}
+.toggle {
+  color:var(--muted);
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  gap:7px;
+  margin-left:8px;
+}
+.toggle input { accent-color:var(--green); }
+.editors {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.panel {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+.panel-head {
+  padding:13px 16px;
+  display:flex;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
+  font-weight:bold;
+}
+.panel-head small { color:var(--muted); font-weight:normal; }
+textarea {
+  width:100%;
+  min-height:300px;
+  resize:vertical;
+  border:0;
+  outline:0;
+  padding:18px;
+  background:transparent;
+  color:#dce5f5;
+  font:13px/1.8 "SFMono-Regular",Consolas,monospace;
+  tab-size:2;
+}
+.results { margin-top:28px; }
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+  margin-bottom:18px;
+}
+.stat {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:17px;
+}
+.stat strong { display:block; font-size:27px; margin-bottom:5px; }
+.stat span { color:var(--muted); font-size:12px; }
+.added strong { color:var(--green); }
+.removed strong { color:var(--red); }
+.changed strong { color:var(--blue); }
+.diff {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  overflow:hidden;
+}
+.diff-head {
+  padding:15px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.diff-body {
+  overflow-x:auto;
+  max-height:550px;
+  overflow-y:auto;
+}
+.line {
+  display:flex;
+  min-width:600px;
+  font:12px/1.8 "SFMono-Regular",Consolas,monospace;
+  white-space:pre;
+}
+.line .number {
+  color:#69758a;
+  width:42px;
+  flex-shrink:0;
+  text-align:right;
+  padding-right:12px;
+  user-select:none;
+}
+.line .symbol { width:24px; flex-shrink:0; }
+.line .content { padding-right:15px; }
+.line.add { background:#123326; color:#a5f5c8; }
+.line.remove { background:#391d27; color:#ffb0b5; }
+.line.same { color:#9ba7b9; }
+.empty {
+  padding:45px 20px;
+  text-align:center;
+  color:var(--muted);
+}
+footer {
+  color:var(--muted);
+  text-align:center;
+  padding:30px;
+  font-size:11px;
+}
+@media(max-width:700px) {
+  .editors { grid-template-columns:1fr; }
+  main { padding:28px 15px; }
+  header { padding:20px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">DIFF<span>//</span>DETECTIVE</div>
+  <div class="status">● LOCAL MODE · PRIVATE</div>
+</header>
+
+<main>
+  <section class="intro">
+    <div class="eyebrow">TEXT ANALYSIS TOOL / 001</div>
+    <h1>Find what changed.</h1>
+    <p>Compare two versions of text or code. Every addition and removal, clearly exposed.</p>
+  </section>
+
+  <div class="toolbar">
+    <button class="primary" id="compare">Compare versions ↗</button>
+    <button id="sample">Load sample</button>
+    <button id="clear">Clear all</button>
+    <label class="toggle">
+      <input type="checkbox" id="ignoreSpace">
+      Ignore whitespace
+    </label>
+    <label class="toggle">
+      <input type="checkbox" id="ignoreCase">
+      Ignore case
+    </label>
+  </div>
+
+  <section class="editors">
+    <div class="panel">
+      <div class="panel-head">
+        <span>01 / ORIGINAL</span>
+        <small id="countA">0 lines</small>
+      </div>
+      <textarea id="original" spellcheck="false"
+        placeholder="Paste your original text here..."></textarea>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <span>02 / MODIFIED</span>
+        <small id="countB">0 lines</small>
+      </div>
+      <textarea id="modified" spellcheck="false"
+        placeholder="Paste your modified text here..."></textarea>
+    </div>
+  </section>
+
+  <section class="results">
+    <div class="stats">
+      <div class="stat added">
+        <strong id="added">—</strong>
+        <span>ADDED LINES</span>
+      </div>
+      <div class="stat removed">
+        <strong id="removed">—</strong>
+        <span>REMOVED LINES</span>
+      </div>
+      <div class="stat changed">
+        <strong id="unchanged">—</strong>
+        <span>UNCHANGED LINES</span>
+      </div>
+    </div>
+
+    <div class="diff">
+      <div class="diff-head">
+        <strong>Comparison results</strong>
+        <button id="copy">Copy report</button>
+      </div>
+      <div class="diff-body" id="output">
+        <div class="empty">
+          Your comparison will appear here.<br>
+          Add two versions and press Compare.
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>DIFF//DETECTIVE · YOUR TEXT NEVER LEAVES THIS DEVICE</footer>
+
+<script>
+const original = document.getElementById("original");
+const modified = document.getElementById("modified");
+const output = document.getElementById("output");
+
+let report = "";
+
+function normalize(line) {
+  let value = line;
+  if (document.getElementById("ignoreSpace").checked) {
+    value = value.replace(/\s+/g, "");
+  }
+  if (document.getElementById("ignoreCase").checked) {
+    value = value.toLowerCase();
+  }
+  return value;
+}
+
+function escapeHTML(value) {
+  return value.replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  })[char]);
+}
+
+function compare() {
+  const a = original.value.split("\n");
+  const b = modified.value.split("\n");
+
+  document.getElementById("countA").textContent =
+    a.length + " lines";
+  document.getElementById("countB").textContent =
+    b.length + " lines";
+
+  // Limit the matrix size to protect the browser.
+  if (a.length * b.length > 1000000) {
+    output.innerHTML =
+      '<div class="empty">Too much text for this version. Try comparing smaller sections (maximum about 1 million line-pairs).</div>';
+    return;
+  }
+
+  const n = a.length;
+  const m = b.length;
+  const dp = Array.from({length:n+1}, () =>
+    new Uint32Array(m+1)
+  );
+
+  for (let i=n-1; i>=0; i--) {
+    for (let j=m-1; j>=0; j--) {
+      dp[i][j] = normalize(a[i]) === normalize(b[j])
+        ? dp[i+1][j+1] + 1
+        : Math.max(dp[i+1][j], dp[i][j+1]);
+    }
+  }
+
+  let i=0, j=0;
+  let added=0, removed=0, unchanged=0;
+  let html="";
+  let plain="";
+
+  function line(type, number, symbol, content) {
+    const safe = escapeHTML(content);
+    html += `<div class="line ${type}">
+      <span class="number">${number}</span>
+      <span class="symbol">${symbol}</span>
+      <span class="content">${safe || " "}</span>
+    </div>`;
+    plain += symbol + " " + content + "\n";
+  }
+
+  while (i<n || j<m) {
+    if (i<n && j<m &&
+        normalize(a[i]) === normalize(b[j])) {
+      unchanged++;
+      line("same", i+1, " ", a[i]);
+      i++; j++;
+    } else if (j<m &&
+        (i===n || dp[i][j+1] >= dp[i+1][j])) {
+      added++;
+      line("add", j+1, "+", b[j]);
+      j++;
+    } else {
+      removed++;
+      line("remove", i+1, "−", a[i]);
+      i++;
+    }
+  }
+
+  report = plain;
+  output.innerHTML = html ||
+    '<div class="empty">No differences found.</div>';
+
+  document.getElementById("added").textContent = added;
+  document.getElementById("removed").textContent = removed;
+  document.getElementById("unchanged").textContent = unchanged;
+}
+
+document.getElementById("compare").addEventListener("click", compare);
+
+document.getElementById("sample").addEventListener("click", () => {
+  original.value = `function greet(name) {
+  console.log("Hello " + name);
+  return true;
+}
+
+greet("Alex");`;
+
+  modified.value = `function greet(name) {
+  console.log("Welcome " + name);
+  console.log("Have a great day!");
+  return true;
+}
+
+greet("Anand");`;
+
+  compare();
+});
+
+document.getElementById("clear").addEventListener("click", () => {
+  original.value = "";
+  modified.value = "";
+  output.innerHTML =
+    '<div class="empty">Your comparison will appear here.</div>';
+  report = "";
+  ["added","removed","unchanged"].forEach(id =>
+    document.getElementById(id).textContent = "—"
+  );
+  document.getElementById("countA").textContent = "0 lines";
+  document.getElementById("countB").textContent = "0 lines";
+});
+
+document.getElementById("copy").addEventListener("click", async () => {
+  if (!report) {
+    alert("Compare two versions first.");
+    return;
+  }
+  try {
+    await navigator.clipboard.writeText(report);
+    document.getElementById("copy").textContent = "Copied ✓";
+    setTimeout(() =>
+      document.getElementById("copy").textContent = "Copy report", 1500
+    );
+  } catch {
+    alert("Clipboard access unavailable. Select and copy the results manually.");
+  }
+});
+
+[original, modified].forEach(editor => {
+  editor.addEventListener("input", () => {
+    const count = editor.value
+      ? editor.value.split("\n").length : 0;
+    document.getElementById(
+      editor === original ? "countA" : "countB"
+    ).textContent = count + " lines";
+  });
+});
+</script>
+</body>
+</html>
