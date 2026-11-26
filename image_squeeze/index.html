@@ -1,0 +1,535 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMAGE//SQUEEZE</title>
+<style>
+:root {
+  --bg:#090c12;
+  --panel:#121824;
+  --border:#263143;
+  --text:#edf2fa;
+  --muted:#8b98aa;
+  --accent:#7ce8b0;
+  --blue:#8eafff;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;
+}
+header {
+  padding:22px 6%;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.logo { font-weight:900; letter-spacing:2px; }
+.logo span { color:var(--accent); }
+header small { color:var(--muted); }
+main { max-width:1100px; margin:auto; padding:42px 22px; }
+.eyebrow {
+  color:var(--accent);
+  font-size:11px;
+  letter-spacing:3px;
+  font-weight:bold;
+}
+h1 { font-size:clamp(32px,5vw,49px); margin:12px 0; }
+.intro p { color:var(--muted); line-height:1.7; }
+.panel {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:22px;
+  margin-top:24px;
+}
+.drop {
+  border:1px dashed #53627a;
+  border-radius:12px;
+  padding:40px 20px;
+  text-align:center;
+  cursor:pointer;
+  transition:.2s;
+}
+.drop:hover,.drop.drag {
+  border-color:var(--accent);
+  background:#15251f;
+}
+.drop .symbol { font-size:38px; margin-bottom:12px; }
+.drop p { color:var(--muted); font-size:13px; }
+button {
+  border:1px solid var(--border);
+  background:#1b2534;
+  color:var(--text);
+  padding:11px 16px;
+  border-radius:8px;
+  font-weight:650;
+  cursor:pointer;
+}
+button:hover { border-color:var(--accent); }
+button:disabled { opacity:.4; cursor:not-allowed; }
+.primary {
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#08150e;
+}
+input,select {
+  background:#0b111b;
+  border:1px solid var(--border);
+  color:var(--text);
+  padding:11px;
+  border-radius:8px;
+  width:100%;
+}
+input[type="range"] { padding:0; accent-color:var(--accent); }
+input[type="checkbox"] { width:auto; accent-color:var(--accent); }
+label {
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-bottom:9px;
+}
+.controls {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:18px;
+  margin-top:22px;
+}
+.control { min-width:0; }
+.range-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  font-size:13px;
+}
+.dimensions {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.checkrow {
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin-top:14px;
+  color:var(--muted);
+  font-size:13px;
+}
+.preview-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+  margin-top:20px;
+}
+.preview {
+  min-width:0;
+  background:#090e16;
+  border:1px solid var(--border);
+  border-radius:10px;
+  overflow:hidden;
+}
+.preview-head {
+  padding:12px;
+  font-size:12px;
+  display:flex;
+  justify-content:space-between;
+}
+.preview-head span { color:var(--muted); }
+.image-area {
+  height:230px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:12px;
+  background-image:linear-gradient(45deg,#151b26 25%,transparent 25%),linear-gradient(-45deg,#151b26 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#151b26 75%),linear-gradient(-45deg,transparent 75%,#151b26 75%);
+  background-size:20px 20px;
+  background-position:0 0,0 10px,10px -10px,-10px 0;
+}
+.image-area img {
+  max-width:100%;
+  max-height:205px;
+  object-fit:contain;
+}
+.image-area .placeholder {
+  color:#647087;
+  font-size:12px;
+}
+.results {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:18px;
+}
+.metric {
+  background:#0b111b;
+  border:1px solid var(--border);
+  padding:15px;
+  border-radius:10px;
+  min-width:0;
+}
+.metric strong { display:block; font-size:21px; margin-bottom:6px; }
+.metric small { color:var(--muted); font-size:11px; }
+.saving { color:var(--accent); }
+.actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:20px;
+}
+.note {
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.6;
+  margin-top:17px;
+}
+footer {
+  text-align:center;
+  padding:30px;
+  color:var(--muted);
+  font-size:11px;
+}
+@media(max-width:650px) {
+  .controls,.preview-grid { grid-template-columns:1fr; }
+  .results { grid-template-columns:1fr; }
+  main { padding:28px 14px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">IMAGE<span>//</span>SQUEEZE</div>
+  <small>LOCAL IMAGE STUDIO · 001</small>
+</header>
+
+<main>
+  <div class="eyebrow">IMAGE OPTIMIZATION LAB</div>
+  <h1>Less size.<br>Same memories.</h1>
+  <div class="intro">
+    <p>Compress, resize and convert your images without uploading them to a server.</p>
+  </div>
+
+  <section class="panel">
+    <div class="drop" id="drop">
+      <div class="symbol">↥</div>
+      <strong>Drop your image here</strong>
+      <p>or click to browse · JPEG, PNG, WebP</p>
+      <input type="file" id="file" accept="image/jpeg,image/png,image/webp" hidden>
+    </div>
+
+    <div class="controls">
+      <div class="control">
+        <label for="format">EXPORT FORMAT</label>
+        <select id="format">
+          <option value="image/webp">WebP — recommended</option>
+          <option value="image/jpeg">JPEG</option>
+          <option value="image/png">PNG — lossless</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <div class="range-row">
+          <label for="quality">COMPRESSION QUALITY</label>
+          <strong id="qualityValue">80%</strong>
+        </div>
+        <input type="range" id="quality" min="10" max="100" value="80">
+      </div>
+
+      <div class="control">
+        <label>OUTPUT WIDTH (PX)</label>
+        <input type="number" id="width" min="1" max="12000" placeholder="Original width">
+      </div>
+
+      <div class="control">
+        <label>OUTPUT HEIGHT (PX)</label>
+        <input type="number" id="height" min="1" max="12000" placeholder="Original height">
+      </div>
+    </div>
+
+    <label class="checkrow">
+      <input type="checkbox" id="lock" checked>
+      Maintain original aspect ratio
+    </label>
+
+    <div class="actions">
+      <button class="primary" id="compress" disabled>Compress image ↗</button>
+      <button id="reset">Reset settings</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <strong>Preview studio</strong>
+    <div class="preview-grid">
+      <div class="preview">
+        <div class="preview-head">
+          ORIGINAL <span id="originalSize">Waiting...</span>
+        </div>
+        <div class="image-area">
+          <img id="before" hidden alt="Original image">
+          <div class="placeholder" id="beforeEmpty">No image selected</div>
+        </div>
+      </div>
+
+      <div class="preview">
+        <div class="preview-head">
+          OPTIMIZED <span id="outputSize">Waiting...</span>
+        </div>
+        <div class="image-area">
+          <img id="after" hidden alt="Compressed image">
+          <div class="placeholder" id="afterEmpty">Your result appears here</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="results">
+      <div class="metric">
+        <strong id="saved">—</strong>
+        <small>SIZE REDUCTION</small>
+      </div>
+      <div class="metric">
+        <strong id="originalMetric">—</strong>
+        <small>ORIGINAL SIZE</small>
+      </div>
+      <div class="metric">
+        <strong id="newMetric">—</strong>
+        <small>NEW SIZE</small>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="primary" id="download" disabled>Download optimized image ↓</button>
+    </div>
+
+    <p class="note" id="message">
+      Select an image to begin. Processing happens locally in your browser.
+      PNG exports are lossless, so the quality slider does not affect them.
+    </p>
+  </section>
+</main>
+
+<footer>IMAGE//SQUEEZE · PRIVATE BY DESIGN · NO SERVER UPLOADS</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let sourceImage = null;
+let originalURL = null;
+let resultURL = null;
+let originalFile = null;
+let aspect = 1;
+
+function formatBytes(bytes) {
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024)
+    return (bytes / 1024).toFixed(1) + " KB";
+  return (bytes / (1024 * 1024)).toFixed(2) + " MB";
+}
+
+function clearResult() {
+  if (resultURL) URL.revokeObjectURL(resultURL);
+  resultURL = null;
+  $("after").hidden = true;
+  $("afterEmpty").hidden = false;
+  $("outputSize").textContent = "Waiting...";
+  $("saved").textContent = "—";
+  $("newMetric").textContent = "—";
+  $("download").disabled = true;
+}
+
+function loadFile(file) {
+  if (!file) return;
+
+  if (!["image/jpeg","image/png","image/webp"].includes(file.type)) {
+    alert("Please select a JPEG, PNG or WebP image.");
+    return;
+  }
+
+  if (file.size > 30 * 1024 * 1024) {
+    alert("Please choose an image smaller than 30 MB.");
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+
+  img.onload = () => {
+    if (originalURL) URL.revokeObjectURL(originalURL);
+    originalURL = url;
+    originalFile = file;
+    sourceImage = img;
+    aspect = img.width / img.height;
+
+    $("before").src = url;
+    $("before").hidden = false;
+    $("beforeEmpty").hidden = true;
+
+    $("originalSize").textContent = formatBytes(file.size);
+    $("originalMetric").textContent = formatBytes(file.size);
+    $("width").value = img.width;
+    $("height").value = img.height;
+    $("compress").disabled = false;
+
+    clearResult();
+
+    $("message").textContent =
+      `${img.width} × ${img.height} px · ${file.name} · Ready to optimize.`;
+  };
+
+  img.onerror = () => {
+    URL.revokeObjectURL(url);
+    alert("Could not read this image.");
+  };
+
+  img.src = url;
+}
+
+$("drop").addEventListener("click", () => $("file").click());
+
+$("file").addEventListener("change", event => {
+  loadFile(event.target.files[0]);
+});
+
+$("drop").addEventListener("dragover", event => {
+  event.preventDefault();
+  $("drop").classList.add("drag");
+});
+
+$("drop").addEventListener("dragleave", () => {
+  $("drop").classList.remove("drag");
+});
+
+$("drop").addEventListener("drop", event => {
+  event.preventDefault();
+  $("drop").classList.remove("drag");
+  loadFile(event.dataTransfer.files[0]);
+});
+
+$("quality").addEventListener("input", () => {
+  $("qualityValue").textContent = $("quality").value + "%";
+});
+
+$("width").addEventListener("input", () => {
+  if (!$("lock").checked || !sourceImage) return;
+  const width = Number($("width").value);
+  if (width > 0) $("height").value = Math.round(width / aspect);
+});
+
+$("height").addEventListener("input", () => {
+  if (!$("lock").checked || !sourceImage) return;
+  const height = Number($("height").value);
+  if (height > 0) $("width").value = Math.round(height * aspect);
+});
+
+$("compress").addEventListener("click", () => {
+  if (!sourceImage) return;
+
+  const width = Number($("width").value);
+  const height = Number($("height").value);
+
+  if (!Number.isInteger(width) || !Number.isInteger(height) ||
+      width < 1 || height < 1 || width > 12000 || height > 12000) {
+    alert("Enter valid dimensions between 1 and 12000 pixels.");
+    return;
+  }
+
+  if (width * height > 40000000) {
+    alert("That image is too large to process safely. Use smaller dimensions.");
+    return;
+  }
+
+  $("compress").disabled = true;
+  $("compress").textContent = "Processing...";
+
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+
+  const ctx = canvas.getContext("2d");
+  const type = $("format").value;
+  const quality = Number($("quality").value) / 100;
+
+  if (type === "image/jpeg") {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  ctx.drawImage(sourceImage, 0, 0, width, height);
+
+  canvas.toBlob(blob => {
+    $("compress").disabled = false;
+    $("compress").textContent = "Compress image ↗";
+
+    if (!blob) {
+      $("message").textContent =
+        "Export failed. Try another format or smaller dimensions.";
+      return;
+    }
+
+    clearResult();
+
+    resultURL = URL.createObjectURL(blob);
+    $("after").src = resultURL;
+    $("after").hidden = false;
+    $("afterEmpty").hidden = true;
+
+    $("outputSize").textContent = formatBytes(blob.size);
+    $("newMetric").textContent = formatBytes(blob.size);
+    $("download").disabled = false;
+
+    const difference = originalFile.size - blob.size;
+    const percentage = (difference / originalFile.size) * 100;
+
+    if (difference > 0) {
+      $("saved").textContent = percentage.toFixed(1) + "%";
+      $("saved").className = "saving";
+    } else {
+      $("saved").textContent = percentage.toFixed(1) + "%";
+      $("saved").className = "";
+    }
+
+    const extension = {
+      "image/webp":"webp",
+      "image/jpeg":"jpg",
+      "image/png":"png"
+    }[blob.type] || "png";
+
+    $("message").textContent =
+      `Finished! ${width} × ${height} px · ${formatBytes(blob.size)} · ` +
+      (difference >= 0
+        ? formatBytes(difference) + " saved."
+        : formatBytes(-difference) + " larger than original.");
+
+    $("download").onclick = () => {
+      const link = document.createElement("a");
+      link.href = resultURL;
+      link.download = "image-squeezed." + extension;
+      link.click();
+    };
+  }, type, type === "image/png" ? undefined : quality);
+});
+
+$("reset").addEventListener("click", () => {
+  $("quality").value = 80;
+  $("qualityValue").textContent = "80%";
+  $("format").value = "image/webp";
+  $("lock").checked = true;
+
+  if (sourceImage) {
+    $("width").value = sourceImage.width;
+    $("height").value = sourceImage.height;
+  }
+});
+
+window.addEventListener("beforeunload", () => {
+  if (originalURL) URL.revokeObjectURL(originalURL);
+  if (resultURL) URL.revokeObjectURL(resultURL);
+});
+</script>
+</body>
+</html>
