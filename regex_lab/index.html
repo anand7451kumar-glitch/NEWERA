@@ -1,0 +1,551 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>REGEX//LAB</title>
+<style>
+:root {
+  --bg:#090c12;
+  --panel:#121824;
+  --border:#273346;
+  --text:#eaf0fa;
+  --muted:#8492a7;
+  --green:#66e6a7;
+  --blue:#8eafff;
+  --red:#ff7885;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;
+}
+header {
+  padding:22px 6%;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.logo { font-weight:900; letter-spacing:2px; }
+.logo span { color:var(--green); }
+header small { color:var(--muted); }
+main { max-width:1100px; margin:auto; padding:40px 22px; }
+.eyebrow {
+  color:var(--green);
+  font-size:11px;
+  letter-spacing:3px;
+  font-weight:bold;
+}
+h1 { font-size:clamp(32px,5vw,48px); margin:12px 0; }
+p { color:var(--muted); line-height:1.6; }
+.panel {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  margin-top:18px;
+}
+.section-title {
+  font-size:13px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+label {
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  letter-spacing:1px;
+  margin-bottom:9px;
+}
+input,textarea,select {
+  width:100%;
+  background:#0a101a;
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--text);
+  padding:12px;
+  outline:none;
+  font:13px "SFMono-Regular",Consolas,monospace;
+}
+input:focus,textarea:focus,select:focus {
+  border-color:var(--green);
+}
+textarea {
+  resize:vertical;
+  min-height:150px;
+  line-height:1.7;
+}
+.pattern-row {
+  display:grid;
+  grid-template-columns:1fr 150px;
+  gap:12px;
+}
+.flags {
+  display:flex;
+  flex-wrap:wrap;
+  gap:15px;
+  margin-top:15px;
+}
+.flags label {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:0;
+  letter-spacing:0;
+  font-size:12px;
+}
+.flags input { width:auto; accent-color:var(--green); }
+button {
+  background:#1a2534;
+  border:1px solid var(--border);
+  color:var(--text);
+  border-radius:8px;
+  padding:10px 14px;
+  cursor:pointer;
+  font-weight:600;
+}
+button:hover { border-color:var(--green); }
+button.primary {
+  background:var(--green);
+  border-color:var(--green);
+  color:#07140e;
+}
+.examples {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:16px;
+}
+.examples button { font-size:11px; }
+.error {
+  display:none;
+  color:var(--red);
+  font-size:12px;
+  margin-top:12px;
+}
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+.stat {
+  background:#0a101a;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:15px;
+}
+.stat strong {
+  display:block;
+  font-size:25px;
+  margin-bottom:5px;
+}
+.stat small { color:var(--muted); }
+.green { color:var(--green); }
+.blue { color:var(--blue); }
+.highlight {
+  min-height:120px;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font:13px/1.9 "SFMono-Regular",Consolas,monospace;
+  color:#bac5d5;
+  background:#0a101a;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:15px;
+}
+mark {
+  background:#246b4a;
+  color:#d9ffeb;
+  border-radius:3px;
+  padding:2px 0;
+}
+.result-list {
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  margin-top:12px;
+}
+.match {
+  background:#0a101a;
+  border:1px solid var(--border);
+  border-radius:7px;
+  padding:11px;
+  font:12px "SFMono-Regular",Consolas,monospace;
+  overflow-wrap:anywhere;
+}
+.match strong { color:var(--green); }
+.match small { color:var(--muted); }
+.replace-row {
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+}
+.output {
+  background:#0a101a;
+  border:1px solid var(--border);
+  padding:15px;
+  border-radius:8px;
+  min-height:65px;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font:13px/1.7 monospace;
+}
+.actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:14px;
+}
+.empty {
+  color:var(--muted);
+  font-size:12px;
+  padding:20px 0;
+}
+footer {
+  text-align:center;
+  color:var(--muted);
+  padding:30px;
+  font-size:11px;
+}
+@media(max-width:650px) {
+  main { padding:25px 14px; }
+  .pattern-row { grid-template-columns:1fr; }
+  .stats { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">REGEX<span>//</span>LAB</div>
+  <small>DEVELOPER TOOL · 001</small>
+</header>
+
+<main>
+  <div class="eyebrow">PATTERN MATCHING WORKBENCH</div>
+  <h1>Decode your patterns.</h1>
+  <p>Write a regular expression. Test it against real text. See every match, position and capture group.</p>
+
+  <section class="panel">
+    <div class="section-title">01 / REGULAR EXPRESSION</div>
+
+    <div class="pattern-row">
+      <div>
+        <label for="pattern">YOUR PATTERN</label>
+        <input id="pattern" value="\b\w+@\w+\.\w+\b"
+          spellcheck="false" placeholder="Enter regex pattern...">
+      </div>
+      <div>
+        <label for="flags">FLAGS</label>
+        <input id="flags" value="gi" spellcheck="false"
+          placeholder="gi">
+      </div>
+    </div>
+
+    <div class="flags">
+      <label><input type="checkbox" id="global" checked> g · Global</label>
+      <label><input type="checkbox" id="insensitive" checked> i · Ignore case</label>
+      <label><input type="checkbox" id="multiline"> m · Multiline</label>
+      <label><input type="checkbox" id="dotall"> s · Dot all</label>
+    </div>
+
+    <div class="examples">
+      <button data-pattern="\b\w+@\w+\.\w+\b" data-flags="gi">Email</button>
+      <button data-pattern="https?://[^\s]+" data-flags="gi">URLs</button>
+      <button data-pattern="\d+" data-flags="g">Numbers</button>
+      <button data-pattern="\b[A-Z][a-z]+\b" data-flags="g">Capitalized words</button>
+      <button data-pattern="#[0-9a-fA-F]{6}\b" data-flags="gi">Hex colors</button>
+      <button data-pattern="\b\d{10}\b" data-flags="g">10-digit numbers</button>
+    </div>
+
+    <div class="error" id="error"></div>
+  </section>
+
+  <section class="panel">
+    <div class="section-title">02 / TEST INPUT</div>
+    <label for="source">TEXT TO ANALYZE</label>
+    <textarea id="source" spellcheck="false">Contact us at hello@example.com.
+You can also reach anand@test.com.
+Visit https://example.com for more information.
+Order number: 1234567890
+Another number: 9876543210</textarea>
+    <div class="actions">
+      <button class="primary" id="test">Run expression ↗</button>
+      <button id="clear">Clear input</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-title">03 / MATCH ANALYSIS</div>
+    <div class="stats">
+      <div class="stat">
+        <strong class="green" id="matchCount">0</strong>
+        <small>MATCHES</small>
+      </div>
+      <div class="stat">
+        <strong class="blue" id="charCount">0</strong>
+        <small>CHARACTERS</small>
+      </div>
+      <div class="stat">
+        <strong id="groupCount">0</strong>
+        <small>CAPTURE GROUPS</small>
+      </div>
+    </div>
+
+    <div style="margin-top:22px">
+      <label>HIGHLIGHTED TEXT</label>
+      <div class="highlight" id="highlight">Run an expression to see highlighted matches.</div>
+    </div>
+
+    <div style="margin-top:22px">
+      <label>MATCH DETAILS</label>
+      <div class="result-list" id="matches">
+        <div class="empty">No analysis yet.</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="copyMatches">Copy matches</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="section-title">04 / REPLACEMENT ENGINE</div>
+    <p style="font-size:12px">Replace matching text using JavaScript replacement syntax. For example, <code>$&</code> represents the entire match.</p>
+
+    <div class="replace-row">
+      <div>
+        <label for="replacement">REPLACEMENT TEXT</label>
+        <input id="replacement" placeholder="Enter replacement...">
+      </div>
+      <div style="align-self:end">
+        <button class="primary" id="replace">Replace all</button>
+      </div>
+    </div>
+
+    <div style="margin-top:17px">
+      <label>REPLACEMENT OUTPUT</label>
+      <div class="output" id="replaceOutput">Your replacement result appears here.</div>
+    </div>
+    <div class="actions">
+      <button id="copyOutput">Copy output</button>
+    </div>
+  </section>
+</main>
+
+<footer>REGEX//LAB · BUILT FOR CURIOUS DEVELOPERS</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let currentMatches = [];
+let replacementResult = "";
+
+function escapeHTML(value) {
+  return value.replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  })[char]);
+}
+
+function getFlags() {
+  return [
+    $("global").checked ? "g" : "",
+    $("insensitive").checked ? "i" : "",
+    $("multiline").checked ? "m" : "",
+    $("dotall").checked ? "s" : ""
+  ].join("");
+}
+
+function syncFlags() {
+  $("flags").value = getFlags();
+}
+
+function parseFlags() {
+  const value = $("flags").value.trim();
+  const allowed = "gimsuy";
+  const seen = new Set();
+
+  for (const flag of value) {
+    if (!allowed.includes(flag) || seen.has(flag)) {
+      throw new Error("Invalid or duplicate flag: " + flag);
+    }
+    seen.add(flag);
+  }
+  return value;
+}
+
+function getRegex() {
+  const flags = parseFlags();
+  return new RegExp($("pattern").value, flags);
+}
+
+function run() {
+  const text = $("source").value;
+  let regex;
+
+  try {
+    regex = getRegex();
+    $("error").style.display = "none";
+  } catch (err) {
+    $("error").textContent = err.message;
+    $("error").style.display = "block";
+    return;
+  }
+
+  currentMatches = [];
+
+  const scanRegex = new RegExp(
+    regex.source,
+    regex.flags.includes("g") ? regex.flags : regex.flags + "g"
+  );
+
+  let match;
+  let safety = 0;
+
+  while ((match = scanRegex.exec(text)) !== null) {
+    currentMatches.push({
+      value:match[0],
+      index:match.index,
+      groups:match.slice(1)
+    });
+
+    if (match[0] === "") scanRegex.lastIndex++;
+    if (++safety > 10000) break;
+  }
+
+  $("matchCount").textContent = currentMatches.length;
+  $("charCount").textContent = text.length;
+  $("groupCount").textContent =
+    currentMatches.reduce((sum, item) =>
+      sum + item.groups.filter(x => x !== undefined).length, 0);
+
+  // Build highlighted output safely.
+  let html = "";
+  let cursor = 0;
+
+  currentMatches.forEach(item => {
+    html += escapeHTML(text.slice(cursor, item.index));
+
+    if (item.value.length) {
+      html += "<mark>" + escapeHTML(item.value) + "</mark>";
+    }
+
+    cursor = item.index + item.value.length;
+  });
+
+  html += escapeHTML(text.slice(cursor));
+  $("highlight").innerHTML = html || "No matching text.";
+
+  if (currentMatches.length === 0) {
+    $("matches").innerHTML =
+      '<div class="empty">No matches found.</div>';
+  } else {
+    $("matches").innerHTML = currentMatches.map((item,index) => {
+      const groups = item.groups.length
+        ? item.groups.map((g,i) =>
+          `<div><small>Group ${i+1}:</small> ${escapeHTML(g ?? "undefined")}</div>`
+        ).join("")
+        : '<small>No capture groups</small>';
+
+      return `<div class="match">
+        <strong>#${index+1} · ${escapeHTML(item.value || "(empty match)")}</strong>
+        <div><small>Position:</small> ${item.index} – ${item.index + item.value.length}</div>
+        ${groups}
+      </div>`;
+    }).join("");
+  }
+
+  $("replaceOutput").textContent =
+    "Enter replacement text and click Replace all.";
+  replacementResult = "";
+}
+
+function replaceAll() {
+  try {
+    const regex = getRegex();
+    const replacement = $("replacement").value;
+
+    const safeRegex = new RegExp(
+      regex.source,
+      regex.flags.includes("g") ? regex.flags : regex.flags + "g"
+    );
+
+    replacementResult = $("source").value.replace(
+      safeRegex,
+      replacement
+    );
+
+    $("replaceOutput").textContent = replacementResult;
+  } catch (err) {
+    $("error").textContent = err.message;
+    $("error").style.display = "block";
+  }
+}
+
+$("test").addEventListener("click", run);
+$("replace").addEventListener("click", replaceAll);
+
+$("clear").addEventListener("click", () => {
+  $("source").value = "";
+  run();
+});
+
+$("flags").addEventListener("input", () => {
+  const flags = $("flags").value;
+  $("global").checked = flags.includes("g");
+  $("insensitive").checked = flags.includes("i");
+  $("multiline").checked = flags.includes("m");
+  $("dotall").checked = flags.includes("s");
+});
+
+["global","insensitive","multiline","dotall"].forEach(id => {
+  $(id).addEventListener("change", syncFlags);
+});
+
+document.querySelectorAll("[data-pattern]").forEach(button => {
+  button.addEventListener("click", () => {
+    $("pattern").value = button.dataset.pattern;
+    $("flags").value = button.dataset.flags;
+
+    $("global").checked = button.dataset.flags.includes("g");
+    $("insensitive").checked = button.dataset.flags.includes("i");
+    $("multiline").checked = button.dataset.flags.includes("m");
+    $("dotall").checked = button.dataset.flags.includes("s");
+
+    run();
+  });
+});
+
+async function copyText(text) {
+  if (!text) {
+    alert("Nothing to copy yet.");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(text);
+    alert("Copied successfully!");
+  } catch {
+    alert("Clipboard access unavailable. Select and copy the text manually.");
+  }
+}
+
+$("copyMatches").addEventListener("click", () => {
+  copyText(currentMatches.map(item => item.value).join("\n"));
+});
+
+$("copyOutput").addEventListener("click", () => {
+  copyText(replacementResult);
+});
+
+run();
+</script>
+</body>
+</html>
