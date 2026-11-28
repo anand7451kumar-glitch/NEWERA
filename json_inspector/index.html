@@ -1,0 +1,676 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JSON//INSPECTOR</title>
+<style>
+:root {
+  --bg:#090c12;
+  --panel:#121824;
+  --border:#283448;
+  --text:#eaf0fa;
+  --muted:#8492a7;
+  --green:#69e6a8;
+  --blue:#91b4ff;
+  --red:#ff7885;
+  --yellow:#f6ce78;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;
+}
+header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:21px 6%;
+  border-bottom:1px solid var(--border);
+}
+.logo { font-weight:900; letter-spacing:2px; }
+.logo span { color:var(--green); }
+header small { color:var(--muted); font-size:11px; }
+main { max-width:1200px; margin:auto; padding:38px 22px; }
+.eyebrow {
+  color:var(--green);
+  font-size:11px;
+  letter-spacing:3px;
+  font-weight:bold;
+}
+h1 { font-size:clamp(30px,5vw,47px); margin:12px 0; }
+.intro { color:var(--muted); line-height:1.7; }
+.panel {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px;
+  margin-top:20px;
+}
+.toolbar {
+  display:flex;
+  flex-wrap:wrap;
+  gap:9px;
+  margin-bottom:14px;
+}
+button {
+  padding:10px 14px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:#1b2534;
+  color:var(--text);
+  cursor:pointer;
+  font-weight:600;
+}
+button:hover { border-color:var(--green); }
+button.primary {
+  background:var(--green);
+  color:#08150e;
+  border-color:var(--green);
+}
+button:disabled { opacity:.4; cursor:not-allowed; }
+.workspace {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+.heading {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:10px;
+  font-size:12px;
+  font-weight:bold;
+}
+.heading span { color:var(--muted); font-weight:normal; }
+textarea {
+  display:block;
+  width:100%;
+  min-height:370px;
+  resize:vertical;
+  background:#090e17;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:15px;
+  color:#dce7f6;
+  outline:none;
+  font:12px/1.8 "SFMono-Regular",Consolas,monospace;
+  tab-size:2;
+}
+textarea:focus,input:focus { border-color:var(--green); }
+input {
+  background:#090e17;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:11px;
+  color:var(--text);
+  outline:none;
+  width:100%;
+}
+.message {
+  display:none;
+  margin-top:13px;
+  padding:12px;
+  border-radius:8px;
+  font:12px/1.6 monospace;
+  overflow-wrap:anywhere;
+}
+.message.success { display:block; background:#123526; color:#a8f4c9; }
+.message.error { display:block; background:#381d28; color:#ffb4bc; }
+.stats {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:18px;
+}
+.stat {
+  background:#0a101a;
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:15px;
+  min-width:0;
+}
+.stat strong { display:block; font-size:23px; margin-bottom:5px; }
+.stat small { color:var(--muted); font-size:10px; }
+.green { color:var(--green); }
+.blue { color:var(--blue); }
+.yellow { color:var(--yellow); }
+.tree-tools {
+  display:grid;
+  grid-template-columns:1fr auto auto;
+  gap:9px;
+  margin:15px 0;
+}
+.tree {
+  background:#090e17;
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:15px;
+  min-height:140px;
+  max-height:500px;
+  overflow:auto;
+  font:12px/2 "SFMono-Regular",Consolas,monospace;
+}
+.node { padding-left:18px; }
+.node-row {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-height:25px;
+  white-space:nowrap;
+}
+.twisty {
+  width:15px;
+  color:var(--muted);
+  cursor:pointer;
+  user-select:none;
+}
+.key { color:var(--blue); }
+.string { color:var(--green); }
+.number { color:#e7b6ff; }
+.boolean { color:var(--yellow); }
+.null { color:var(--red); }
+.type { color:var(--muted); font-size:10px; }
+.value {
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.node.collapsed > .children { display:none; }
+.node.hidden { display:none; }
+.node-row.match {
+  background:#243b31;
+  border-radius:4px;
+}
+.path-box {
+  background:#090e17;
+  padding:13px;
+  border-radius:8px;
+  color:var(--green);
+  font:12px monospace;
+  overflow-wrap:anywhere;
+  min-height:42px;
+}
+.empty {
+  color:var(--muted);
+  padding:25px;
+  text-align:center;
+  font-size:12px;
+}
+footer {
+  text-align:center;
+  color:var(--muted);
+  padding:30px;
+  font-size:11px;
+}
+@media(max-width:750px) {
+  .workspace { grid-template-columns:1fr; }
+  .stats { grid-template-columns:1fr 1fr; }
+  .tree-tools { grid-template-columns:1fr; }
+  main { padding:25px 14px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">JSON<span>//</span>INSPECTOR</div>
+  <small>DATA WORKBENCH · 001</small>
+</header>
+
+<main>
+  <div class="eyebrow">DEVELOPER DATA TOOL</div>
+  <h1>Make data readable.</h1>
+  <p class="intro">
+    Format, validate, search and explore JSON.
+    No external libraries. Your data stays in your browser.
+  </p>
+
+  <section class="panel">
+    <div class="toolbar">
+      <button class="primary" id="format">Format JSON ↗</button>
+      <button id="minify">Minify</button>
+      <button id="validate">Validate</button>
+      <button id="sample">Load sample</button>
+      <button id="clear">Clear</button>
+    </div>
+
+    <div class="workspace">
+      <div>
+        <div class="heading">
+          INPUT <span id="inputLength">0 characters</span>
+        </div>
+        <textarea id="input" spellcheck="false"
+          placeholder='Paste JSON here...'></textarea>
+      </div>
+
+      <div>
+        <div class="heading">
+          OUTPUT <span id="outputLength">0 characters</span>
+        </div>
+        <textarea id="output" readonly spellcheck="false"
+          placeholder="Your formatted JSON will appear here..."></textarea>
+        <div id="message" class="message"></div>
+      </div>
+    </div>
+
+    <div class="toolbar" style="margin-top:14px;margin-bottom:0">
+      <button id="copy">Copy output</button>
+      <button id="download">Download .json</button>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="stat">
+      <strong class="green" id="keys">—</strong>
+      <small>OBJECT KEYS</small>
+    </div>
+    <div class="stat">
+      <strong class="blue" id="arrays">—</strong>
+      <small>ARRAYS</small>
+    </div>
+    <div class="stat">
+      <strong class="yellow" id="depth">—</strong>
+      <small>MAX DEPTH</small>
+    </div>
+    <div class="stat">
+      <strong id="size">—</strong>
+      <small>OUTPUT SIZE</small>
+    </div>
+  </div>
+
+  <section class="panel">
+    <div class="heading">
+      <div>JSON TREE EXPLORER</div>
+      <span>Click arrows to expand or collapse</span>
+    </div>
+
+    <div class="tree-tools">
+      <input id="search" placeholder="Search keys and values...">
+      <button id="expand">Expand all</button>
+      <button id="collapse">Collapse all</button>
+    </div>
+
+    <div class="tree" id="tree">
+      <div class="empty">Format valid JSON to explore its structure.</div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="heading">SELECTED DATA PATH</div>
+    <div class="path-box" id="path">Click a tree item to inspect its path.</div>
+    <p style="font-size:11px">
+      Example: $.user.profile.email
+    </p>
+  </section>
+</main>
+
+<footer>JSON//INSPECTOR · BUILT WITH NATIVE JAVASCRIPT</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+let parsedData = null;
+let hasValidData = false;
+
+function showMessage(text, type) {
+  const box = $("message");
+  box.textContent = text;
+  box.className = "message " + type;
+}
+
+function clearStats() {
+  ["keys","arrays","depth","size"].forEach(id => {
+    $(id).textContent = "—";
+  });
+}
+
+function formatBytes(bytes) {
+  if (bytes < 1024) return bytes + " B";
+  return (bytes / 1024).toFixed(2) + " KB";
+}
+
+function getStats(value) {
+  let keys = 0;
+  let arrays = 0;
+  let maxDepth = 0;
+
+  function walk(item, depth) {
+    maxDepth = Math.max(maxDepth, depth);
+
+    if (Array.isArray(item)) {
+      arrays++;
+      item.forEach(child => walk(child, depth + 1));
+    } else if (item !== null && typeof item === "object") {
+      const entries = Object.entries(item);
+      keys += entries.length;
+      entries.forEach(([,child]) => walk(child, depth + 1));
+    }
+  }
+
+  walk(value, 0);
+  return {keys, arrays, maxDepth};
+}
+
+function updateStats(value, output) {
+  const stats = getStats(value);
+  $("keys").textContent = stats.keys;
+  $("arrays").textContent = stats.arrays;
+  $("depth").textContent = stats.maxDepth;
+  $("size").textContent = formatBytes(
+    new Blob([output]).size
+  );
+}
+
+function renderOutput(value, mode) {
+  const result = mode === "minify"
+    ? JSON.stringify(value)
+    : JSON.stringify(value, null, 2);
+
+  $("output").value = result;
+  $("outputLength").textContent =
+    result.length.toLocaleString() + " characters";
+
+  updateStats(value, result);
+  renderTree(value);
+
+  return result;
+}
+
+function parseInput() {
+  const text = $("input").value;
+
+  if (!text.trim()) {
+    showMessage("Enter some JSON first.", "error");
+    return null;
+  }
+
+  try {
+    const value = JSON.parse(text);
+    parsedData = value;
+    hasValidData = true;
+    return value;
+  } catch (error) {
+    parsedData = null;
+    hasValidData = false;
+    clearStats();
+    $("tree").innerHTML =
+      '<div class="empty">Fix the JSON to explore its structure.</div>';
+    $("output").value = "";
+    $("outputLength").textContent = "0 characters";
+    showMessage("Invalid JSON: " + error.message, "error");
+    return null;
+  }
+}
+
+function formatJSON() {
+  const value = parseInput();
+  if (value === null && $("input").value.trim() !== "null") return;
+
+  const result = renderOutput(value, "format");
+  showMessage("Valid JSON · Formatted successfully.", "success");
+}
+
+function minifyJSON() {
+  const value = parseInput();
+  if (value === null && $("input").value.trim() !== "null") return;
+
+  renderOutput(value, "minify");
+  showMessage("Valid JSON · Minified successfully.", "success");
+}
+
+function validateJSON() {
+  const value = parseInput();
+  if (value === null && $("input").value.trim() !== "null") return;
+
+  showMessage("✓ Your JSON is valid.", "success");
+  renderOutput(value, "format");
+}
+
+function escapeHTML(text) {
+  return String(text).replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  })[char]);
+}
+
+function renderTree(data) {
+  $("tree").innerHTML = "";
+  $("path").textContent = "Click a tree item to inspect its path.";
+
+  function build(value, key, path) {
+    const isArray = Array.isArray(value);
+    const isObject = value !== null && typeof value === "object";
+    const container = document.createElement("div");
+    container.className = "node";
+
+    const row = document.createElement("div");
+    row.className = "node-row";
+
+    const twisty = document.createElement("span");
+    twisty.className = "twisty";
+
+    if (isObject) {
+      twisty.textContent = "▼";
+      twisty.addEventListener("click", event => {
+        event.stopPropagation();
+        container.classList.toggle("collapsed");
+        twisty.textContent =
+          container.classList.contains("collapsed") ? "▶" : "▼";
+      });
+    } else {
+      twisty.textContent = "·";
+    }
+
+    const keyElement = document.createElement("span");
+    keyElement.className = "key";
+    keyElement.textContent = key === null
+      ? "root"
+      : typeof key === "number" ? `[${key}]` : key;
+
+    const typeElement = document.createElement("span");
+    typeElement.className = "type";
+
+    const valueElement = document.createElement("span");
+    valueElement.className = "value";
+
+    if (isArray) {
+      typeElement.textContent = `Array (${value.length})`;
+      valueElement.textContent = "";
+    } else if (isObject) {
+      typeElement.textContent = `Object (${Object.keys(value).length})`;
+      valueElement.textContent = "";
+    } else {
+      const type = value === null ? "null" : typeof value;
+      typeElement.textContent = type;
+
+      if (type === "string") {
+        valueElement.className += " string";
+        valueElement.textContent = `"${value}"`;
+      } else if (type === "number") {
+        valueElement.className += " number";
+        valueElement.textContent = value;
+      } else if (type === "boolean") {
+        valueElement.className += " boolean";
+        valueElement.textContent = value;
+      } else {
+        valueElement.className += " null";
+        valueElement.textContent = "null";
+      }
+    }
+
+    row.append(twisty, keyElement, typeElement, valueElement);
+
+    row.addEventListener("click", () => {
+      $("path").textContent = path;
+    });
+
+    container.appendChild(row);
+
+    if (isObject) {
+      const children = document.createElement("div");
+      children.className = "children";
+
+      const entries = isArray
+        ? value.map((item,index) => [index,item])
+        : Object.entries(value);
+
+      entries.forEach(([childKey, childValue]) => {
+        const childPath = isArray
+          ? `${path}[${childKey}]`
+          : `${path}.${childKey}`;
+
+        children.appendChild(
+          build(childValue, childKey, childPath)
+        );
+      });
+
+      container.appendChild(children);
+    }
+
+    return container;
+  }
+
+  $("tree").appendChild(build(data, null, "$"));
+}
+
+function filterTree() {
+  const query = $("search").value.toLowerCase();
+  const nodes = [...$("tree").querySelectorAll(".node")];
+
+  nodes.forEach(node => {
+    node.classList.remove("hidden");
+    node.querySelector(".node-row").classList.remove("match");
+  });
+
+  if (!query) return;
+
+  nodes.forEach(node => {
+    const row = node.querySelector(".node-row");
+    const matches = row.textContent.toLowerCase().includes(query);
+
+    if (matches) {
+      row.classList.add("match");
+      let parent = node.parentElement.closest(".node");
+
+      while (parent) {
+        parent.classList.remove("collapsed");
+        const arrow = parent.querySelector(":scope > .node-row > .twisty");
+        if (arrow) arrow.textContent = "▼";
+        parent = parent.parentElement.closest(".node");
+      }
+    } else {
+      node.classList.add("hidden");
+    }
+  });
+}
+
+function setAllCollapsed(collapsed) {
+  $("tree").querySelectorAll(".node").forEach(node => {
+    const hasChildren = node.querySelector(":scope > .children");
+    if (!hasChildren) return;
+
+    node.classList.toggle("collapsed", collapsed);
+
+    const arrow = node.querySelector(":scope > .node-row > .twisty");
+    if (arrow) arrow.textContent = collapsed ? "▶" : "▼";
+  });
+}
+
+$("format").addEventListener("click", formatJSON);
+$("minify").addEventListener("click", minifyJSON);
+$("validate").addEventListener("click", validateJSON);
+$("search").addEventListener("input", filterTree);
+
+$("expand").addEventListener("click", () => setAllCollapsed(false));
+$("collapse").addEventListener("click", () => setAllCollapsed(true));
+
+$("input").addEventListener("input", () => {
+  $("inputLength").textContent =
+    $("input").value.length.toLocaleString() + " characters";
+});
+
+$("clear").addEventListener("click", () => {
+  $("input").value = "";
+  $("output").value = "";
+  $("inputLength").textContent = "0 characters";
+  $("outputLength").textContent = "0 characters";
+  $("message").className = "message";
+  $("tree").innerHTML =
+    '<div class="empty">Format valid JSON to explore its structure.</div>';
+  $("search").value = "";
+  $("path").textContent = "Click a tree item to inspect its path.";
+  parsedData = null;
+  hasValidData = false;
+  clearStats();
+});
+
+$("sample").addEventListener("click", () => {
+  $("input").value = JSON.stringify({
+    user: {
+      id: 1042,
+      name: "Anand",
+      active: true,
+      profile: {
+        city: "Kolkata",
+        skills: ["Python","JavaScript","HTML","CSS"],
+        email: "hello@example.com"
+      }
+    },
+    projects: [
+      {name:"FocusFlow", status:"completed"},
+      {name:"Regex Lab", status:"in progress"},
+      {name:"JSON Inspector", status:"building"}
+    ],
+    settings: {
+      theme: "dark",
+      notifications: false,
+      version: 1.0
+    }
+  });
+  $("inputLength").textContent =
+    $("input").value.length + " characters";
+  formatJSON();
+});
+
+$("copy").addEventListener("click", async () => {
+  if (!$("output").value) {
+    showMessage("Nothing to copy.", "error");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText($("output").value);
+    showMessage("Copied output to clipboard.", "success");
+  } catch {
+    showMessage("Clipboard unavailable. Select and copy the output manually.", "error");
+  }
+});
+
+$("download").addEventListener("click", () => {
+  if (!$("output").value) {
+    showMessage("Format JSON before downloading.", "error");
+    return;
+  }
+
+  const blob = new Blob([$ ("output").value], {
+    type:"application/json"
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "formatted-data.json";
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
+$("inputLength").textContent =
+  $("input").value.length + " characters";
+</script>
+</body>
+</html>
